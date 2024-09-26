@@ -53,7 +53,6 @@ services:
       - MAX_REQUEST_SIZE=${max_request_size}B
       - CONNECTION_TIMEOUT=${connection_timeout:-10000}
       - READ_TIMEOUT=${read_timeout:-60000}
-      - CORE_SERVICE_URL=http://192.168.1.121:3000 # IP of the laptop running the core service
 
   compreface-fe:
     restart: always
@@ -68,3 +67,19 @@ services:
       - CLIENT_MAX_BODY_SIZE=${max_request_size}
       - PROXY_READ_TIMEOUT=${read_timeout:-60000}ms
       - PROXY_CONNECT_TIMEOUT=${connection_timeout:-10000}ms
+
+  compreface-core:
+    restart: always
+    image: ${registry}compreface-core:${CORE_VERSION}
+    container_name: "compreface-core"
+    environment:
+      - ML_PORT=3000
+      - IMG_LENGTH_LIMIT=${max_detect_size}
+      - UWSGI_PROCESSES=${uwsgi_processes:-2}
+      - UWSGI_THREADS=${uwsgi_threads:-1}
+    healthcheck:
+      test: curl --fail http://localhost:3000/healthcheck || exit 1
+      interval: 10s
+      retries: 0
+      start_period: 0s
+      timeout: 1s
