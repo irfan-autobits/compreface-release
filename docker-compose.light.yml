@@ -53,7 +53,7 @@ services:
       - MAX_REQUEST_SIZE=${max_request_size}B
       - CONNECTION_TIMEOUT=${connection_timeout:-10000}
       - READ_TIMEOUT=${read_timeout:-60000}
-      - CORE_SERVICE_URL=http://<your-laptop-ip>:3000 # IP of the laptop running the core service
+      - CORE_SERVICE_URL=http://irfan-Latitude-5490:3000 # IP of the laptop running the core service
 
   compreface-fe:
     restart: always
