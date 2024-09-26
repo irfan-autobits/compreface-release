@@ -1,0 +1,16 @@
+certifi==2024.8.30
+charset-normalizer==3.3.2
+compreface-sdk==0.6.0
+et-xmlfile==1.1.0
+idna==3.10
+numpy==2.1.1
+opencv-python==4.10.0.84
+openpyxl==3.1.5
+pandas==2.2.2
+python-dateutil==2.9.0.post0
+pytz==2024.2
+requests==2.32.3
+requests-toolbelt==0.9.1
+six==1.16.0
+tzdata==2024.1
+urllib3==1.26.15
