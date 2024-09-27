@@ -65,6 +65,8 @@ services:
       - compreface-api
       - compreface-admin
     environment:
+      - CORE_IP=${CORE_IP}
+      - CORE_PORT=${CORE_PORT}
       - CLIENT_MAX_BODY_SIZE=${max_request_size}
       - PROXY_READ_TIMEOUT=${read_timeout:-60000}ms
       - PROXY_CONNECT_TIMEOUT=${connection_timeout:-10000}ms
