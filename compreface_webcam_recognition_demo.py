@@ -1,7 +1,9 @@
-import cv2
+import os
+os.environ['QT_QPA_PLATFORM'] = 'xcb'  # Or 'offscreen' if you want no display
+import cv2, time
 import argparse
 import time
-import os
+import gc 
 import shutil
 import numpy as np
 from threading import Thread
@@ -72,7 +74,7 @@ excel_path = os.path.join(database_dir, excel_name)
 def parseArguments():
     parser = argparse.ArgumentParser()
 
-    parser.add_argument("--api-key", help="CompreFace recognition service API key", type=str, default='c7d5f325-7167-463a-a1f5-b973422b868e')
+    parser.add_argument("--api-key", help="CompreFace recognition service API key", type=str, default='88910b39-ac74-4fea-afcd-cfc446de2e6e')
     # parser.add_argument("--api-key", help="CompreFace recognition service API key", type=str, default='00000000-0000-0000-0000-000000000002')
     parser.add_argument("--host", help="CompreFace host", type=str, default='http://localhost')
     parser.add_argument("--port", help="CompreFace port", type=str, default='8000')
@@ -130,6 +132,7 @@ class ThreadedCamera:
         self.recognition: RecognitionService = compre_face.init_face_recognition(api_key)
 
         self.FPS = 1/30
+        self.FPS_MS = int(self.FPS * 1000)
 
         # Start frame retrieval thread
         self.thread = Thread(target=self.show_frame, args=())
@@ -227,7 +230,10 @@ class ThreadedCamera:
         self.results = self.filter_recognition_results(data)
         # Print filtered data for debugging
         print('Filtered data:', self.results)
-        
+        # Manually release memory and trigger garbage collection
+        del byte_im
+        cv2.waitKey(1)
+        gc.collect()  # Trigger garbage collection manually
         # Save results to Excel and save face images with the current frame_count
         self.save_results_to_excel(self.results, frame_count)
 
