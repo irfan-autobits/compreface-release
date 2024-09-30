@@ -27,7 +27,7 @@ acc_file_path = os.path.join(database_dir, txt_name)
 def parseArguments():
     parser = argparse.ArgumentParser()
 
-    parser.add_argument("--api-key", help="CompreFace recognition service API key", type=str, default='88910b39-ac74-4fea-afcd-cfc446de2e6e')
+    parser.add_argument("--api-key", help="CompreFace recognition service API key", type=str, default='9d7bf3e4-069b-4c82-87e6-1064e90823de')
     parser.add_argument("--host", help="CompreFace host", type=str, default='http://localhost')
     parser.add_argument("--port", help="CompreFace port", type=str, default='8000')
     parser.add_argument("--rtsp", help="Use RTSP stream (True/False)", type=str, default='True')
@@ -60,7 +60,8 @@ class ThreadedCamera:
 
         self.recognition: RecognitionService = compre_face.init_face_recognition(api_key)
 
-        self.FPS = 1/30
+        self.FPS = 1/25
+        self.FPS_MS = int(self.FPS * 1000)
 
         # Start frame retrieval thread
         self.thread = Thread(target=self.show_frame, args=())
@@ -102,11 +103,8 @@ class ThreadedCamera:
                             face_image_name = f"{timestamp}_{subjects[0]['subject']}_({subjects[0]['similarity']})_{frame_count}.jpg"
                             face_image_path = os.path.join(database_dir, face_image_name)
                             # Save the face as a JPG image
-                            cv2.imwrite(face_image_path, face_image)
-                            #saving accuracy
-                            with open(acc_file_path, 'a') as file:
-                                file.write(f'Saved detected face as: {face_image_name}'+ '\n')
-                            print(f"Saved detected face as: {face_image_name}")
+                            # cv2.imwrite(face_image_path, face_image)
+                            print(f"Saved detected at if face as: {face_image_name}")
 
                         else:
                             subject = f"No known faces"
@@ -122,19 +120,16 @@ class ThreadedCamera:
                             face_image_name = f"{timestamp}_{frame_count}.jpg"
                             face_image_path = os.path.join(database_dir, face_image_name)
                             # Save the face as a JPG image
-                            cv2.imwrite(face_image_path, face_image)
-                            #saving accuracy
-                            with open(acc_file_path, 'a') as file:
-                                file.write(f'Saved detected face as: {face_image_name}'+ '\n')
+                            # cv2.imwrite(face_image_path, face_image)
                             print(f"Saved detected face as: {face_image_name}")
 
-            cv2.imshow('CompreFace demo', self.frame)
+            # cv2.imshow('CompreFace demo', self.frame)
             time.sleep(self.FPS)
 
-            if cv2.waitKey(1) & 0xFF == 27 or 0xFF == ord('q'):
-                self.capture.release()
-                cv2.destroyAllWindows()
-                self.active = False
+            # if cv2.waitKey(1) & 0xFF == 27 or 0xFF == ord('q'):
+            #     self.capture.release()
+            #     cv2.destroyAllWindows()
+            #     self.active = False
 
     def is_active(self):
         return self.active
@@ -147,13 +142,44 @@ class ThreadedCamera:
         byte_im = im_buf_arr.tobytes()
         data = self.recognition.recognize(byte_im)
         self.results = data.get('result')
+        if self.results:
+            results = self.results
+            for result in results:
+                box = result.get('box')
+                subjects = result.get('subjects')
+                if box:
+                    if subjects:
+                        subjects = sorted(subjects, key=lambda k: k['similarity'], reverse=True)
+                        subject = f"Subject: {subjects[0]['subject']}"
+                        similarity = f"Similarity: {subjects[0]['similarity']}"
+                        face_image_name = f"{timestamp}_{subjects[0]['subject']}_({subjects[0]['similarity']})_{frame_count}.jpg"
+                        with open(acc_file_path, 'a') as file:
+                                file.write(f'Saved detected face as: {face_image_name}'+ '\n')
+                    else:
+                        subject = f"No known faces"
+                        face_image_name = f"{timestamp}_{frame_count}.jpg"
+                        with open(acc_file_path, 'a') as file:
+                                file.write(f'Saved detected face as: {face_image_name}'+ '\n')
+        
+        cv2.imshow('CompreFace demo', self.frame)
+        cv2.waitKey(self.FPS_MS)
+        
+        if cv2.waitKey(1) & 0xFF == 27 or 0xFF == ord('q'):
+            self.capture.release()
+            cv2.destroyAllWindows()
+            self.active = False
         
 
         
 if __name__ == '__main__':
     args = parseArguments()
     threaded_camera = ThreadedCamera(args.api_key, args.host, args.port, args.rtsp, args.rtsp_url)
+    frame_interval = 3  # Process every 3rd frame
     frame_count = 0 
     while threaded_camera.is_active():
         frame_count += 1  # Increment frame counter
+        # Skip frames that are not the 3rd one in sequence
+        if frame_count % frame_interval != 0:
+            print(f'Skip-processing {frame_count},{frame_interval}')
+            continue  # Skip this iteration and go to the next frame
         threaded_camera.update(frame_count)
