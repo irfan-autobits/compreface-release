@@ -4,6 +4,8 @@
 cleaning.py
 docker_install.sh
 req.txt
+/yunet_mediapipe/
+irfan.png
 
 tmp/
 

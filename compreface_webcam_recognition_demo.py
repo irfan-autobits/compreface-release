@@ -78,7 +78,7 @@ def parseArguments():
     # parser.add_argument("--api-key", help="CompreFace recognition service API key", type=str, default='00000000-0000-0000-0000-000000000002')
     parser.add_argument("--host", help="CompreFace host", type=str, default='http://localhost')
     parser.add_argument("--port", help="CompreFace port", type=str, default='8000')
-    parser.add_argument("--rtsp", help="Use RTSP stream (True/False)", type=str, default='True')
+    parser.add_argument("--rtsp", help="Use RTSP stream (True/False)", type=str, default='False')
     parser.add_argument("--rtsp-url", help="RTSP stream URL", type=str, default='rtsp://autobits:Autobits@123@192.168.1.204:554')
 
     args = parser.parse_args()
