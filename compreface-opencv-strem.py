@@ -40,7 +40,7 @@ class ThreadedCamera(object):
 
         compre_face: CompreFace = CompreFace(host, port, {
                                                 "limit": 0,
-                                                "det_prob_threshold": 0.60,
+                                                "det_prob_threshold": 0.1,
                                                 "prediction_count": 1,
                                                 # "face_plugins": "",
                                                 "status": False
@@ -95,7 +95,7 @@ class ThreadedCamera(object):
                                 # face_image_path = os.path.join(database_dir, face_image_name)
                                 # # Save the face as a JPG image
                                 # # cv2.imwrite(face_image_path, face_image)
-                                print(f"Saved detected at if face as: {face_image_name}")
+                                # print(f"Saved detected at if face as: {face_image_name}")
 
                             else:
                                 subject = f"Unknown"
@@ -112,7 +112,7 @@ class ThreadedCamera(object):
                                 # face_image_path = os.path.join(database_dir, face_image_name)
                                 # # Save the face as a JPG image
                                 # # cv2.imwrite(face_image_path, face_image)
-                                print(f"Saved detected face as: {face_image_name}")
+                                # print(f"Saved detected face as: {face_image_name}")
             # time.sleep(self.FPS)
 
     def is_active(self):
@@ -139,13 +139,13 @@ class ThreadedCamera(object):
                         face_image_name = f"{timestamp}_{subjects[0]['subject']}_({subjects[0]['similarity']})_{frame_count}.jpg"
                         with open(acc_file_path, 'a') as file:
                                 file.write(f'Saved detected face as: {face_image_name}'+ '\n')
-                        # print(f"detected if face as: {face_image_name}")
+                        print(f"detected if face as: {face_image_name}")
                     else:
                         subject = f"UNknown"
                         face_image_name = f"{timestamp}_{frame_count}.jpg"
                         with open(acc_file_path, 'a') as file:
                                 file.write(f'Saved detected face as: {face_image_name}'+ '\n')
-                        # print(f"detected face as: {face_image_name}")  
+                        print(f"detected face as: {face_image_name}")  
         cv2.imshow('frame', self.frame)
         cv2.waitKey(self.FPS_MS)
 
@@ -176,7 +176,7 @@ if __name__ == '__main__':
     host = 'http://localhost'
     port = '8000'
     api_key = 'b32c9ed2-0a51-47c7-9eb6-6d2063834a0f'
-    use_rtsp = True
+    use_rtsp = False
         
     threaded_camera = ThreadedCamera(host, port, api_key, use_rtsp, src)
     frame_interval = 1  # Process every 3rd frame
