@@ -27,7 +27,7 @@ class ThreadedCamera(object):
             '-i', self.src,             # Input RTSP stream
             '-f', 'rawvideo',           # Output format
             '-pix_fmt', 'bgr24',        # Pixel format for OpenCV
-            '-an',                       # Disable audio
+            # '-an',                       # Disable audio
             '-sn',                       # Disable subtitles
             '-tune', 'zerolatency',     # Tune for low latency
             '-'

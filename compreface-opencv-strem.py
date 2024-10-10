@@ -91,10 +91,10 @@ class ThreadedCamera(object):
                                 # # Extract face region using bounding box
                                 # face_image = self.frame[box['y_min']:box['y_max'], box['x_min']:box['x_max']]
                                 # # Define file path to save the image
-                                face_image_name = f"{timestamp}_{subjects[0]['subject']}_({subjects[0]['similarity']})_{frame_count}.jpg"
+                                # face_image_name = f"{timestamp}_{subjects[0]['subject']}_({subjects[0]['similarity']})_{frame_count}.jpg"
                                 # face_image_path = os.path.join(database_dir, face_image_name)
                                 # # Save the face as a JPG image
-                                # # cv2.imwrite(face_image_path, face_image)
+                                # cv2.imwrite(face_image_path, face_image)
                                 # print(f"Saved detected at if face as: {face_image_name}")
 
                             else:
@@ -108,10 +108,10 @@ class ThreadedCamera(object):
                                 # # Extract face region using bounding box
                                 # face_image = self.frame[box['y_min']:box['y_max'], box['x_min']:box['x_max']]
                                 # # Define file path to save the image
-                                face_image_name = f"{timestamp}_{frame_count}.jpg"
+                                # face_image_name = f"{timestamp}_{frame_count}.jpg"
                                 # face_image_path = os.path.join(database_dir, face_image_name)
                                 # # Save the face as a JPG image
-                                # # cv2.imwrite(face_image_path, face_image)
+                                # cv2.imwrite(face_image_path, face_image)
                                 # print(f"Saved detected face as: {face_image_name}")
             # time.sleep(self.FPS)
 
@@ -137,15 +137,32 @@ class ThreadedCamera(object):
                         subject = f"Subject: {subjects[0]['subject']}"
                         similarity = f"Similarity: {subjects[0]['similarity']}"
                         face_image_name = f"{timestamp}_{subjects[0]['subject']}_({subjects[0]['similarity']})_{frame_count}.jpg"
+                        # saving img
+                        # Extract face region using bounding box
+                        face_image = self.frame[box['y_min']:box['y_max'], box['x_min']:box['x_max']]
+                        # Define file path to save the image
+                        face_image_name = f"{timestamp}_{subjects[0]['subject']}_({subjects[0]['similarity']})_{frame_count}.jpg"
+                        face_image_path = os.path.join(database_dir, face_image_name)
+                        # Save the face as a JPG image
+                        cv2.imwrite(face_image_path, face_image)
+                        print(f"Saved detected at if face as: {face_image_name}")
                         with open(acc_file_path, 'a') as file:
                                 file.write(f'Saved detected face as: {face_image_name}'+ '\n')
-                        print(f"detected if face as: {face_image_name}")
                     else:
                         subject = f"UNknown"
                         face_image_name = f"{timestamp}_{frame_count}.jpg"
+                        # saving img
+                        # Extract face region using bounding box
+                        face_image = self.frame[box['y_min']:box['y_max'], box['x_min']:box['x_max']]
+                        # Define file path to save the image
+                        face_image_name = f"{timestamp}_{frame_count}.jpg"
+                        face_image_path = os.path.join(database_dir, face_image_name)
+                        # Save the face as a JPG image
+                        cv2.imwrite(face_image_path, face_image)
+                        print(f"Saved detected face as: {face_image_name}")
                         with open(acc_file_path, 'a') as file:
                                 file.write(f'Saved detected face as: {face_image_name}'+ '\n')
-                        print(f"detected face as: {face_image_name}")  
+                        
         cv2.imshow('frame', self.frame)
         cv2.waitKey(self.FPS_MS)
 
