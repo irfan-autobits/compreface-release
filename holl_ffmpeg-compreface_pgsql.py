@@ -14,14 +14,58 @@ import struct
 os.environ['QT_QPA_PLATFORM'] = 'xcb'  # Or 'offscreen' if you want no display
 
 # Directory to store employee images
-database_dir = 'Report'
-shutil.rmtree(database_dir, ignore_errors=True)
+database_dir = 'Report_holl'
+shutil.rmtree(database_dir, ignore_errors=True) # --------uncmt to stop append mode 
 os.makedirs(database_dir, exist_ok=True)
 print('Created/checked database_dir')
 excel_name = 'face_recognition_results.xlsx'
 excel_path = os.path.join(database_dir, excel_name)
 txt_name = 'face_recognition_results.txt'
 acc_file_path = os.path.join(database_dir, txt_name)
+
+# postgre - - - - - - - - - - 
+from sqlalchemy import create_engine, Column, Integer, String, Text, DateTime
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import sessionmaker
+import re
+from datetime import datetime
+
+# Define the database URL
+DATABASE_URL = "postgresql+psycopg2://postgres:postgres@localhost:6432/frs"
+
+# Create a database engine
+engine = create_engine(DATABASE_URL)
+
+# Define the Base class
+Base = declarative_base()
+
+# Define the Table schema
+class RecognitionResult(Base):
+    __tablename__ = 'recognition_res'
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    camera = Column(Text)
+    person = Column(Text)  # Use Text for longer strings
+    accuracy = Column(Text)
+    Image = Column(Text)
+    timestamp = Column(DateTime, default=datetime.utcnow)
+# -------- uncmt to stop append mode---------------------------------------
+# Drop the table
+Base.metadata.drop_all(engine)
+print("All tables have been dropped.")
+# --------------------------------------------------------------------------
+# Create tables in the database
+Base.metadata.create_all(engine)
+
+# Create a session
+Session = sessionmaker(bind=engine)
+session = Session()
+
+# # # Purge all rows from the table
+# # session.query(RecognitionResult).delete()
+# # session.commit()
+# # print("All rows deleted from the table.")
+# ----------------------------------------------------
 
 class ThreadedCamera:
     def __init__(self, host, port, api_key, use_rtsp, src='0'):
@@ -131,6 +175,15 @@ class ThreadedCamera:
                             # with open(acc_file_path, 'a') as file:
                             #         file.write(f'Saved detected face as: {face_image_name}'+ '\n')
 
+    def extract_ip_from_src(self, src):
+        # Regular expression to match an IP address
+        ip_pattern = r'(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})'
+        match = re.search(ip_pattern, src)
+        if match:
+            return match.group(0)
+        else:
+            return None
+
     def show_frame(self, frame_count):
         if not hasattr(self, 'frame'):
             return
@@ -150,7 +203,7 @@ class ThreadedCamera:
                     if subjects and subjects[0]['similarity'] >= 0.975:
                         subjects = sorted(subjects, key=lambda k: k['similarity'], reverse=True)
                         subject = f"{subjects[0]['subject']}"
-                        similarity = f"Similarity: {subjects[0]['similarity']}"
+                        similarity = f"{subjects[0]['similarity']}"
                         # cv2.rectangle(img=self.frame, pt1=(box['x_min'], box['y_min']),
                         #         pt2=(box['x_max'], box['y_max']), color=(0, 255, 0), thickness=1)
                         # cv2.putText(self.frame, subject, (box['x_min']+5, box['y_min'] - 15),
@@ -158,7 +211,24 @@ class ThreadedCamera:
                         face_image_name = f"{timestamp}_{subjects[0]['subject']}_({subjects[0]['similarity']})_{frame_count}.jpg"
                         with open(acc_file_path, 'a') as file:
                                 file.write(f'Saved detected face as: {face_image_name}'+ '\n')
-                        print(f"detected if face as: {face_image_name}")
+                        # print(f"detected if face as: {face_image_name}")
+                        database_img_dir = os.path.join(database_dir, subject) 
+                        face_image_path = os.path.join(database_img_dir, face_image_name)
+                        if self.use_rtsp == True:
+                            camera_ip = self.extract_ip_from_src(src)
+                        elif self.use_rtsp == False:
+                            camera_ip = 'Device_camera'
+                        accuracy_per = f"{float(similarity) * 100:.0f}%"
+                        print('ip in if',camera_ip)
+                        # Save data to PostgreSQL
+                        recognition_result = RecognitionResult(
+                            camera=camera_ip,
+                            person=subject,
+                            accuracy= accuracy_per,
+                            Image=face_image_path,
+                        )
+                        session.add(recognition_result)
+                        session.commit()
                     else:
                         subject = f"Unknown"
                         # cv2.rectangle(img=self.frame, pt1=(box['x_min'], box['y_min']),
@@ -168,10 +238,38 @@ class ThreadedCamera:
                         face_image_name = f"{timestamp}_{frame_count}.jpg"
                         with open(acc_file_path, 'a') as file:
                                 file.write(f'Saved detected face as: {face_image_name}'+ '\n')
-                        print(f"detected face as: {face_image_name}") 
+                        # print(f"detected face as: {face_image_name}")
+                        database_img_dir = os.path.join(database_dir, subject) 
+                        face_image_path = os.path.join(database_img_dir, face_image_name)
+                        if self.use_rtsp == True:
+                            camera_ip = self.extract_ip_from_src(src)
+                        elif self.use_rtsp == False:
+                            camera_ip = 'Device_camera'
+                        print('ip in elif',camera_ip)
+                        # Save data to PostgreSQL
+                        recognition_result = RecognitionResult(
+                            camera=camera_ip,
+                            person=subject,
+                            accuracy='100%',
+                            Image=face_image_path,
+                        )
+                        session.add(recognition_result)
+                        session.commit() 
         cv2.imshow('Frame', self.frame)
         cv2.waitKey(self.FPS_MS)
-
+        # if cv2.waitKey(1) & 0xFF == 27 or cv2.waitKey(1) & 0xFF == ord('q'):
+        #     self.capture.release()
+        #     cv2.destroyAllWindows()
+        #     self.active = False
+        #     # Close the PostgreSQL session
+        #     session.close()
+        #     print("PostgreSQL session closed")
+        
+        key = cv2.waitKey(1) & 0xFF
+        if key == ord('q') or key == 27:  # 27 is the ASCII code for 'Esc'
+            print("Exiting...")
+            # Release any resources if needed
+            cv2.destroyAllWindows()
 
     def get_stream_info(self, capture, stream_type):
         if not capture.isOpened():
@@ -200,8 +298,12 @@ if __name__ == '__main__':
     port = '8000'
     api_key = '819d4fe1-6951-4a36-b432-6f75e9b4bbb0'
     use_rtsp = True
-    src = 'rtsp://autobits:Autobits@1234@192.168.1.202:554'
-    src1 = 'rtsp://autobits:Autobits@123@192.168.1.204:554'
+    cam_names = ['team','holl']
+    cam_name = cam_names[1]
+    if cam_name == 'team':
+        src = 'rtsp://autobits:Autobits@1234@192.168.1.202:554'
+    elif cam_name == 'holl':
+        src = 'rtsp://autobits:Autobits@123@192.168.1.204:554'
     
     threaded_camera = ThreadedCamera(host, port, api_key, use_rtsp, src)
     frame_interval = 1  # Process every frame
@@ -214,3 +316,7 @@ if __name__ == '__main__':
             threaded_camera.show_frame(frame_count)
         except AttributeError:
             pass
+    
+    # # Close the PostgreSQL session
+    # session.close()
+    # print("PostgreSQL session closed")

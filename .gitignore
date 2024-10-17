@@ -1,12 +1,12 @@
 /Report/
-/Report1/
-/Report_test/
+/Report_team/
+/Report_holl/
 cleaning.py
 docker_install.sh
 req.txt
 /yunet_mediapipe/
 irfan.png
-
+# dev_req.txt
 tmp/
 
 # Created by .ignore support plugin (hsz.mobi)
