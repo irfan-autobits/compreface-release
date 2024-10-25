@@ -295,6 +295,7 @@ if __name__ == '__main__':
     host = 'http://localhost'
     port = '8000'
     api_key = '819d4fe1-6951-4a36-b432-6f75e9b4bbb0'
+    api_key = 'cc10c64d-ae29-47a8-8bb5-17f76dfc4878'
     use_rtsp = False
     cam_names = ['team','holl']
     cam_name = cam_names[0]
