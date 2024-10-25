@@ -211,7 +211,7 @@ class ThreadedCamera:
                         face_image_name = f"{timestamp}_{subjects[0]['subject']}_({subjects[0]['similarity']})_{frame_count}.jpg"
                         with open(acc_file_path, 'a') as file:
                                 file.write(f'Saved detected face as: {face_image_name}'+ '\n')
-                        # print(f"detected if face as: {face_image_name}")
+                        print(f"detected if face as: {face_image_name}")
                         database_img_dir = os.path.join(database_dir, subject) 
                         face_image_path = os.path.join(database_img_dir, face_image_name)
                         if self.use_rtsp == True:
@@ -219,7 +219,6 @@ class ThreadedCamera:
                         elif self.use_rtsp == False:
                             camera_ip = 'Device_camera'
                         accuracy_per = f"{float(similarity) * 100:.0f}%"
-                        print('ip in if',camera_ip)
                         # Save data to PostgreSQL
                         recognition_result = RecognitionResult(
                             camera=camera_ip,
@@ -238,14 +237,13 @@ class ThreadedCamera:
                         face_image_name = f"{timestamp}_{frame_count}.jpg"
                         with open(acc_file_path, 'a') as file:
                                 file.write(f'Saved detected face as: {face_image_name}'+ '\n')
-                        # print(f"detected face as: {face_image_name}")
+                        print(f"detected face as: {face_image_name}")
                         database_img_dir = os.path.join(database_dir, subject) 
                         face_image_path = os.path.join(database_img_dir, face_image_name)
                         if self.use_rtsp == True:
                             camera_ip = self.extract_ip_from_src(src)
                         elif self.use_rtsp == False:
                             camera_ip = 'Device_camera'
-                        print('ip in elif',camera_ip)
                         # Save data to PostgreSQL
                         recognition_result = RecognitionResult(
                             camera=camera_ip,

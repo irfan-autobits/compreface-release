@@ -3,6 +3,7 @@ from threading import Thread
 import os
 os.environ['QT_QPA_PLATFORM'] = 'xcb'  # Or 'offscreen' if you want no display
 import cv2, time
+import numpy as np
 
 class ThreadedCamera(object):
     def __init__(self, src=0):
@@ -29,10 +30,18 @@ class ThreadedCamera(object):
                 if not self.status:
                     print("Failed to grab frame")
                     break  # Stop the loop if no frame is captured
+    def prewhiten(self,img):
+        """ Normalize image."""
+        mean = np.mean(img)
+        std = np.std(img)
+        std_adj = np.maximum(std, 1.0 / np.sqrt(img.size))
+        y = np.multiply(np.subtract(img, mean), 1 / std_adj)
+        return y
 
     def show_frame(self):
         
         if self.frame is not None:
+            # self.frame = self.prewhiten(self.frame)
             cv2.imshow('frame', self.frame)
             cv2.waitKey(self.FPS_MS)
         else:
@@ -65,7 +74,7 @@ if __name__ == '__main__':
     # src1 = 'rtsp://autobits:Autobits@1234@192.168.1.202:554'
     src1 = 'rtsp://autobits:Autobits%401234@192.168.1.202:554'
     try:
-        threaded_camera = ThreadedCamera(src)
+        threaded_camera = ThreadedCamera()
         while True:
             try:
                 threaded_camera.show_frame()

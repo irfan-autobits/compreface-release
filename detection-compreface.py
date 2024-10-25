@@ -14,7 +14,7 @@ import struct
 os.environ['QT_QPA_PLATFORM'] = 'xcb'  # Or 'offscreen' if you want no display
 
 # Directory to store employee images
-database_dir = 'Report_team'
+database_dir = 'Report_holl'
 shutil.rmtree(database_dir, ignore_errors=True) # --------uncmt to stop append mode 
 os.makedirs(database_dir, exist_ok=True)
 print('Created/checked database_dir')
@@ -128,52 +128,26 @@ class ThreadedCamera:
                     if not self.status or self.frame is None or self.frame.size == 0:
                         print("No frame received, skipping...")
                         time.sleep(self.FPS)  # Prevent tight loop if no frames are coming in
-                        continue  # Skip the rest of the loop if no frame
-                    # self.frame = cv2.flip(self.frame, 1)
-                    
+                        continue  # Skip the rest of the loop if no frame                    
             if self.results:
                 for result in self.results:
                     box = result.get('box')
                     subjects = result.get('subjects')
                     if box:
-                        if subjects and subjects[0]['similarity'] >= 0.975:
-                            subjects = sorted(subjects, key=lambda k: k['similarity'], reverse=True)
-                            subject = f"{subjects[0]['subject']}"
-                            similarity = f"Similarity: {subjects[0]['similarity']}"
-                            cv2.rectangle(img=self.frame, pt1=(box['x_min'], box['y_min']),
-                                    pt2=(box['x_max'], box['y_max']), color=(0, 255, 0), thickness=1)
-                            cv2.putText(self.frame, subject, (box['x_min']+5, box['y_min'] - 15),
-                                        cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 0), 1)
-                            # saving img
-                            # Extract face region using bounding box
-                            face_image = self.frame[box['y_min']:box['y_max'], box['x_min']:box['x_max']]
-                            face_image_name = f"{timestamp}_{subject}_({subjects[0]['similarity']})_{frame_count}.jpg"
-                            database_img_dir = os.path.join(database_dir, subject) 
-                            os.makedirs(database_img_dir, exist_ok=True)
-                            face_image_path = os.path.join(database_img_dir, face_image_name)
-                            # Save the face as a JPG image
-                            cv2.imwrite(face_image_path, face_image)
-                            # print(f"Saved detected at if face as: {face_image_name}")
-                            # with open(acc_file_path, 'a') as file:
-                            #         file.write(f'Saved detected face as: {face_image_name}'+ '\n')
-                        else:
-                            subject = f"UNknown"
-                            cv2.rectangle(img=self.frame, pt1=(box['x_min'], box['y_min']),
-                                    pt2=(box['x_max'], box['y_max']), color=(0, 0, 255), thickness=1)
-                            cv2.putText(self.frame, subject, (box['x_min']+5, box['y_min'] - 15),
-                                        cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 0, 255), 1)
-                            # saving img
-                            # Extract face region using bounding box
-                            face_image = self.frame[box['y_min']:box['y_max'], box['x_min']:box['x_max']]
-                            face_image_name = f"{timestamp}_{subject}_{frame_count}.jpg"
-                            database_img_dir = os.path.join(database_dir, subject) 
-                            os.makedirs(database_img_dir, exist_ok=True)
-                            face_image_path = os.path.join(database_img_dir, face_image_name)
-                            # Save the face as a JPG image
-                            cv2.imwrite(face_image_path, face_image)
-                            # print(f"Saved detected face as: {face_image_name}")
-                            # with open(acc_file_path, 'a') as file:
-                            #         file.write(f'Saved detected face as: {face_image_name}'+ '\n')
+                        cv2.rectangle(img=self.frame, pt1=(box['x_min'], box['y_min']),
+                                pt2=(box['x_max'], box['y_max']), color=(0, 0, 255), thickness=1)
+                        cv2.putText(self.frame (box['x_min']+5, box['y_min'] - 15),
+                                    cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 0, 255), 1)
+                        # saving img
+                        # Extract face region using bounding box
+                        face_image = self.frame[box['y_min']:box['y_max'], box['x_min']:box['x_max']]
+                        face_image_name = f"{timestamp}_{frame_count}.jpg"                        
+                        face_image_path = os.path.join(database_dir, face_image_name)
+                        # Save the face as a JPG image
+                        cv2.imwrite(face_image_path, face_image)
+                        # print(f"Saved detected face as: {face_image_name}")
+                        # with open(acc_file_path, 'a') as file:
+                        #         file.write(f'Saved detected face as: {face_image_name}'+ '\n')
 
     def extract_ip_from_src(self, src):
         # Regular expression to match an IP address
@@ -200,35 +174,6 @@ class ThreadedCamera:
                 box = result.get('box')
                 subjects = result.get('subjects')
                 if box:
-                    if subjects and subjects[0]['similarity'] >= 0.975:
-                        subjects = sorted(subjects, key=lambda k: k['similarity'], reverse=True)
-                        subject = f"{subjects[0]['subject']}"
-                        similarity = f"{subjects[0]['similarity']}"
-                        # cv2.rectangle(img=self.frame, pt1=(box['x_min'], box['y_min']),
-                        #         pt2=(box['x_max'], box['y_max']), color=(0, 255, 0), thickness=1)
-                        # cv2.putText(self.frame, subject, (box['x_min']+5, box['y_min'] - 15),
-                        #             cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 0), 1)
-                        face_image_name = f"{timestamp}_{subjects[0]['subject']}_({subjects[0]['similarity']})_{frame_count}.jpg"
-                        with open(acc_file_path, 'a') as file:
-                                file.write(f'Saved detected face as: {face_image_name}'+ '\n')
-                        print(f"detected if face as: {face_image_name}")
-                        database_img_dir = os.path.join(database_dir, subject) 
-                        face_image_path = os.path.join(database_img_dir, face_image_name)
-                        if self.use_rtsp == True:
-                            camera_ip = self.extract_ip_from_src(src)
-                        elif self.use_rtsp == False:
-                            camera_ip = 'Device_camera'
-                        accuracy_per = f"{float(similarity) * 100:.0f}%"
-                        # Save data to PostgreSQL
-                        recognition_result = RecognitionResult(
-                            camera=camera_ip,
-                            person=subject,
-                            accuracy= accuracy_per,
-                            Image=face_image_path,
-                        )
-                        session.add(recognition_result)
-                        session.commit()
-                    else:
                         subject = f"Unknown"
                         # cv2.rectangle(img=self.frame, pt1=(box['x_min'], box['y_min']),
                         #         pt2=(box['x_max'], box['y_max']), color=(0, 0, 255), thickness=1)
@@ -238,8 +183,7 @@ class ThreadedCamera:
                         with open(acc_file_path, 'a') as file:
                                 file.write(f'Saved detected face as: {face_image_name}'+ '\n')
                         print(f"detected face as: {face_image_name}")
-                        database_img_dir = os.path.join(database_dir, subject) 
-                        face_image_path = os.path.join(database_img_dir, face_image_name)
+                        face_image_path = os.path.join(database_dir, face_image_name)
                         if self.use_rtsp == True:
                             camera_ip = self.extract_ip_from_src(src)
                         elif self.use_rtsp == False:
@@ -294,7 +238,7 @@ class ThreadedCamera:
 if __name__ == '__main__':
     host = 'http://localhost'
     port = '8000'
-    api_key = '819d4fe1-6951-4a36-b432-6f75e9b4bbb0'
+    api_key = '52f0ea92-73f6-47d4-bd14-03e148549e56'
     use_rtsp = False
     cam_names = ['team','holl']
     cam_name = cam_names[0]
