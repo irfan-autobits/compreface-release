@@ -10,12 +10,19 @@ from compreface import CompreFace
 from compreface.service import RecognitionService
 from datetime import datetime
 import struct
+from dotenv import load_dotenv
+
+
+# Load environment variables from .env file
+load_dotenv()
+FACE_DET_TH = float(os.getenv("FACE_DET_TH", 0.8))
+FACE_REC_TH = float(os.getenv("FACE_REC_TH", 0.0))
 
 os.environ['QT_QPA_PLATFORM'] = 'xcb'  # Or 'offscreen' if you want no display
 
 # Directory to store employee images
-database_dir = 'Report_team'
-shutil.rmtree(database_dir, ignore_errors=True) # --------uncmt to stop append mode 
+database_dir = 'Report_office'
+# shutil.rmtree(database_dir, ignore_errors=True) # --------uncmt to stop append mode 
 os.makedirs(database_dir, exist_ok=True)
 print('Created/checked database_dir')
 excel_name = 'face_recognition_results.xlsx'
@@ -29,6 +36,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 import re
 from datetime import datetime
+import pytz
 
 # Define the database URL
 DATABASE_URL = "postgresql+psycopg2://postgres:postgres@localhost:6432/frs"
@@ -48,11 +56,14 @@ class RecognitionResult(Base):
     person = Column(Text)  # Use Text for longer strings
     accuracy = Column(Text)
     Image = Column(Text)
-    timestamp = Column(DateTime, default=datetime.utcnow)
+    def current_time_zone():
+        ist = pytz.timezone('Asia/Kolkata')
+        return datetime.now(ist)
+    timestamp = Column(DateTime, default=current_time_zone)
 # -------- uncmt to stop append mode---------------------------------------
 # Drop the table
-Base.metadata.drop_all(engine)
-print("All tables have been dropped.")
+# Base.metadata.drop_all(engine)
+# print("All tables have been dropped.")
 # --------------------------------------------------------------------------
 # Create tables in the database
 Base.metadata.create_all(engine)
@@ -81,7 +92,7 @@ class ThreadedCamera:
         
         compre_face = CompreFace(host, port, {
             "limit": 0,
-            "det_prob_threshold": 0.8,
+            "det_prob_threshold": FACE_DET_TH,
             "prediction_count": 1,
             "status": False
         })
@@ -136,7 +147,7 @@ class ThreadedCamera:
                     box = result.get('box')
                     subjects = result.get('subjects')
                     if box:
-                        if subjects and subjects[0]['similarity'] >= 0.975:
+                        if subjects and subjects[0]['similarity'] >= FACE_REC_TH:
                             subjects = sorted(subjects, key=lambda k: k['similarity'], reverse=True)
                             subject = f"{subjects[0]['subject']}"
                             similarity = f"Similarity: {subjects[0]['similarity']}"
@@ -200,7 +211,7 @@ class ThreadedCamera:
                 box = result.get('box')
                 subjects = result.get('subjects')
                 if box:
-                    if subjects and subjects[0]['similarity'] >= 0.975:
+                    if subjects and subjects[0]['similarity'] >= FACE_REC_TH:
                         subjects = sorted(subjects, key=lambda k: k['similarity'], reverse=True)
                         subject = f"{subjects[0]['subject']}"
                         similarity = f"{subjects[0]['similarity']}"
@@ -294,16 +305,20 @@ class ThreadedCamera:
 if __name__ == '__main__':
     host = 'http://localhost'
     port = '8000'
-    api_key = '819d4fe1-6951-4a36-b432-6f75e9b4bbb0'
-    api_key = 'cc10c64d-ae29-47a8-8bb5-17f76dfc4878'
-    use_rtsp = False
-    cam_names = ['team','holl']
-    cam_name = cam_names[0]
+    # api_key = '819d4fe1-6951-4a36-b432-6f75e9b4bbb0'
+    api_key = 'a3457361-c655-441a-a3a6-571a7783105c'
+    use_rtsp = True
+    cam_names = ['team','holl','room','office']
+    cam_name = cam_names[3]
     if cam_name == 'team':
         src = 'rtsp://autobits:Autobits@1234@192.168.1.202:554'
     elif cam_name == 'holl':
         src = 'rtsp://autobits:Autobits@123@192.168.1.204:554'
-    
+    elif cam_name == 'room':
+        src = 'rtsp://autobits:Autobits@123@192.168.1.201:554'
+    elif cam_name == 'office':
+        src = 'rtsp://autobits:Autobits@123@192.168.1.203:554'
+
     threaded_camera = ThreadedCamera(host, port, api_key, use_rtsp, src)
     frame_interval = 1  # Process every frame
     frame_count = 0 
@@ -311,7 +326,7 @@ if __name__ == '__main__':
     while True:
         try:
             frame_count += 1  # Increment frame counter
-            timestamp = datetime.now().strftime('%Y%m%d%H%M%S%f')[:-4]
+            timestamp = datetime.now().strftime('%y%m%d-%H:%M:%S-%f')[:-4]
             threaded_camera.show_frame(frame_count)
         except AttributeError:
             pass

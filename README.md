@@ -38,3 +38,20 @@ py compreface_webcam_recognition_demo.py --api-key 00000000-0000-0000-0000-00000
 pip install openpyxl pandas opencv-python compreface-sdk sqlalchemy psycopg2
 pip install urllib3==1.25.11
 Successfully uninstalled urllib3==2.2.3
+
+NEEEDED FOR PSYCOPG2-----------
+sudo apt-get update
+sudo apt-get install build-essential libpq-dev
+sudo apt-get remove build-essential libpq-dev
+headers-----
+sudo apt-get install python3-dev
+
+then-----
+pip install psycopg2
+
+FROM BINARY---
+pip install psycopg2-binary
+
+for ffmpeg-------
+sudo apt update
+sudo apt install ffmpeg

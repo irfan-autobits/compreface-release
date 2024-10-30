@@ -1,0 +1,5 @@
+sudo apt-get install python3-tk
+pip install matplotlib scikit-learn
+pip install plotly
+pip install python-dotenv
+pip install pytz

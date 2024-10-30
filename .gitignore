@@ -1,11 +1,20 @@
 /Report/
-/Report_team/
-/Report_holl/
+Report_team/
+Report_holl/
+Report_office/
+Report_room/
 cleaning.py
 docker_install.sh
 req.txt
 /yunet_mediapipe/
 irfan.png
+# generated files
+3d_embeddings_facenet_plot(Scaled).html
+3d_embeddings_facenet_plot(Unscaled).html
+3d_embeddings_insightface_plot(Scaled).html
+3d_embeddings_insightface_plot(Unscaled).html
+embeddings-facenet-face_pca_3d_plot.png
+embeddings-insightface-face_pca_3d_plot.png
 # dev_req.txt
 tmp/
 
