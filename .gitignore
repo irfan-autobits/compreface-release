@@ -15,6 +15,8 @@ irfan.png
 3d_embeddings_insightface_plot(Unscaled).html
 embeddings-facenet-face_pca_3d_plot.png
 embeddings-insightface-face_pca_3d_plot.png
+embeddings-facenet-face_pca_plot.png
+embeddings-insight-face_pca_plot.png
 # dev_req.txt
 tmp/
 
