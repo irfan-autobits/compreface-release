@@ -20,7 +20,7 @@ irfan.png
 # embeddings-insight-face_pca_plot.png
 # dev_req.txt
 tmp/
-
+.env
 # Created by .ignore support plugin (hsz.mobi)
 ### Python template
 # Byte-compiled / optimized / DLL files
