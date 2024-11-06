@@ -23,15 +23,7 @@ print(f'FACE_REC_TH = {FACE_REC_TH}')
 
 os.environ['QT_QPA_PLATFORM'] = 'xcb'  # Or 'offscreen' if you want no display
 
-# Directory to store employee images
-database_dir = 'Report_holl'
-# shutil.rmtree(database_dir, ignore_errors=True) # --------uncmt to stop append mode 
-os.makedirs(database_dir, exist_ok=True)
-print('Created/checked database_dir')
-excel_name = 'face_recognition_results.xlsx'
-excel_path = os.path.join(database_dir, excel_name)
-txt_name = 'face_recognition_results.txt'
-acc_file_path = os.path.join(database_dir, txt_name)
+
 
 # postgre - - - - - - - - - - 
 from sqlalchemy import create_engine, Column, Integer, String, Text, DateTime
@@ -80,6 +72,7 @@ session = Session()
 def parseArguments():
     parser = argparse.ArgumentParser()
     parser.add_argument("--rtsp-url", help="RTSP stream URL", type=str, default='0')
+    parser.add_argument("--data-dir", help="Name of the Recognized Pic Dir", type=str, default='Report')
     args = parser.parse_args()
     
     return args
@@ -313,24 +306,23 @@ class ThreadedCamera:
 if __name__ == '__main__':
     host = 'http://localhost'
     port = '8000'
-    # api_key = '819d4fe1-6951-4a36-b432-6f75e9b4bbb0'
     api_key = API_KEY 
     use_rtsp = True
-    # cam_names = ['team','holl','room','office']
-    # cam_name = cam_names[1]
-    # if cam_name == 'team':
-    #     src = 'rtsp://autobits:Autobits@1234@192.168.1.202:554'
-    # elif cam_name == 'holl':
-    #     src = 'rtsp://autobits:Autobits@123@192.168.1.204:554'
-    # elif cam_name == 'room':
-    #     src = 'rtsp://autobits:Autobits@123@192.168.1.201:554'
-    # elif cam_name == 'office':
-    #     src = 'rtsp://autobits:Autobits@123@192.168.1.203:554'
     args = parseArguments()
     threaded_camera = ThreadedCamera(host, port, api_key, use_rtsp, args.rtsp_url)
     frame_interval = 1  # Process every frame
     frame_count = 0 
-
+    
+    # Directory to store employee images
+    database_dir = args.data_dir
+    # shutil.rmtree(database_dir, ignore_errors=True) # --------uncmt to stop append mode 
+    os.makedirs(database_dir, exist_ok=True)
+    print('Created/checked database_dir')
+    excel_name = 'face_recognition_results.xlsx'
+    excel_path = os.path.join(database_dir, excel_name)
+    txt_name = 'face_recognition_results.txt'
+    acc_file_path = os.path.join(database_dir, txt_name)
+    
     while True:
         try:
             frame_count += 1  # Increment frame counter
