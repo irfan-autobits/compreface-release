@@ -73,7 +73,7 @@ excel_path = os.path.join(database_dir, excel_name)
 
 def parseArguments():
     parser = argparse.ArgumentParser()
-
+    # python compreface_webcam_recognition_demo.py --api-key your_api_key --host http://localhost --port 8000
     parser.add_argument("--api-key", help="CompreFace recognition service API key", type=str, default='88910b39-ac74-4fea-afcd-cfc446de2e6e')
     # parser.add_argument("--api-key", help="CompreFace recognition service API key", type=str, default='00000000-0000-0000-0000-000000000002')
     parser.add_argument("--host", help="CompreFace host", type=str, default='http://localhost')

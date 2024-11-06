@@ -76,14 +76,20 @@ session = Session()
 # # session.commit()
 # # print("All rows deleted from the table.")
 # ----------------------------------------------------
-
+def parseArguments():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--rtsp-url", help="RTSP stream URL", type=str, default='0')
+    args = parser.parse_args()
+    
+    return args
 class ThreadedCamera:
-    def __init__(self, host, port, api_key, use_rtsp, src='0'):
+    def __init__(self, host, port, api_key, use_rtsp, rtsp_url='0'):
         self.active = True
         self.results = []
         self.use_rtsp = use_rtsp
+        self.rtsp_url = rtsp_url
         if use_rtsp:
-            self.start_ffmpeg(src)
+            self.start_ffmpeg(rtsp_url)
             # self.get_stream_info(self.capture, "RTSP")
         else:
             self.capture = cv2.VideoCapture(0)
@@ -225,7 +231,7 @@ class ThreadedCamera:
                         database_img_dir = os.path.join(database_dir, subject) 
                         face_image_path = os.path.join(database_img_dir, face_image_name)
                         if self.use_rtsp == True:
-                            camera_ip = self.extract_ip_from_src(src)
+                            camera_ip = self.extract_ip_from_src(self.rtsp_url)
                         elif self.use_rtsp == False:
                             camera_ip = 'Device_camera'
                         accuracy_per = f"{float(similarity) * 100:.0f}%"
@@ -252,7 +258,7 @@ class ThreadedCamera:
                         database_img_dir = os.path.join(database_dir, subject) 
                         face_image_path = os.path.join(database_img_dir, face_image_name)
                         if self.use_rtsp == True:
-                            camera_ip = self.extract_ip_from_src(src)
+                            camera_ip = self.extract_ip_from_src(self.rtsp_url)
                         elif self.use_rtsp == False:
                             camera_ip = 'Device_camera'
                         # Save data to PostgreSQL
@@ -309,18 +315,18 @@ if __name__ == '__main__':
     # api_key = '819d4fe1-6951-4a36-b432-6f75e9b4bbb0'
     api_key = 'a3457361-c655-441a-a3a6-571a7783105c'
     use_rtsp = True
-    cam_names = ['team','holl','room','office']
-    cam_name = cam_names[1]
-    if cam_name == 'team':
-        src = 'rtsp://autobits:Autobits@1234@192.168.1.202:554'
-    elif cam_name == 'holl':
-        src = 'rtsp://autobits:Autobits@123@192.168.1.204:554'
-    elif cam_name == 'room':
-        src = 'rtsp://autobits:Autobits@123@192.168.1.201:554'
-    elif cam_name == 'office':
-        src = 'rtsp://autobits:Autobits@123@192.168.1.203:554'
-    
-    threaded_camera = ThreadedCamera(host, port, api_key, use_rtsp, src)
+    # cam_names = ['team','holl','room','office']
+    # cam_name = cam_names[1]
+    # if cam_name == 'team':
+    #     src = 'rtsp://autobits:Autobits@1234@192.168.1.202:554'
+    # elif cam_name == 'holl':
+    #     src = 'rtsp://autobits:Autobits@123@192.168.1.204:554'
+    # elif cam_name == 'room':
+    #     src = 'rtsp://autobits:Autobits@123@192.168.1.201:554'
+    # elif cam_name == 'office':
+    #     src = 'rtsp://autobits:Autobits@123@192.168.1.203:554'
+    args = parseArguments()
+    threaded_camera = ThreadedCamera(host, port, api_key, use_rtsp, args.rtsp_url)
     frame_interval = 1  # Process every frame
     frame_count = 0 
 

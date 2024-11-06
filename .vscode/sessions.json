@@ -1,54 +1,97 @@
 {
   "$schema": "https://cdn.statically.io/gh/nguyenngoclongdev/cdn/main/schema/v10/terminal-keeper.json",
   "theme": "tribe",
-  "active": "saved-session",
+  "active": "web-cli-session",
   "activateOnStartup": true,
   "keepExistingTerminals": false,
   "sessions": {
     "default": [
       {
-        "name": "hello",
-        "autoExecuteCommands": true,
-        "icon": "rss",
-        "color": "terminal.ansiGreen",
+        "name": "startup",
+        "autoExecuteCommands": false,
         "commands": [
-          "echo hello"
+          "cd /home/irfan/editing\\ by\\ pyhon/Autobit-proj/web-cli-linux",
+          "source venv/bin/activate"
         ]
-      },
+      }
+    ],
+    "web-cli-session": [
       [
         {
-          "name": "docker:ros",
+          "name": "web-cli",
+          "autoExecuteCommands": true,
+          "icon": "rss",
+          "color": "terminal.ansiCyan",
           "commands": [
-            ""
+            "cd Camera/"
           ]
         },
         {
-          "name": "docker:k8s",
+          "name": "web-cli",
+          "autoExecuteCommands": true,
+          "icon": "rss",
+          "color": "terminal.ansiCyan",
           "commands": [
-            ""
+            "cd Camera/"
           ]
         }
       ],
-      [
-        {
-          "name": "docker:nats",
-          "commands": [
-            ""
-          ]
-        },
-        {
-          "name": "docker:fleet",
-          "commands": [
-            ""
-          ]
-        }
-      ]
-    ],
-    "saved-session": [
       {
-        "name": "connect",
+        "name": "git-web-cli",
+        "autoExecuteCommands": true,
+        "icon": "logo-github",
+        "color": "terminal.ansiWhite",
         "commands": [
-          ""
+          "cd /home/irfan/editing\\ by\\ pyhon/Autobit-proj/web-cli-linux"
+        ]
+      },
+      {
+        "name": "git-cmds",
+        "autoExecuteCommands": true,
+        "icon": "logo-github",
+        "color": "terminal.ansiWhite",
+        "commands": [
+          "cd /home/irfan/editing\\ by\\ pyhon/Autobit-proj/cmds"
+        ]
+      },
+      {
+        "name": "Docker-server",
+        "autoExecuteCommands": true,
+        "icon": "radio-tower",
+        "color": "terminal.ansiGreen",
+        "commands": [
+          "cd /home/irfan/editing\\ by\\ pyhon/Autobit-proj/compreface-git/CompreFace",
+          "sudo su",
+          "docker compose up"
+        ]
+      },
+      {
+        "name": "git-compreface",
+        "autoExecuteCommands": true,
+        "icon": "logo-github",
+        "color": "terminal.ansiWhite",
+        "commands": [
+          "cd /home/irfan/editing\\ by\\ pyhon/Autobit-proj/compreface-git/CompreFace"
+        ]
+      },
+      {
+        "name": "angular-ui",
+        "autoExecuteCommands": true,
+        "icon": "symbol-color",
+        "color": "terminal.ansiYellow",
+        "commands": [
+          "cd /home/irfan/editing\\ by\\ pyhon/Autobit-proj/compreface-git/CompreFace/ui"
+        ]
+      },
+      {
+        "name": "pgadmin",
+        "autoExecuteCommands": true,
+        "icon": "notebook-template",
+        "color": "terminal.ansiBlue",
+        "commands": [
+          "cd ~",
+          "source pgadminvenv/bin/activate",
+          "python3 pgadminvenv/lib/python3.12/site-packages/pgadmin4/pgAdmin4.py"
         ]
       }
     ]
