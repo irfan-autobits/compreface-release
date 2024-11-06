@@ -160,7 +160,11 @@ class ThreadedCamera:
                             os.makedirs(database_img_dir, exist_ok=True)
                             face_image_path = os.path.join(database_img_dir, face_image_name)
                             # Save the face as a JPG image
-                            cv2.imwrite(face_image_path, face_image)
+                            # Inside your update() method where cv2.imwrite() is called
+                            if face_image is not None and face_image.size > 0:  # Ensure face_image is valid
+                                cv2.imwrite(face_image_path, face_image)
+                            else:
+                                print("Warning: Empty face image, skipping save.")
                             # print(f"Saved detected at if face as: {face_image_name}")
                             # with open(acc_file_path, 'a') as file:
                             #         file.write(f'Saved detected face as: {face_image_name}'+ '\n')
@@ -178,7 +182,12 @@ class ThreadedCamera:
                             os.makedirs(database_img_dir, exist_ok=True)
                             face_image_path = os.path.join(database_img_dir, face_image_name)
                             # Save the face as a JPG image
-                            cv2.imwrite(face_image_path, face_image)
+                            # Inside your update() method where cv2.imwrite() is called
+                            if face_image is not None and face_image.size > 0:  # Ensure face_image is valid
+                                cv2.imwrite(face_image_path, face_image)
+                            else:
+                                print("Warning: Empty face image, skipping save.")
+
                             # print(f"Saved detected face as: {face_image_name}")
                             # with open(acc_file_path, 'a') as file:
                             #         file.write(f'Saved detected face as: {face_image_name}'+ '\n')
