@@ -17,6 +17,7 @@ from dotenv import load_dotenv
 load_dotenv()
 FACE_DET_TH = float(os.getenv("FACE_DET_TH", 0.8))
 FACE_REC_TH = float(os.getenv("FACE_REC_TH", 0.0))
+API_KEY = float(os.getenv("API_KEY", 00000000-0000-0000-0000-000000000002))
 print(f'FACE_DET_TH = {FACE_DET_TH}')
 print(f'FACE_REC_TH = {FACE_REC_TH}')
 
@@ -313,8 +314,8 @@ if __name__ == '__main__':
     host = 'http://localhost'
     port = '8000'
     # api_key = '819d4fe1-6951-4a36-b432-6f75e9b4bbb0'
-    api_key = 'a3457361-c655-441a-a3a6-571a7783105c'
-    use_rtsp = True
+    api_key = API_KEY 
+    use_rtsp = False
     # cam_names = ['team','holl','room','office']
     # cam_name = cam_names[1]
     # if cam_name == 'team':
