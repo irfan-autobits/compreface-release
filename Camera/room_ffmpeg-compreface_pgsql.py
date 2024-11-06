@@ -36,7 +36,6 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 import re
 from datetime import datetime
-import pytz
 
 # Define the database URL
 DATABASE_URL = "postgresql+psycopg2://postgres:postgres@localhost:6432/frs"
@@ -47,19 +46,18 @@ engine = create_engine(DATABASE_URL)
 # Define the Base class
 Base = declarative_base()
 
+
 # Define the Table schema
+# Update your RecognitionResult class to use this function
 class RecognitionResult(Base):
-    __tablename__ = 'recognition_res'
+    __tablename__ = 'recognition_res1'
 
     id = Column(Integer, primary_key=True, autoincrement=True)
     camera = Column(Text)
     person = Column(Text)  # Use Text for longer strings
     accuracy = Column(Text)
     Image = Column(Text)
-    def current_time_zone():
-        ist = pytz.timezone('Asia/Kolkata')
-        return datetime.now(ist)
-    timestamp = Column(DateTime, default=current_time_zone)
+    time = Column(DateTime(timezone=True)) 
 # -------- uncmt to stop append mode---------------------------------------
 # Drop the table
 # Base.metadata.drop_all(engine)
@@ -236,6 +234,7 @@ class ThreadedCamera:
                             person=subject,
                             accuracy= accuracy_per,
                             Image=face_image_path,
+                            time=datetime.now()
                         )
                         session.add(recognition_result)
                         session.commit()
@@ -261,6 +260,7 @@ class ThreadedCamera:
                             person=subject,
                             accuracy='100%',
                             Image=face_image_path,
+                            time=datetime.now()
                         )
                         session.add(recognition_result)
                         session.commit() 

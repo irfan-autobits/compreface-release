@@ -49,17 +49,14 @@ Base = declarative_base()
 
 # Define the Table schema
 class RecognitionResult(Base):
-    __tablename__ = 'recognition_res'
+    __tablename__ = 'recognition_res1'
 
     id = Column(Integer, primary_key=True, autoincrement=True)
     camera = Column(Text)
     person = Column(Text)  # Use Text for longer strings
     accuracy = Column(Text)
     Image = Column(Text)
-    def current_time_zone():
-        ist = pytz.timezone('Asia/Kolkata')
-        return datetime.now(ist)
-    timestamp = Column(DateTime, default=current_time_zone)
+    time = Column(DateTime(timezone=True)) 
 # -------- uncmt to stop append mode---------------------------------------
 # Drop the table
 # Base.metadata.drop_all(engine)
@@ -236,6 +233,7 @@ class ThreadedCamera:
                             person=subject,
                             accuracy= accuracy_per,
                             Image=face_image_path,
+                            time=datetime.now()
                         )
                         session.add(recognition_result)
                         session.commit()
@@ -261,6 +259,7 @@ class ThreadedCamera:
                             person=subject,
                             accuracy='100%',
                             Image=face_image_path,
+                            time=datetime.now()
                         )
                         session.add(recognition_result)
                         session.commit() 
