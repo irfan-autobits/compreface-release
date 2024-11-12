@@ -64,6 +64,9 @@ plt.scatter(embeddings_pca[:, 0], embeddings_pca[:, 1], c='blue')
 for i, name in enumerate(names):
     plt.text(embeddings_pca[i, 0], embeddings_pca[i, 1], name, fontsize=8)
 plt.title('PCA of Face Embeddings (Unscaled)')
+plt.xlabel('PCA Component 1')
+plt.ylabel('PCA Component 2')
+plt.axis("equal")  # Make the aspect ratio equal
 
 # # Invert the vertical axis if needed
 # plt.gca().invert_yaxis()
@@ -75,6 +78,9 @@ plt.scatter(embeddings_pca_scaled[:, 0], embeddings_pca_scaled[:, 1], c='blue')
 for i, name in enumerate(names):
     plt.text(embeddings_pca_scaled[i, 0], embeddings_pca_scaled[i, 1], name, fontsize=8)
 plt.title('PCA of Face Embeddings (Scaled)')
+plt.xlabel('PCA Component 1')
+plt.ylabel('PCA Component 2')
+plt.axis("equal")  # Make the aspect ratio equal
 
 # Invert the vertical axis if needed
 # plt.gca().invert_yaxis()
