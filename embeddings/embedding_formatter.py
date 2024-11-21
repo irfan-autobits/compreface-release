@@ -56,17 +56,14 @@ embeddings_pca_scaled = pca.fit_transform(scaled_embeddings)
 
 # Plotting the results
 plt.ion() 
-plt.figure(figsize=(10, 5))
+plt.figure(figsize=(15, 7.5))
 
 # PCA without scaling
 plt.subplot(1, 2, 1)
 plt.scatter(embeddings_pca[:, 0], embeddings_pca[:, 1], c='blue')
 for i, name in enumerate(names):
-    plt.text(embeddings_pca[i, 0], embeddings_pca[i, 1], name, fontsize=8)
+    plt.text(embeddings_pca[i, 0], embeddings_pca[i, 1], name, fontsize=9)
 plt.title('PCA of Face Embeddings (Unscaled)')
-plt.xlabel('PCA Component 1')
-plt.ylabel('PCA Component 2')
-plt.axis("equal")  # Make the aspect ratio equal
 
 # # Invert the vertical axis if needed
 # plt.gca().invert_yaxis()
@@ -76,18 +73,15 @@ plt.axis("equal")  # Make the aspect ratio equal
 plt.subplot(1, 2, 2)
 plt.scatter(embeddings_pca_scaled[:, 0], embeddings_pca_scaled[:, 1], c='blue')
 for i, name in enumerate(names):
-    plt.text(embeddings_pca_scaled[i, 0], embeddings_pca_scaled[i, 1], name, fontsize=8)
+    plt.text(embeddings_pca_scaled[i, 0], embeddings_pca_scaled[i, 1], name, fontsize=9)
 plt.title('PCA of Face Embeddings (Scaled)')
-plt.xlabel('PCA Component 1')
-plt.ylabel('PCA Component 2')
-plt.axis("equal")  # Make the aspect ratio equal
 
 # Invert the vertical axis if needed
-# plt.gca().invert_yaxis()
+plt.gca().invert_yaxis()
 plt.gca().invert_xaxis()
 
 # Save the plot to a file
-plt.savefig('embeddings-insight-face_pca_plot.png')
+plt.savefig('embeddings-facenet-next-face_pca_plot.png')
 
 # Display the plot
 plt.show()

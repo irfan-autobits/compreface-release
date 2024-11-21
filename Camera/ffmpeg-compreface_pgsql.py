@@ -1,3 +1,4 @@
+import json
 import os
 import cv2
 import time
@@ -139,7 +140,7 @@ class ThreadedCamera:
                         print("No frame received, skipping...")
                         time.sleep(self.FPS)  # Prevent tight loop if no frames are coming in
                         continue  # Skip the rest of the loop if no frame
-                    self.frame = cv2.flip(self.frame, 1)
+                    # self.frame = cv2.flip(self.frame, 1)
                     
             if self.results:
                 for result in self.results:
@@ -200,9 +201,12 @@ class ThreadedCamera:
 
         _, im_buf_arr = cv2.imencode(".jpg", self.frame)
         byte_im = im_buf_arr.tobytes()
-        data = self.recognition.recognize(byte_im)
-        self.results = data.get('result')
-        
+        try:
+            data = self.recognition.recognize(byte_im)
+            self.results = data.get('result')
+        except json.JSONDecodeError:
+            print("Failed to decode JSON response. The response might be empty or malformed.")
+            self.results = []
 
         if self.results:
             results = self.results
@@ -307,7 +311,7 @@ if __name__ == '__main__':
     host = 'http://localhost'
     port = '8000'
     api_key = API_KEY 
-    use_rtsp = True
+    use_rtsp = False
     args = parseArguments()
     threaded_camera = ThreadedCamera(host, port, api_key, use_rtsp, args.rtsp_url)
     frame_interval = 1  # Process every frame
