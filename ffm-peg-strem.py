@@ -7,7 +7,7 @@ from threading import Thread
 os.environ['QT_QPA_PLATFORM'] = 'xcb'  # Or 'offscreen' if you want no display
 
 class ThreadedCamera(object):
-    def __init__(self, src='rtsp://autobits:Autobits%401234@192.168.1.202:554'):
+    def __init__(self, src='rtsp://marketingoffice:CameraOffice@999@10.20.11.2:554/unicast/c4/s0/live'):
         self.src = src
         self.pipe = None
         self.frames = None
@@ -16,7 +16,7 @@ class ThreadedCamera(object):
         self.start_ffmpeg()
         
         # Start FFplay for audio
-        self.start_audio()
+        # self.start_audio()
         
         # Start frame retrieval thread
         self.thread = Thread(target=self.update, args=())
@@ -26,11 +26,13 @@ class ThreadedCamera(object):
     def start_ffmpeg(self):
         command = [
             'ffmpeg',
-            '-i', self.src,             # Input RTSP stream
-            '-f', 'rawvideo',           # Output format
-            '-pix_fmt', 'bgr24',        # Pixel format for OpenCV
-            '-sn',                      # Disable subtitles
-            '-tune', 'zerolatency',     # Tune for low latency
+            "-hwaccel", "cuda",                 # Enable CUDA hardware acceleration
+            "-hwaccel_output_format", "cuda",   # Use CUDA for the output format
+            '-i', self.src,                     # Input RTSP stream
+            '-f', 'rawvideo',                   # Output format
+            '-pix_fmt', 'bgr24',                # Pixel format for OpenCV
+            '-sn',                              # Disable subtitles
+            '-tune', 'zerolatency',             # Tune for low latency
             '-'
         ]
         self.pipe = subprocess.Popen(command, stdout=subprocess.PIPE, bufsize=10**8)
@@ -58,7 +60,7 @@ class ThreadedCamera(object):
             print("No frame to display")
 
 if __name__ == '__main__':
-    src = 'rtsp://autobits:Autobits%401234@192.168.1.202:554'
+    src = 'rtsp://marketingoffice:CameraOffice@999@10.20.11.2:554/unicast/c4/s0/live'
     try:
         threaded_camera = ThreadedCamera(src)
         while True:

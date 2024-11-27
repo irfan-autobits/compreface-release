@@ -45,7 +45,7 @@ Base = declarative_base()
 
 # Define the Table schema
 class RecognitionResult(Base):
-    __tablename__ = 'recognition_res1'
+    __tablename__ = 'Hathi_recognition'
 
     id = Column(Integer, primary_key=True, autoincrement=True)
     camera = Column(Text)
@@ -311,7 +311,7 @@ if __name__ == '__main__':
     host = 'http://localhost'
     port = '8000'
     api_key = API_KEY 
-    use_rtsp = False
+    use_rtsp = True
     args = parseArguments()
     threaded_camera = ThreadedCamera(host, port, api_key, use_rtsp, args.rtsp_url)
     frame_interval = 1  # Process every frame
