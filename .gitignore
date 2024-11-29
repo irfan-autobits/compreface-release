@@ -7,17 +7,10 @@ req.txt
 irfan.png
 
 # generated files
-3d_embeddings_facenet_plot(Scaled).html
-3d_embeddings_facenet_plot(Unscaled).html
-3d_embeddings_insightface_plot(Scaled).html
-3d_embeddings_insightface_plot(Unscaled).html
-3d_embeddings_hathi_insightface_plot(Unscaled).html
-3d_embeddings_hathi_insightface_plot(Scaled).html
+/embeddings/facenet/
+/embeddings/insightface/
 *.png
-# embeddings-facenet-face_pca_3d_plot.png
-# embeddings-insightface-face_pca_3d_plot.png
-# embeddings-facenet-face_pca_plot.png
-# embeddings-insight-face_pca_plot.png
+
 # dev_req.txt
 tmp/
 .env

@@ -15,7 +15,22 @@ matplotlib.use('TkAgg')  # Change to your preferred backend if needed
 # Database configuration
 DATABASE_URL = "postgresql+psycopg2://postgres:postgres@localhost:6432/frs"
 
-model = 'insightface'
+model = "insightface"
+service = "hathi"
+
+# shutil.rmtree(model, ignore_errors=True)
+os.makedirs(model,exist_ok=True)
+service_dir = os.path.join(model, service)
+os.makedirs(service_dir, exist_ok=True)
+image_name = f'embeddings_{service}_{model}_pca_3d_plot.png'
+image_path = os.path.join(service_dir, image_name)
+
+unscale_html_name = f"3d_embeddings_{service}_{model}_plot(Unscaled).html"
+unscale_html_path = os.path.join(service_dir, unscale_html_name)
+
+scale_html_name = f"3d_embeddings_{service}_{model}_plot(Scaled).html"
+scale_html_path = os.path.join(service_dir, scale_html_name)
+
 # Create a database engine and reflect the existing database schema
 engine = create_engine(DATABASE_URL)
 metadata = MetaData()
@@ -84,7 +99,7 @@ ax2.set_ylabel('PCA 2')
 ax2.set_zlabel('PCA 3')
 
 # Save the plot to a file
-plt.savefig(f'embeddings-{model}-face_pca_3d_plot.png')
+plt.savefig(image_path)
 
 # Convert embeddings to 3D interactive plot using Plotly
 fig = go.Figure(data=[go.Scatter3d(
@@ -107,7 +122,7 @@ fig.update_layout(
 )
 
 # Save the interactive plot as an HTML file
-fig.write_html(f"3d_embeddings_{model}_plot(Unscaled).html")
+fig.write_html(unscale_html_path)
 
 # Convert embeddings to 3D interactive plot using Plotly
 fig = go.Figure(data=[go.Scatter3d(
@@ -130,7 +145,7 @@ fig.update_layout(
 )
 
 # Save the interactive plot as an HTML file
-fig.write_html(f"3d_embeddings_{model}_plot(Scaled).html")
+fig.write_html(scale_html_path)
 
 # Display the plot and keep the window open
 plt.show(block=True)

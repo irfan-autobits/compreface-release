@@ -10,6 +10,15 @@ from sklearn.preprocessing import StandardScaler
 # Configure the matplotlib backend
 matplotlib.use('TkAgg')  # Change to your preferred backend if needed
 
+model = "insightface"
+service = "hathi"
+
+# shutil.rmtree(model, ignore_errors=True)
+os.makedirs(model,exist_ok=True)
+service_dir = os.path.join(model, service)
+os.makedirs(service_dir, exist_ok=True)
+image_name = f'embeddings_{service}_{model}_pca_2d_plot.png'
+image_path = os.path.join(service_dir, image_name)
 # Database configuration
 DATABASE_URL = "postgresql+psycopg2://postgres:postgres@localhost:6432/frs"
 
@@ -81,7 +90,7 @@ plt.gca().invert_yaxis()
 plt.gca().invert_xaxis()
 
 # Save the plot to a file
-plt.savefig('embeddings-facenet-next-face_pca_plot.png')
+plt.savefig(image_path)
 
 # Display the plot
 plt.show()

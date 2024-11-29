@@ -4,3 +4,4 @@ pip install plotly
 pip install python-dotenv
 pip install pytz
 pip install asyncpg
+pip install flask
