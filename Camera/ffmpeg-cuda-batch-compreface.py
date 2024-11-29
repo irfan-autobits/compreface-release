@@ -287,7 +287,7 @@ if __name__ == '__main__':
     camera_name = extract_ip_from_src(args.rtsp_url) if use_rtsp else 'Device_camera'
 
     # Append database directory to the camera name
-    camera_name = f"{camera_name}_{args.data_dir}"
+    camera_name = f"{args.data_dir}"
     
     threaded_camera = ThreadedCamera(host, port, api_key, use_rtsp, camera_name ,args.rtsp_url, args.data_dir)
     database_dir = args.data_dir
