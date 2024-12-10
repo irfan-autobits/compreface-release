@@ -1,4 +1,5 @@
 # flask_multiprocess/plain_multiprocess.py
+import json
 import os
 import shutil
 from dotenv import load_dotenv
@@ -21,6 +22,8 @@ FACE_REC_TH = float(os.getenv("FACE_REC_TH", 0.0))
 host = os.getenv("HOST", 'http://localhost')
 port = os.getenv("PORT", '8000')
 api_key = os.getenv("API_KEY", '00000000-0000-0000-0000-000000000002')
+CAMERA_SOURCES = os.getenv("CAMERA_SOURCES", "{}")
+
 print(f'FACE_DET_TH = {FACE_DET_TH}')
 print(f'FACE_REC_TH = {FACE_REC_TH}')
 print(f'host = {host}')
@@ -143,13 +146,17 @@ if __name__ == '__main__':
     #     1: "rtsp://marketingoffice:CameraOffice@999@10.20.11.2:554/unicast/c11/s0/live",
     #     2: "rtsp://marketingoffice:CameraOffice@999@10.20.11.2:554/unicast/c12/s0/live"
     # }
-    camera_sources = {
-        1: "rtsp://autobits:Autobits@123@192.168.1.203:554",
-        2: "rtsp://autobits:Autobits@1234@192.168.1.202:554",
-        3: "rtsp://autobits:Autobits@123@192.168.1.201:554",
-        4: "rtsp://autobits:Autobits@123@192.168.1.204:554"
-    }
+    # camera_sources = {
+    #     1: "rtsp://autobits:Autobits@123@192.168.1.203:554",
+    #     2: "rtsp://autobits:Autobits@1234@192.168.1.202:554",
+    #     3: "rtsp://autobits:Autobits@123@192.168.1.201:554",
+    #     4: "rtsp://autobits:Autobits@123@192.168.1.204:554"
+    # }
     
+    camera_sources = json.loads(CAMERA_SOURCES)
+    
+    if not camera_sources:
+        raise ValueError("No camera sources found in the environment variables.")
 
     # Free the port if in use
     free_port(5000)
