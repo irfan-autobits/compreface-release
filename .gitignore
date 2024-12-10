@@ -5,6 +5,8 @@ docker_install.sh
 req.txt
 /yunet_mediapipe/
 irfan.png
+# process_vizfile
+profile_stats
 
 # generated files
 /embeddings/facenet/

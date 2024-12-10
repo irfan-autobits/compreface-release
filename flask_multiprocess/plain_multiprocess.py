@@ -54,7 +54,7 @@ def process_camera(camera_id, url, status_dict):
 
     # Start FFmpeg process
     ffmpeg_command = [
-        # 'nice', '-n', '10',
+        # 'nice', '-n', '-19',
         "ffmpeg",
         "-i", url,             # Input URL
         '-vf', 'scale=960:540',
@@ -79,7 +79,11 @@ def process_camera(camera_id, url, status_dict):
         # Convert raw bytes to numpy array
         frame = np.frombuffer(raw_frame, np.uint8).reshape((540, 960, 3))
 
-        frame_write.write_frame(frame,frame_count)
+        # Measure frame processing time
+        # start_time = time.time()  
+        frame = frame_write.write_frame(frame,frame_count)
+        # processing_time = time.time() - start_time
+        # logging.info(f"Frame processing time: {processing_time} seconds")
 
         # Update FPS
         frame_count += 1
@@ -103,6 +107,7 @@ def video_feed(camera_id):
     def generate():
         while True:
             frame = camera_status[camera_id].get("frame")
+            # frame = camera_status.get(camera_id, {}).get("frame")
             if frame is not None:
                 # Convert the frame to JPEG
                 ret, jpeg_frame = cv2.imencode('.jpg', frame)
@@ -134,11 +139,17 @@ if __name__ == '__main__':
     signal.signal(signal.SIGINT, handle_exit)
     signal.signal(signal.SIGTERM, handle_exit)
 
-    # Camera sources
+    # camera_sources = {
+    #     1: "rtsp://marketingoffice:CameraOffice@999@10.20.11.2:554/unicast/c11/s0/live",
+    #     2: "rtsp://marketingoffice:CameraOffice@999@10.20.11.2:554/unicast/c12/s0/live"
+    # }
     camera_sources = {
-        1: "rtsp://marketingoffice:CameraOffice@999@10.20.11.2:554/unicast/c11/s0/live",
-        2: "rtsp://marketingoffice:CameraOffice@999@10.20.11.2:554/unicast/c12/s0/live"
+        1: "rtsp://autobits:Autobits@123@192.168.1.203:554",
+        2: "rtsp://autobits:Autobits@1234@192.168.1.202:554",
+        3: "rtsp://autobits:Autobits@123@192.168.1.201:554",
+        4: "rtsp://autobits:Autobits@123@192.168.1.204:554"
     }
+    
 
     # Free the port if in use
     free_port(5000)
@@ -151,6 +162,6 @@ if __name__ == '__main__':
         processes.append(p)
 
     try:
-        app.run(host='0.0.0.0', port=5000, debug=False)
+        app.run(host='0.0.0.0', port=5001, threaded=True, debug=False)
     finally:
         terminate_processes(processes)
