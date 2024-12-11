@@ -105,7 +105,7 @@ def terminate_processes(processes):
             p.join()
     logging.info("All processes terminated.")
 
-@app.route('/camera/<int:camera_id>')
+@app.route('/camera/<string:camera_id>')
 def video_feed(camera_id):
     def generate():
         while True:
