@@ -4,7 +4,8 @@ from flask import Flask, jsonify
 from multiprocessing import Manager, Process
 import os
 import time
-
+from dotenv import load_dotenv
+load_dotenv()
 app = Flask(__name__)
 CAMERA_SOURCES = os.getenv("CAMERA_SOURCES", "{}")
 
@@ -34,11 +35,10 @@ def get_status():
 
 if __name__ == "__main__":
     # Define camera configurations
-    camera_sources = json.loads(CAMERA_SOURCES)
-    cameras = [   camera_sources     ]
+    print("saktiman saktiman",CAMERA_SOURCES)
+    cameras = json.loads(CAMERA_SOURCES)
 
     processes = []
-
     # Start camera processes
     for cam in cameras:
         process = Process(target=run_camera, args=(cam["id"], cam["rtsp_url"], cam["data_dir"], status_dict))
