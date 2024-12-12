@@ -157,8 +157,8 @@ class ThreadedCamera:
                 # time.sleep(1)  # Batch save every n seconds
             else:
                 current_time = time.time()
-                print(f"current for {current_time - self.start_time} restarting.")
-                if current_time - self.start_time > 10 :
+                # print(f"current for {current_time - self.start_time} restarting.")
+                if current_time - self.start_time > 30 * 60 :
                     print(f"paused for {current_time - self.start_time} restarting.")
                     self.restart_script()
                     break
@@ -288,7 +288,7 @@ class ThreadedCamera:
     def save_to_txt(self, message):
         with open(self.acc_file_path, 'a') as file:
             file.write(message + '\n')
-        # print(message)
+        print(message)
 
 def extract_ip_from_src(src):
     ip_pattern = r'(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})'
