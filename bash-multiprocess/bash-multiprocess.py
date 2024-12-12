@@ -1,10 +1,12 @@
 # bash-multiprocess/bash-multiprocess.py
+import json
 from flask import Flask, jsonify
 from multiprocessing import Manager, Process
 import os
 import time
 
 app = Flask(__name__)
+CAMERA_SOURCES = os.getenv("CAMERA_SOURCES", "{}")
 
 # Shared dictionary to store camera statuses
 manager = Manager()
@@ -32,12 +34,8 @@ def get_status():
 
 if __name__ == "__main__":
     # Define camera configurations
-    cameras = [
-        # {"id": 1, "rtsp_url": "rtsp://autobits:Autobits@123@192.168.1.204:554", "data_dir": "Report_holl"},
-        {"id": 2, "rtsp_url": "rtsp://autobits:Autobits@123@192.168.1.203:554", "data_dir": "Report_office"},
-        # {"id": 3, "rtsp_url": "rtsp://autobits:Autobits@123@192.168.1.201:554", "data_dir": "Report_room"},
-        {"id": 4, "rtsp_url": "rtsp://autobits:Autobits@1234@192.168.1.202:554", "data_dir": "Report_team"}
-    ]
+    camera_sources = json.loads(CAMERA_SOURCES)
+    cameras = [   camera_sources     ]
 
     processes = []
 
