@@ -1,3 +1,4 @@
+# bash-multiprocess/ffmpeg-cuda-batch-compreface.py
 import json
 import os
 import sys
@@ -12,7 +13,7 @@ from compreface import CompreFace
 from datetime import datetime
 import struct
 from dotenv import load_dotenv
-from sqlalchemy import create_engine, Column, Integer, Text, DateTime
+from sqlalchemy import QueuePool, create_engine, Column, Integer, Text, DateTime
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 import re
@@ -30,6 +31,15 @@ os.environ['QT_QPA_PLATFORM'] = 'xcb'
 # Database setup
 DATABASE_URL = "postgresql+psycopg2://postgres:postgres@localhost:6432/frs"
 engine = create_engine(DATABASE_URL, echo=False)
+# engine = create_engine(
+#     DATABASE_URL,
+#     poolclass=QueuePool,
+#     pool_size=10,          # Number of connections in the pool
+#     max_overflow=20,       # Additional connections when pool is full
+#     pool_timeout=30,       # Seconds to wait before giving up on a connection
+#     pool_recycle=3600,     # Seconds after which connections are recycled
+# )
+
 Base = declarative_base()
 
 class RecognitionResult(Base):
@@ -60,6 +70,7 @@ class ThreadedCamera:
         self.database_dir = data_dir
         self.camera_name = camera_name
         self.acc_file_path = os.path.join(self.database_dir, "logs.txt")
+        self.start_time = time.time()
         # shutil.rmtree(self.database_dir, ignore_errors=True)
         os.makedirs(self.database_dir, exist_ok=True)
 
@@ -107,7 +118,7 @@ class ThreadedCamera:
             print("Detection stuck detected! Resetting...")
             return True
         return False
-    
+
     def start_ffmpeg(self, src):
         command = [
             'nice', '-n', '10',
@@ -128,6 +139,7 @@ class ThreadedCamera:
                 raw_frame = self.pipe.stdout.read(frame_size)
                 if len(raw_frame) != frame_size:
                     print("Failed to grab frame from FFmpeg")
+                    self.restart_script()
                     break
                 with self.lock:
                     self.frame = np.frombuffer(raw_frame, np.uint8).reshape((frame_height, frame_width, 3)).copy()
@@ -139,9 +151,17 @@ class ThreadedCamera:
                     continue
             # Batch process the results every n seconds (synchronously)
             if threaded_camera.results:
+                self.start_time = time.time()
                 threaded_camera.save_to_database(threaded_camera.results)
                 threaded_camera.results = []
                 # time.sleep(1)  # Batch save every n seconds
+            else:
+                current_time = time.time()
+                print(f"current for {current_time - self.start_time} restarting.")
+                if current_time - self.start_time > 10 :
+                    print(f"paused for {current_time - self.start_time} restarting.")
+                    self.restart_script()
+                    break
             
     # def reset_stream(self):
     #     self.active = False
@@ -229,10 +249,11 @@ class ThreadedCamera:
 
 
 
-    def show_frame(self):
+    def show_frame(self, frame_count):
         if self.frame is None:
+            # print('None recieved...')
             return
-
+        
         with self.lock:
             display_frame = self.frame.copy()
 
@@ -267,7 +288,7 @@ class ThreadedCamera:
     def save_to_txt(self, message):
         with open(self.acc_file_path, 'a') as file:
             file.write(message + '\n')
-        print(message)
+        # print(message)
 
 def extract_ip_from_src(src):
     ip_pattern = r'(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})'
@@ -280,12 +301,11 @@ if __name__ == '__main__':
     parser.add_argument("--rtsp-url", type=str, default='0')
     parser.add_argument("--data-dir", type=str, default='Report')
     args = parser.parse_args()
-
+    frame_count = 0 
     host = 'http://localhost'
     port = '8000'
     api_key = API_KEY
     use_rtsp = args.rtsp_url != '0'
-
     camera_name = extract_ip_from_src(args.rtsp_url) if use_rtsp else 'Device_camera'
 
     # Append database directory to the camera name
@@ -295,6 +315,6 @@ if __name__ == '__main__':
     database_dir = args.data_dir
 
     while threaded_camera.active:
-        threaded_camera.show_frame()
-
-
+        if frame_count % 2 == 0:
+            threaded_camera.show_frame(frame_count)
+        frame_count+=1
