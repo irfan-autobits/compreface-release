@@ -14,7 +14,7 @@ from datetime import datetime
 import struct
 from dotenv import load_dotenv
 from sqlalchemy import QueuePool, create_engine, Column, Integer, Text, DateTime
-from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import declarative_base
 from sqlalchemy.orm import sessionmaker
 import re
 
@@ -126,7 +126,11 @@ class ThreadedCamera:
             # '-hwaccel', 'cuda', 
             '-i', src,
             '-vf', 'scale=960:540',
-            '-f', 'rawvideo', '-pix_fmt', 'bgr24', '-an', '-sn', '-'
+            '-f', 'rawvideo', 
+            '-pix_fmt', 'bgr24', 
+            # '-pix_fmt', 'nv12', 
+            # '-pix_fmt', 'yuv420p',
+            '-an', '-sn', '-'
         ]
         self.pipe = subprocess.Popen(command, stdout=subprocess.PIPE, bufsize=10**8)
 
@@ -158,10 +162,13 @@ class ThreadedCamera:
             else:
                 current_time = time.time()
                 # print(f"current for {current_time - self.start_time} restarting.")
-                if current_time - self.start_time > 30 * 60 :
+                if current_time - self.start_time > 1 * 10 :
                     print(f"paused for {current_time - self.start_time} restarting.")
                     self.restart_script()
                     break
+
+
+
             
     # def reset_stream(self):
     #     self.active = False
@@ -175,7 +182,7 @@ class ThreadedCamera:
     #     self.__init__(self.host, self.port, self.api_key, self.use_rtsp, self.rtsp_url, self.database_dir)
 
     def restart_script(self):
-        print("Restarting script...")
+        print(f"================================== Restarting script {camera_name} .==================================")
         python = sys.executable
         os.execl(python, python, *sys.argv)
     
@@ -265,6 +272,9 @@ class ThreadedCamera:
         except json.JSONDecodeError:
             print("Failed to decode JSON response.")
             self.results = []
+        except Exception as e:
+            print(f"Recognition error: {e}")
+            return
 
         cv2.imshow('Frame', display_frame)
         key = cv2.waitKey(self.FPS_MS) & 0xFF
