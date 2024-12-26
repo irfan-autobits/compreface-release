@@ -46,6 +46,7 @@ class VideoStream(object):
         """
         command = [
             "ffmpeg",
+            # "-hwaccel", "cuda",                # Enable CUDA hardware acceleration
             "-i", self.src,                      # Input video source
             "-vf", f"scale={self.width}:{self.height}",  # Resize video
             "-f", "rawvideo",                    # Output raw video format
