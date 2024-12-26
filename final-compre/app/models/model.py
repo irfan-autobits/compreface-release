@@ -23,7 +23,7 @@ class Detection(db.Model):
 class Camera_list(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     camera_name = db.Column(db.String(50), nullable=False)
-    camera_url = db.Column(db.String(50), nullable=False)
+    camera_url = db.Column(db.Text, nullable=False)
 
     def __repr__(self):
         return f"<Camera_list {self.camera_name}, {self.camera_url}>"
