@@ -2,3 +2,24 @@ pip install flask-socketio
 pip install flask-cors
 pip install flask-sqlalchemy
 pip install PyJWT
+
+
+*************** sample - env *******************
+# Detection / Recognition threshold
+FACE_DET_TH=0.8
+FACE_REC_TH=0.8
+
+# Compre_connect
+HOST = http://localhost
+PORT = 8000
+API_KEY = KEY
+
+# Camera Sources
+CAMERA_SOURCES="{
+    \"Hall\": \"  RTSP_URL \",
+    \"Office\": \"  RTSP_URL \",
+    \"Team\": \"  RTSP_URL \",
+    \"Room\": \"  RTSP_URL \"
+}"
+
+SECRET_KEY = "extreme_secret"
