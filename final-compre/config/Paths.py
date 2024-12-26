@@ -27,6 +27,7 @@ PORT = os.getenv("PORT", "8000")
 API_KEY = os.getenv("API_KEY", "00000000-0000-0000-0000-000000000002")
 FACE_DET_TH = os.getenv("FACE_DET_TH", 0.8)
 FACE_REC_TH = os.getenv("FACE_REC_TH", 0.8)
+FACE_DET_LM = os.getenv("FACE_DET_LM", 0)
 
 # Simulating variables
 database_dir = DATABASE_DIR

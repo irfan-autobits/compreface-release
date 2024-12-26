@@ -2,11 +2,11 @@
 import json
 import cv2
 from compreface import CompreFace
-from config.Paths import HOST, PORT , API_KEY, FACE_DET_TH
+from config.Paths import HOST, PORT , API_KEY, FACE_DET_TH, FACE_DET_LM 
 
 # Initialize CompreFace
 compre_face = CompreFace(HOST, PORT, {
-    "limit": 0,                                                     # Limit the number of faces per frame
+    "limit": int(FACE_DET_LM),                                                     # Limit the number of faces per frame
     "det_prob_threshold": float(FACE_DET_TH),                                      # Minimum detection probability threshold for face detection
     "prediction_count": 1,                                          # Number of estimate per face
     "face_plugins": "calculator,landmarks",         # "calculator = embedding,age,gender,landmarks,mask", 
