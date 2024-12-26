@@ -1,8 +1,8 @@
 import asyncio
 import cv2
 from aiohttp import web
+from aiohttp_cors import setup as setup_cors, ResourceOptions
 from aiortc import RTCPeerConnection, RTCSessionDescription, VideoStreamTrack
-from aiortc.contrib.signaling import BYE
 from av import VideoFrame
 
 pcs = set()  # Keep track of active peer connections
@@ -38,7 +38,7 @@ async def offer(request):
     answer = await pc.createAnswer()
     await pc.setLocalDescription(answer)
 
-    return web.Response(content_type="application/json", text=pc.localDescription.sdp)
+    return web.json_response({"sdp": pc.localDescription.sdp, "type": pc.localDescription.type})
 
 # Clean up connections
 async def on_shutdown(app):
@@ -49,7 +49,16 @@ async def on_shutdown(app):
 # Set up the server
 app = web.Application()
 app.on_shutdown.append(on_shutdown)
-app.add_routes([web.post("/offer", offer)])  # Endpoint for the WebRTC offer
+
+# Set up routes
+app.router.add_post("/offer", offer)
+
+# Enable CORS
+cors = setup_cors(app, defaults={
+    "*": ResourceOptions(allow_headers="*", expose_headers="*", allow_methods="*")
+})
+for route in app.router.routes():
+    cors.add(route)
 
 if __name__ == "__main__":
     web.run_app(app, port=8080)

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebSocket Video Stream</title>
+</head>
+<body>
+    <img id="video" alt="Video Stream" style="width: 100%; max-width: 640px; height: auto;">
+    <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
+    <script>
+        const videoElement = document.getElementById('video');
+        const socket = io();
+
+        socket.on('video_frame', (frame) => {
+            console.log("Received frame");
+            videoElement.src = `data:image/jpeg;base64,${frame}`;
+        });
+
+        socket.on('connect', () => {
+            console.log("WebSocket connected");
+        });
+
+        socket.on('disconnect', () => {
+            console.log("WebSocket disconnected");
+        });
+    </script>
+</body>
+</html>

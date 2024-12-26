@@ -1,0 +1,35 @@
+project/
+├── app/
+│   ├── __init__.py           # Initialize the Flask app
+│   ├── routes/               # Route handlers
+│   │   ├── __init__.py
+│   │   ├── camera_routes.py  # Routes for managing cameras
+│   │   └── feed_routes.py    # Routes for video feed
+│   ├── models/               # Database models and management
+│   │   ├── __init__.py
+│   │   ├── Camera_list.py
+│   │   └── manage_table.py
+│   ├── processors/           # Processing logic
+│   │   ├── __init__.py
+│   │   ├── face_detection.py # Face detection logic
+│   │   ├── frame_draw.py     # Logic for drawing on frames
+│   │   ├── save_face.py      # Logic for saving detected faces
+│   │   └── videocapture.py   # VideoStream logic
+│   ├── services/             # Business logic and helper services
+│   │   ├── __init__.py
+│   │   ├── camera_manager.py # Camera-related functionality
+│   │   └── user_management.py# User management logic
+│   └── templates/            # (Optional) HTML templates for web interface
+├── integrations/             # External API integrations
+│   ├── __init__.py
+│   └── compreface_api.py      # Functions for interfacing with CompreFace API
+├── config/                   # Configuration files
+│   ├── __init__.py
+│   ├── logger_config.py       # Logger setup
+├── static/                   # Static files (CSS, JS, images)
+├── tests/                    # Unit and integration tests
+├── scripts/                  # Utility scripts
+│   ├── manage_db.py           # Manage database tables
+├── run.py                    # Main entry point
+├── requirements.txt          # Dependencies
+└── README.md                 # Documentation
