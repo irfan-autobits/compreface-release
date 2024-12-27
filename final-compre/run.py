@@ -47,7 +47,7 @@ face_processor = FaceDetectionProcessor(cam_sources, db.session, app)
 import time
 
 def send_frame():
-    FPS = 1 / 45  # 30 FPS
+    FPS = 1 / 10  # 30 FPS
     log_interval = 1
     frame_count = {cam_name: 0 for cam_name in cam_sources}
     last_frame_time = {cam_name: time.time() for cam_name in cam_sources}
@@ -69,7 +69,8 @@ def send_frame():
                         if frame is not None:
                             if frame_count[cam_name] % log_interval == 0:
                                 cam_stat_logger.info(f"Processed {frame_count[cam_name]} frames from camera {cam_name} at {fps:.2f} FPS")
-                            frame = face_processor.process_frame(frame, cam_name)
+                            if frame_count[cam_name] % 5 == 0:
+                                frame = face_processor.process_frame(frame, cam_name)
                             # Encode the frame as JPEG
                             _, buffer = cv2.imencode('.jpg', frame)
                             frame_data = base64.b64encode(buffer).decode('utf-8')

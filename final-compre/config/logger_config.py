@@ -1,5 +1,6 @@
 # final-compre/config/logger_config.py
 import logging
+from logging.handlers import RotatingFileHandler
 from config.Paths import DET_LOG_FILE_PATH, CAM_STAT_LOG_FILE_PATH
 
 # File paths for different log files
@@ -11,7 +12,7 @@ def create_detection_logger():
     det_logger = logging.getLogger('detection_logger')
     det_logger.setLevel(logging.DEBUG)
 
-    # File handler for detection logs
+    det_file_handler = RotatingFileHandler(str(det_log_path), maxBytes=1048576, backupCount=3)
     det_file_handler = logging.FileHandler(str(det_log_path))
     det_file_handler.setFormatter(logging.Formatter('%(asctime)s - %(levelname)s - %(message)s'))
 
@@ -30,7 +31,7 @@ def create_cam_stat_logger():
     cam_stat_logger = logging.getLogger('cam_stat_logger')
     cam_stat_logger.setLevel(logging.DEBUG)
 
-    # File handler for other logs
+    cam_stat_file_handler = RotatingFileHandler(str(cam_stat_log_path), maxBytes=1048576, backupCount=3)
     cam_stat_file_handler = logging.FileHandler(str(cam_stat_log_path))
     cam_stat_file_handler.setFormatter(logging.Formatter('%(asctime)s - %(levelname)s - %(message)s'))
 
