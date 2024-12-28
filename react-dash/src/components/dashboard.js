@@ -39,72 +39,14 @@ const Dashboard = () => {
   
   const handle_remove_Submit = (event) => {
     event.preventDefault();
-    if (camera_name && camera_url) {
-      console.log('camera details are:', { camera_name, camera_url });
-      fetch('/api/start_feed', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ camera_name: camera_name, camera_url: camera_url }),
-      })
-        .then(async (response) => {
-          const responseData = await response.json(); // Parse JSON response
-          if (!response.ok) {
-            // Handle HTTP error responses
-            throw new Error(responseData.error || 'Something went wrong');
-          }
-          return responseData; // Successful response
-        })
-        .then((data) => {
-          console.log('camera added:', data);
-        })
-        .catch((error) => {
-          console.error('Error adding camera:', error);
-        });
-    } else {
-      alert('Please fill in all fields');
-    }
-  }  
-  const handle_start_Submit = (event) => {
-    event.preventDefault();
-    if (camera_name && camera_url) {
-      console.log('camera details are:', { camera_name, camera_url });
-      fetch('/api/stop_feed', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ camera_name: camera_name, camera_url: camera_url }),
-      })
-        .then(async (response) => {
-          const responseData = await response.json(); // Parse JSON response
-          if (!response.ok) {
-            // Handle HTTP error responses
-            throw new Error(responseData.error || 'Something went wrong');
-          }
-          return responseData; // Successful response
-        })
-        .then((data) => {
-          console.log('camera added:', data);
-        })
-        .catch((error) => {
-          console.error('Error adding camera:', error);
-        });
-    } else {
-      alert('Please fill in all fields');
-    }
-  }  
-  const handle_stop_Submit = (event) => {
-    event.preventDefault();
-    if (camera_name && camera_url) {
-      console.log('camera details are:', { camera_name, camera_url });
+    if (camera_name ) {
+      console.log('camera details are:', { camera_name });
       fetch('/api/remove_camera', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ camera_name: camera_name, camera_url: camera_url }),
+        body: JSON.stringify({ camera_name: camera_name }),
       })
         .then(async (response) => {
           const responseData = await response.json(); // Parse JSON response
@@ -115,10 +57,70 @@ const Dashboard = () => {
           return responseData; // Successful response
         })
         .then((data) => {
-          console.log('camera added:', data);
+          console.log('camera removed:', data);
         })
         .catch((error) => {
-          console.error('Error adding camera:', error);
+          console.error('Error removing camera:', error);
+        });
+    } else {
+      alert('Please fill in all fields');
+    }
+  }  
+
+  const handle_start_Submit = (event) => {
+    event.preventDefault();
+    if (camera_name ) {
+      console.log('camera details are:', { camera_name });
+      fetch('/api/start_feed', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ camera_name: camera_name }),
+      })
+        .then(async (response) => {
+          const responseData = await response.json(); // Parse JSON response
+          if (!response.ok) {
+            // Handle HTTP error responses
+            throw new Error(responseData.error || 'Something went wrong');
+          }
+          return responseData; // Successful response
+        })
+        .then((data) => {
+          console.log('camera started:', data);
+        })
+        .catch((error) => {
+          console.error('Error starting camera:', error);
+        });
+    } else {
+      alert('Please fill in all fields');
+    }
+  }  
+
+  const handle_stop_Submit = (event) => {
+    event.preventDefault();
+    if (camera_name ) {
+      console.log('camera details are:', { camera_name });
+      fetch('/api/stop_feed', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ camera_name: camera_name }),
+      })
+        .then(async (response) => {
+          const responseData = await response.json(); // Parse JSON response
+          if (!response.ok) {
+            // Handle HTTP error responses
+            throw new Error(responseData.error || 'Something went wrong');
+          }
+          return responseData; // Successful response
+        })
+        .then((data) => {
+          console.log('camera stopped:', data);
+        })
+        .catch((error) => {
+          console.error('Error stopping camera:', error);
         });
     } else {
       alert('Please fill in all fields');
@@ -161,13 +163,7 @@ const Dashboard = () => {
           onChange = {(e) => setCameraName(e.target.value)}
           required
           />
-        <input 
-          type="text" 
-          placeholder="Enter camera URL"
-          value = {camera_url} 
-          onChange = {(e) => setCameraUrl(e.target.value)}
-          required
-          />
+
         <button id="remove_camera" type='submit'>Remove Camera</button>
       </div>
     </form>    
@@ -181,13 +177,7 @@ const Dashboard = () => {
           onChange = {(e) => setCameraName(e.target.value)}
           required
           />
-        <input 
-          type="text" 
-          placeholder="Enter camera URL"
-          value = {camera_url} 
-          onChange = {(e) => setCameraUrl(e.target.value)}
-          required
-          />
+
         <button id="start_camera" type='submit'>start Camera</button>
       </div>
     </form>    
@@ -201,13 +191,7 @@ const Dashboard = () => {
           onChange = {(e) => setCameraName(e.target.value)}
           required
           />
-        <input 
-          type="text" 
-          placeholder="Enter camera URL"
-          value = {camera_url} 
-          onChange = {(e) => setCameraUrl(e.target.value)}
-          required
-          />
+
         <button id="stop_camera" type='submit'>stop Camera</button>
       </div>
     </form>
