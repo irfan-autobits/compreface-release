@@ -59,14 +59,13 @@ def remove_camera():
     """API endpoint to remove a camera"""
     data = request.get_json()
     camera_name = data.get('camera_name')
-    camera_url = data.get('camera_url')
-    if camera_name and camera_url:
-        responce, status = Remove_camera(camera_name,camera_url)
+    if camera_name :
+        responce, status = Remove_camera(camera_name)
         return jsonify(responce), status
     else:
         return {'error' : 'Camera name or url not provided'}, 400
 
-@bp.route('/start_feed', methods=['POST'])
+@bp.route('/api/start_feed', methods=['POST'])
 def start_feed():
     """Start the video feed"""
     data = request.get_json()
@@ -83,7 +82,7 @@ def start_feed():
     else:
         return {'error' : 'Camera name not provided for starting'}, 400
 
-@bp.route('/stop_feed', methods=['POST'])
+@bp.route('/api/stop_feed', methods=['POST'])
 def stop_feed():
     """Stop the video feed"""
     data = request.get_json()

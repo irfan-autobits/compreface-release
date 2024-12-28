@@ -17,7 +17,7 @@ class FaceDetectionProcessor:
     def process_frame(self, frame, cam_name):
         results = compreface_api(frame)
         if results:
-            print(f"return result on one frame are ::::::::::: {len(results)}")
+            print(f"result on one frame are ::::::::::: {len(results)}")
             for result in results:
                 box = result.get('box')
                 subject = result.get('subjects')[0]['subject']

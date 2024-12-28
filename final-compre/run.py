@@ -40,36 +40,35 @@ db.init_app(app)
 with app.app_context():
     manage_table(drop = True) # drop all tables
     responce, status = Default_cameras()
-print("default camera added",responce)
 
 face_processor = FaceDetectionProcessor(cam_sources, db.session, app)
 
 import time
+from collections import defaultdict
 
 def send_frame():
     FPS = 1 / 10  # 30 FPS
     log_interval = 1
-    frame_count = {cam_name: 0 for cam_name in cam_sources}
-    last_frame_time = {cam_name: time.time() for cam_name in cam_sources}
+    frame_count = defaultdict(int)
+    last_frame_time = defaultdict(lambda: time.time())    
     """function to send frames to the client from all cameras"""
     try:
         with app.app_context():  # Explicitly create an app context
             while True:
                 with frame_lock:  # Ensure thread-safe access
                     for cam_name, vs in list(vs_list.items()):  # Create a list to avoid runtime changes
-                        frame = vs.read()
+                        frame = vs.read()                            
                         # frame cal
                         if frame_count[cam_name] % log_interval == 0:
                             current_time = time.time()
                             time_diff = current_time - last_frame_time[cam_name]
                             fps = 1 / time_diff if time_diff > 0 else 0
-                            last_frame_time[cam_name] = current_time                        
+                            last_frame_time[cam_name] = current_time 
                         frame_count[cam_name] += 1
-
                         if frame is not None:
                             if frame_count[cam_name] % log_interval == 0:
-                                cam_stat_logger.info(f"Processed {frame_count[cam_name]} frames from camera {cam_name} at {fps:.2f} FPS")
-                            if frame_count[cam_name] % 5 == 0:
+                                cam_stat_logger.debug(f"Processed {frame_count[cam_name]} frames from camera {cam_name} at {fps:.2f} FPS")
+                            if frame_count[cam_name] % 2 == 0:
                                 frame = face_processor.process_frame(frame, cam_name)
                             # Encode the frame as JPEG
                             _, buffer = cv2.imencode('.jpg', frame)

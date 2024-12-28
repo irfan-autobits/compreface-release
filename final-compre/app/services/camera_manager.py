@@ -38,37 +38,35 @@ def Add_camera(camera_name,camera_url):
             with frame_lock:
                 cam_sources[camera_name] = camera_url
                 responce, status = Start_camera(camera_name)
-                timestamp = datetime.now()
-                cam_stat_logger.info(f"Camera {camera_name} added successfully at {timestamp}")
+                cam_stat_logger.info(f"{camera_name} Camera added successfully")
                 # responce, status = {'message' : f"Camera {camera_name} added successfully"}, 200
             return responce, status
     except Exception as e:
         db.session.rollback()
-        cam_stat_logger.error(f"Failed to add camera {camera_name}: {str(e)}")
+        cam_stat_logger.error(f"Failed to add {camera_name} camera: {str(e)}")
         return {'error' : str(e)}, 500
     
-def Remove_camera(camera_name,camera_url):
+def Remove_camera(camera_name):
     """API endpoint to remove a camera"""
     global vs_list, cam_sources
     try:
         with current_app.app_context():
-            camera = Camera_list.query.filter_by(camera_name=camera_name, camera_url=camera_url).first()
+            camera = Camera_list.query.filter_by(camera_name=camera_name).first()
             if camera:
                 db.session.delete(camera)
                 db.session.commit()
                 with frame_lock:
                     responce, status = Stop_camera(camera_name)
-                    timestamp = datetime.now()
-                    cam_stat_logger.info(f"Camera {camera_name} removed successfully at {timestamp}")
+                    cam_stat_logger.info(f"{camera_name} Camera removed successfully")
                     # responce, status = {'message' : f"Camera {camera_name} removed successfully"}, 200
                     if camera_name in cam_sources:
                         del cam_sources[camera_name]
                 return responce, status
             else:
-                return {'error' : f'Camera {camera_name} not found'}, 404
+                return {'error' : f'{camera_name} Camera not found'}, 404
     except Exception as e:
         db.session.rollback()
-        cam_stat_logger.error(f"Failed to Remove camera {camera_name}: {str(e)}")
+        cam_stat_logger.error(f"Failed to Remove {camera_name} camera: {str(e)}")
         return {'error' : str(e)}, 500
 
 def Start_camera(camera_name):
@@ -80,20 +78,21 @@ def Start_camera(camera_name):
         else:
             vs_list[camera_name] = VideoStream(src=cam_sources[camera_name])
             vs_list[camera_name].start()
-            timestamp = datetime.now()
-            cam_stat_logger.info(f"Camera {camera_name} started successfully at {timestamp}")
+            cam_stat_logger.info(f"{camera_name} Camera started successfully.")
             return {'message' : f'Video feed started for {camera_name}'}, 200
     else:
-        return {'error' : f'Camera {camera_name} not found'}, 404
+        return {'error' : f'{camera_name} Camera not found'}, 404
 
 def Stop_camera(camera_name):
     """API endpoint to stop a camera feed"""
-    global vs_list
-    if camera_name in vs_list:
-        vs_list[camera_name].stop()
-        del vs_list[camera_name]
-        timestamp = datetime.now()
-        cam_stat_logger.info(f"Camera {camera_name} stoped successfully at {timestamp}")
-        return {'message' : f'Video feed stopped for {camera_name}'}, 200
+    global vs_list, cam_sources
+    if camera_name in cam_sources:
+        if camera_name in vs_list:
+            vs_list[camera_name].stop()
+            del vs_list[camera_name]
+            cam_stat_logger.info(f"{camera_name} Camera stoped successfully.")
+            return {'message' : f'Video feed stopped for {camera_name}'}, 200
+        else:
+            return {'error' : f'{camera_name} Camera Already stopped'}, 404
     else:
-        return {'error' : f'Camera {camera_name} not found'}, 404
+        return {'error' : f'{camera_name} Camera not found'}, 404        
