@@ -7,14 +7,15 @@ from config.Paths import DET_LOG_FILE_PATH, CAM_STAT_LOG_FILE_PATH, EXEC_TIME_LO
 det_log_path = DET_LOG_FILE_PATH
 cam_stat_log_path = CAM_STAT_LOG_FILE_PATH
 exec_time_log_path = EXEC_TIME_LOG_FILE_PATH
+log_file_size = 100 * 1024 # 1kb = 12.1 lines
 
 # Function to configure a logger for detection logs
 def create_detection_logger():
     det_logger = logging.getLogger('detection_logger')
     det_logger.setLevel(logging.DEBUG)
 
-    det_file_handler = RotatingFileHandler(str(det_log_path), maxBytes=10 * 1024, backupCount=3)
-    det_file_handler = logging.FileHandler(str(det_log_path))
+    det_file_handler = RotatingFileHandler(str(det_log_path), maxBytes=log_file_size, backupCount=1)
+    # det_file_handler = logging.FileHandler(str(det_log_path))
     det_file_handler.setFormatter(logging.Formatter('%(asctime)s - %(levelname)s - %(message)s'))
 
     det_logger.addHandler(det_file_handler)
@@ -31,9 +32,9 @@ def create_detection_logger():
 def create_cam_stat_logger():
     cam_stat_logger = logging.getLogger('cam_stat_logger')
     cam_stat_logger.setLevel(logging.DEBUG)
-
-    cam_stat_file_handler = RotatingFileHandler(str(cam_stat_log_path), maxBytes=10 * 1024, backupCount=3)
-    cam_stat_file_handler = logging.FileHandler(str(cam_stat_log_path))
+    
+    cam_stat_file_handler = RotatingFileHandler(str(cam_stat_log_path), maxBytes=log_file_size, backupCount=1)
+    # cam_stat_file_handler = logging.FileHandler(str(cam_stat_log_path))
     cam_stat_file_handler.setFormatter(logging.Formatter('%(asctime)s - %(levelname)s - %(message)s'))
 
     cam_stat_logger.addHandler(cam_stat_file_handler)
@@ -50,8 +51,8 @@ def create_exec_time_logger():
     exec_time_logger = logging.getLogger('exec_time_logger')
     exec_time_logger.setLevel(logging.DEBUG)
 
-    exec_time_file_handler = RotatingFileHandler(str(exec_time_log_path), maxBytes=10 * 1024, backupCount=3)
-    exec_time_file_handler = logging.FileHandler(str(exec_time_log_path))
+    exec_time_file_handler = RotatingFileHandler(str(exec_time_log_path), maxBytes=log_file_size, backupCount=1)
+    # exec_time_file_handler = logging.FileHandler(str(exec_time_log_path))
     exec_time_file_handler.setFormatter(logging.Formatter('%(asctime)s - %(levelname)s - %(message)s'))
 
     exec_time_logger.addHandler(exec_time_file_handler)
