@@ -1,12 +1,19 @@
-import React, { useEffect, useState } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import CameraFeed from "./camera_feed";
-import { AddNew, PauseButton, PlayButton, RemoveSVG } from "../assets/svgs";
+import {
+  AddNew,
+  CloseSvg,
+  PauseButton,
+  PlayButton,
+  RemoveSVG,
+} from "../assets/svgs";
 import { io } from "socket.io-client";
 
 const Dashboard = () => {
   const navigate = useNavigate();
   const [camera_name, setCameraName] = React.useState("");
+  const [camEnabled, setcamEnabled] = useState({});
 
   const handle_add_Submit = (camera_name, camera_url) => {
     if (camera_name && camera_url) {
@@ -149,6 +156,14 @@ const Dashboard = () => {
     };
   }, []);
 
+  useEffect(() => {
+    Object.keys(cameraFeeds).forEach((camera_name) => {
+      if (!camEnabled.hasOwnProperty(camera_name)) {
+        setcamEnabled({ ...camEnabled, [camera_name]: true });
+      }
+    });
+  }, [cameraFeeds]);
+
   return (
     <div className="main-container">
       <div className="dash-header">
@@ -175,7 +190,18 @@ const Dashboard = () => {
                   className="search"
                   name="addNewCamera"
                   id="addNewCamera"
-                  placeholder="Search..."
+                  placeholder="Camera name"
+                  // onChange={onFilterTextBoxChanged}
+                  style={{
+                    marginRight: "5px",
+                  }}
+                />
+                <input
+                  type="text"
+                  className="search"
+                  name="addNewCameraURL"
+                  id="addNewCameraURL"
+                  placeholder="Camera URL"
                   // onChange={onFilterTextBoxChanged}
                   style={{
                     marginRight: "5px",
@@ -186,7 +212,8 @@ const Dashboard = () => {
                   svgColor={"#fff"}
                   onClick={() =>
                     handle_add_Submit(
-                      document.getElementById("addNewCamera").value
+                      document.getElementById("addNewCamera").value,
+                      document.getElementById("addNewCameraURL").value
                     )
                   }
                 />
@@ -194,8 +221,14 @@ const Dashboard = () => {
             </div>
             {Object.keys(cameraFeeds).map((cameraName) => (
               <div className="list-item group-item ">
-                <div className="label">
-                  {cameraFeeds[cameraName].status ? (
+                <div
+                  className="label"
+                  onClick={() => {
+                    setcamEnabled({ ...camEnabled, [cameraName]: true });
+                    handle_start_Submit(cameraName);
+                  }}
+                >
+                  {camEnabled[cameraName] === true? (
                     <span
                       className="group_icon_inner"
                       style={{
@@ -233,77 +266,57 @@ const Dashboard = () => {
 
         <div className="dash-content">
           {Object.keys(cameraFeeds).map((cameraName) => (
-            <div className="cam-card">
-              <div className="cam-header">
-                <div className="cam-title">
-                  {cameraFeeds[cameraName].status ? (
-                    <span
-                      className="group_icon_inner"
-                      style={{
-                        backgroundColor: "rgb(134, 173, 74)",
-                      }}
-                      // onClick={() => setGroupProfileVisible(!groupProfileVisible)}
-                    ></span>
-                  ) : (
-                    <span
-                      className="group_icon_inner"
-                      style={{
-                        backgroundColor: "rgb(255, 82, 82)",
-                      }}
-                      // onClick={() => setGroupProfileVisible(!groupProfileVisible)}
-                    ></span>
-                  )}
-                  <span>{cameraName}</span>
-                </div>
-                <div className="cam-actions">
-                  <div className="action-icon">
-                    {cameraFeeds[cameraName].isEnabled ? (
-                      <PlayButton
-                        svgHeight={"25px"}
-                        svgColor={"#fff"}
-                        onClick={() => {
-                          cameraFeeds[cameraName].isEnabled ? 
-                          handle_start_Submit(cameraName) : handle_stop_Submit(cameraName);
-                          setCameraFeeds((prevFeeds) => {
-                            return {
-                              ...prevFeeds,
-                              [camera_name]: {
-                                ...prevFeeds[camera_name],
-                                isEnabled: !prevFeeds[camera_name].isEnabled,
-                              }, // Update camera status and image
-                            };
-                          });
-                        }}
-                      />
-                    ) : (
-                      <PauseButton
-                        svgHeight={"25px"}
-                        svgColor={"#fff"}
-                        onClick={() => {
-                          setCameraFeeds((prevFeeds) => {
-                            return {
-                              ...prevFeeds,
-                              [camera_name]: {
-                                ...prevFeeds[camera_name],
-                                isEnabled: !prevFeeds[camera_name].isEnabled,
-                              }, // Update camera status and image
-                            };
-                          });
-                        }}
-                      />
-                    )}
+            <Fragment>
+              {camEnabled[cameraName] === true && (
+                <div className="cam-card">
+                  <div className="cam-header">
+                    <div className="cam-title">
+                      {camEnabled[cameraName] === true ? (
+                        <span
+                          className="group_icon_inner"
+                          style={{
+                            backgroundColor: "rgb(134, 173, 74)",
+                          }}
+                          // onClick={() => setGroupProfileVisible(!groupProfileVisible)}
+                        ></span>
+                      ) : (
+                        <span
+                          className="group_icon_inner"
+                          style={{
+                            backgroundColor: "rgb(255, 82, 82)",
+                          }}
+                          // onClick={() => setGroupProfileVisible(!groupProfileVisible)}
+                        ></span>
+                      )}
+                      <span>{cameraName}</span>
+                    </div>
+                    <div className="cam-actions">
+                      <div className="action-icon">
+                        <CloseSvg
+                          svgHeight={"15px"}
+                          svgColor={"#fff"}
+                          onClick={() => {
+                            setcamEnabled({
+                              ...camEnabled,
+                              [cameraName]: false,
+                            });
+                            handle_stop_Submit(cameraName);
+                          }}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <div className="cam-preview">
+                    <img
+                      id={"feed_" + cameraName}
+                      src={`data:image/jpeg;base64,${cameraFeeds[cameraName].image}`}
+                      alt={cameraName}
+                      width="400"
+                    />
                   </div>
                 </div>
-              </div>
-              <div className="cam-preview">
-                <img
-                  id={"feed_" + cameraName}
-                  src={`data:image/jpeg;base64,${cameraFeeds[cameraName].image}`}
-                  alt={cameraName}
-                  width="320"
-                />
-              </div>
-            </div>
+              )}
+            </Fragment>
           ))}
         </div>
       </div>

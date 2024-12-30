@@ -129,11 +129,15 @@ button{
   font-family: "Inter", sans-serif;
   font-size: 15px;
   border: #373b42 solid 1px;
-  flex: 1 1;
   color: white;
   /* position: relative; */
   /* overflow: hidden; */
   max-width: 400px;
+}
+.dash-content {
+  display: flex;
+  flex-wrap: wrap;
+  align-content: flex-start;
 }
 .login-container,
 .signup-container {
@@ -316,6 +320,7 @@ button{
     border-radius: 6px;
     background-color: #151515;
     transition: background-color 0.2s ease-out;
+    flex: 1;
  }
   .sidebar-column .list-container .list-item {
     font-family: sans-serif !important;
@@ -471,4 +476,8 @@ button{
   justify-content: space-between;
   align-items: center;
   padding: 0 7px;
+  margin-bottom: 5px;
+}
+.cam-preview img {
+  border-radius: 3px;
 }

@@ -3,7 +3,7 @@ import { Navigate } from "react-router-dom";
 
 
 const AppRoute = (props) => {
-    // return <React.Fragment>{props.element}</React.Fragment>
+    return <React.Fragment>{props.element}</React.Fragment>
     // let res = JSON.parse(localStorage.getItem('token'));
     // if(res !== null){
     //     return (
