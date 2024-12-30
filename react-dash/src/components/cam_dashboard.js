@@ -38,6 +38,7 @@ const Dashboard = () => {
         })
         .then((data) => {
           console.log("camera added:", data);
+          getCamerasList();
         })
         .catch((error) => {
           console.error("Error adding camera:", error);
@@ -67,6 +68,7 @@ const Dashboard = () => {
         })
         .then((data) => {
           console.log("camera removed:", data);
+          getCamerasList();
         })
         .catch((error) => {
           console.error("Error removing camera:", error);
@@ -133,6 +135,32 @@ const Dashboard = () => {
       alert("Please fill in all fields");
     }
   };
+  const [cameraList, setcameraList] = useState([]);
+
+  function getCamerasList () {
+    fetch("/api/camera_list", {
+      method: "GET"
+    })
+      .then(async (response) => {
+        const responseData = await response.json(); // Parse JSON response
+        if (!response.ok) {
+          // Handle HTTP error responses
+          throw new Error(responseData.error || "Something went wrong");
+        }
+        
+        setcameraList(responseData.cameras);
+        return responseData; // Successful response
+      })
+      .then((data) => {
+        console.log("camera stopped:", data);
+      })
+      .catch((error) => {
+        console.error("Error stopping camera:", error);
+      });
+  }
+  useEffect(() => {
+    getCamerasList();
+  }, []);
 
   const [cameraFeeds, setCameraFeeds] = useState({});
 
@@ -219,16 +247,16 @@ const Dashboard = () => {
                 />
               </div>
             </div>
-            {Object.keys(cameraFeeds).map((cameraName) => (
+            {cameraList.map((cam) => (
               <div className="list-item group-item ">
                 <div
                   className="label"
                   onClick={() => {
-                    setcamEnabled({ ...camEnabled, [cameraName]: true });
-                    handle_start_Submit(cameraName);
+                    setcamEnabled({ ...camEnabled, [cam.camera_name]: true });
+                    handle_start_Submit(cam.camera_name);
                   }}
                 >
-                  {camEnabled[cameraName] === true? (
+                  {camEnabled[cam.camera_name] === true? (
                     <span
                       className="group_icon_inner"
                       style={{
@@ -245,12 +273,12 @@ const Dashboard = () => {
                       // onClick={() => setGroupProfileVisible(!groupProfileVisible)}
                     ></span>
                   )}
-                  <span>{cameraName}</span>
+                  <span>{cam.camera_name}</span>
                 </div>
                 <div className="icons">
                   <div
                     className="add-icon group-icon"
-                    onClick={() => handle_remove_Submit(cameraName)}
+                    onClick={() => handle_remove_Submit(cam.camera_name)}
                   >
                     <RemoveSVG
                       svgHeight={"25px"}

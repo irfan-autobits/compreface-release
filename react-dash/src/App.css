@@ -478,6 +478,10 @@ button{
   padding: 0 7px;
   margin-bottom: 5px;
 }
+.cam-preview {
+  width: 400px;
+  height: 100%;
+}
 .cam-preview img {
   border-radius: 3px;
 }
