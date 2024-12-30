@@ -3,7 +3,7 @@ import { Navigate } from "react-router-dom";
 
 
 import Login from "../components/login";
-import Dashboard from "../components/dashboard";
+import Dashboard from "../components/cam_dashboard";
 import Signup from "../components/sign_up";
 import Logout from "../components/logout";
 
