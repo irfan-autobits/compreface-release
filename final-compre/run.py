@@ -64,7 +64,7 @@ def send_frame():
                             time_diff = current_time - last_frame_time[cam_name]
                             fps = 1 / time_diff if time_diff > 0 else 0
                             last_frame_time[cam_name] = current_time 
-
+                            
                             exec_time_logger.debug(f"took {time_diff:.4f} seconds with compreface as :{is_compre} for camera {cam_name}")
                         frame_count[cam_name] += 1
                         if frame is not None:

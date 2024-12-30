@@ -98,8 +98,16 @@ class VideoStream(object):
         if self.thread.is_alive():
             self.thread.join()        
         if self.pipe:
-            self.pipe.terminate()
-            self.pipe = None
+            try:
+                # Terminate the FFmpeg process
+                self.pipe.terminate()
+                self.pipe.wait(timeout=5)  # Wait for the process to terminate
+            except subprocess.TimeoutExpired:
+                print("FFmpeg did not terminate, killing the process.")
+                self.pipe.kill()  # Force kill if termination fails
+            finally:
+                self.pipe = None
+                print("ffmpeg process closed.")
 
     def __del__(self):
         """
