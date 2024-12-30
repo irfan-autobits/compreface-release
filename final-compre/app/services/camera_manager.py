@@ -1,7 +1,7 @@
 # final-compre/app/services/camera_manager.py
 from datetime import datetime 
 import json
-from app.models.model import Camera_list, db
+from app.models.model import Detection, Camera_list, db
 from flask import current_app
 from app.processors.VideoCapture import VideoStream  
 from config.Paths import frame_lock, vs_list, cam_sources
@@ -74,12 +74,12 @@ def Start_camera(camera_name):
     global vs_list, cam_sources
     if camera_name in cam_sources:
         if camera_name in vs_list:
-            return {'message' : f'Video feed already started for {camera_name}'}, 200
+            return {'message' : f'Recognition for {camera_name} Camera Already started'}, 200
         else:
             vs_list[camera_name] = VideoStream(src=cam_sources[camera_name])
             vs_list[camera_name].start()
-            cam_stat_logger.info(f"{camera_name} Camera started successfully.")
-            return {'message' : f'Video feed started for {camera_name}'}, 200
+            cam_stat_logger.info(f"Recognition for {camera_name} Camera started successfully.")
+            return {'message' : f'Recognition started for {camera_name}'}, 200
     else:
         return {'error' : f'{camera_name} Camera not found'}, 404
 
@@ -90,9 +90,33 @@ def Stop_camera(camera_name):
         if camera_name in vs_list:
             vs_list[camera_name].stop()
             del vs_list[camera_name]
-            cam_stat_logger.info(f"{camera_name} Camera stoped successfully.")
-            return {'message' : f'Video feed stopped for {camera_name}'}, 200
+            cam_stat_logger.info(f"Recognition for {camera_name} Camera stoped successfully.")
+            return {'message' : f'Recognition stopped for {camera_name}'}, 200
         else:
-            return {'error' : f'{camera_name} Camera Already stopped'}, 404
+            return {'error' : f'Recognition for {camera_name} Camera Already stopped'}, 404
     else:
-        return {'error' : f'{camera_name} Camera not found'}, 404        
+        return {'error' : f'{camera_name} Camera not found'}, 404   
+    
+def List_cameras():
+    """API endpoint to list all cameras"""
+    try:
+        with current_app.app_context():
+            cameras = Camera_list.query.all()
+            camera_list = [{'camera_name': cam.camera_name, 'camera_url': cam.camera_url} for cam in cameras]
+            return {'cameras': camera_list}, 200
+    except Exception as e:
+        db.session.rollback()
+        cam_stat_logger.error(f"Failed to list cameras: {str(e)}")
+        return {'error' : str(e)}, 500   
+     
+def Recognition_table():
+    """API endpoint to list all Recognition"""
+    try:
+        with current_app.app_context():
+            detection = Detection.query.all()
+            detection_list = [{'camera_name': det.camera_name, 'det_face': det.det_face, 'person': det.person, 'similarity': det.similarity, 'timestamp': det.timestamp} for det in detection]
+            return {'detections': detection_list}, 200
+    except Exception as e:
+        db.session.rollback()
+        cam_stat_logger.error(f"Failed to list cameras: {str(e)}")
+        return {'error' : str(e)}, 500

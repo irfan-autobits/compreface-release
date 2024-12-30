@@ -2,7 +2,7 @@
 from flask import Blueprint, jsonify, render_template, request
 from flask import current_app 
 from app.services.user_management import sign_up_user, log_in_user
-from app.services.camera_manager import Add_camera, Remove_camera, Start_camera, Stop_camera
+from app.services.camera_manager import Add_camera, Remove_camera, Start_camera, Stop_camera, List_cameras, Recognition_table
 from flask_socketio import SocketIO
 
 
@@ -71,12 +71,6 @@ def start_feed():
     data = request.get_json()
     camera_name = data.get('camera_name')
     if camera_name:
-        # if camera_name in active_cameras:
-        #     return {'message' : f'Video feed already started for {camera_name}'}, 200
-        # else:
-        #     active_cameras.append(camera_name)
-        #     print(f"started :: {camera_name}")
-        #     return {'message' : f'Video feed started for {camera_name}'} , 200
         responce, status = Start_camera(camera_name)
         return responce, status
     else:
@@ -88,14 +82,19 @@ def stop_feed():
     data = request.get_json()
     camera_name = data.get('camera_name')
     if camera_name:
-        # if camera_name in active_cameras:
-        #     active_cameras.remove(camera_name)
-        #     print(f"stopped :: {camera_name}")
-        #     return {'message' : f'Video feed stopped for {camera_name}'} , 200
-        # else:
-        #     return {'message' : f'Video feed already stopped for {camera_name}'}, 200
         responce, status = Stop_camera(camera_name)
         return responce, status
     else:
         return {'error' : 'Camera name not provided for stopping'}, 400
     
+@bp.route('/api/camera_list', methods=['GET'])
+def List_cam():
+    """List all the camera"""
+    responce, status = List_cameras()
+    return responce, status
+    
+@bp.route('/api/reco_table', methods=['GET'])
+def List_det():
+    """List all the Recognitions"""
+    responce, status = Recognition_table()
+    return responce, status

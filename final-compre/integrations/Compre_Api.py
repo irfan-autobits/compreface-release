@@ -10,7 +10,7 @@ compre_face = CompreFace(HOST, PORT, {
     "det_prob_threshold": float(FACE_DET_TH),                                      # Minimum detection probability threshold for face detection
     "prediction_count": 1,                                          # Number of estimate per face
     "face_plugins": "calculator,landmarks",         # "calculator = embedding,age,gender,landmarks,mask", 
-    "status": False                                                  # execution_time and plugin_version fields
+    "status": True                                                  # execution_time and plugin_version fields
 })
 
 recognition = compre_face.init_face_recognition(API_KEY)

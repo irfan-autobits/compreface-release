@@ -5,14 +5,16 @@ from flask_socketio import SocketIO, emit
 import cv2
 import base64
 from config.Paths import frame_lock, cam_sources, vs_list
-from config.logger_config import cam_stat_logger , console_logger
+from config.logger_config import cam_stat_logger , console_logger, exec_time_logger
 from config.config import Config
 from app.routes.Route import bp as video_feed_bp, active_cameras
-from app.models.model import Detection, db, Camera_list
+from app.models.model import db, Detection, Camera_list
 from scripts.manage_db import manage_table
 from app.processors.face_detection import FaceDetectionProcessor
 from app.services.camera_manager import Default_cameras
-from flask_cors import CORS 
+from flask_cors import CORS
+import time
+from collections import defaultdict
 
 def create_app():
     app = Flask(__name__, template_folder='app/templates')  # Specify template folder
@@ -43,14 +45,12 @@ with app.app_context():
 
 face_processor = FaceDetectionProcessor(cam_sources, db.session, app)
 
-import time
-from collections import defaultdict
-
 def send_frame():
     FPS = 1 / 10  # 30 FPS
     log_interval = 1
     frame_count = defaultdict(int)
-    last_frame_time = defaultdict(lambda: time.time())    
+    last_frame_time = defaultdict(lambda: time.time())   
+    is_compre = True 
     """function to send frames to the client from all cameras"""
     try:
         with app.app_context():  # Explicitly create an app context
@@ -64,11 +64,13 @@ def send_frame():
                             time_diff = current_time - last_frame_time[cam_name]
                             fps = 1 / time_diff if time_diff > 0 else 0
                             last_frame_time[cam_name] = current_time 
+
+                            exec_time_logger.debug(f"took {time_diff:.4f} seconds with compreface as :{is_compre} for camera {cam_name}")
                         frame_count[cam_name] += 1
                         if frame is not None:
                             if frame_count[cam_name] % log_interval == 0:
                                 cam_stat_logger.debug(f"Processed {frame_count[cam_name]} frames from camera {cam_name} at {fps:.2f} FPS")
-                            if frame_count[cam_name] % 2 == 0:
+                            if frame_count[cam_name] % 1 == 0 and is_compre:
                                 frame = face_processor.process_frame(frame, cam_name)
                             # Encode the frame as JPEG
                             _, buffer = cv2.imencode('.jpg', frame)
