@@ -9,7 +9,7 @@ from config.logger_config import cam_stat_logger , console_logger, exec_time_log
 from config.config import Config
 from app.routes.Route import bp as video_feed_bp, active_cameras
 from app.models.model import db, Detection, Camera_list
-from scripts.manage_db import manage_table
+from scripts.manage_db import manage_table, import_tab
 from app.processors.face_detection import FaceDetectionProcessor
 from app.services.camera_manager import Default_cameras
 from flask_cors import CORS
@@ -41,6 +41,8 @@ db.init_app(app)
 # add default camera
 with app.app_context():
     manage_table(drop = True) # drop all tables
+    db_url = app.config['SQLALCHEMY_DATABASE_URI']
+    import_tab(db_url)
     responce, status = Default_cameras()
 
 face_processor = FaceDetectionProcessor(cam_sources, db.session, app)

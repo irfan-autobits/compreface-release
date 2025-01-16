@@ -35,4 +35,3 @@ class Face_recog_User(db.Model):
 
     def __repr__(self):
         return f"<User {self.email}>"
-    

@@ -93,3 +93,30 @@ test=
     "mask": "facemask.MaskDetector"
   }
 }
+
+// ----------- yunet - detect --------------------------------- //
+
+faces = [
+  {
+    'x1': 243, 
+    'y1': 158, 
+    'x2': 272, 
+    'y2': 180, 
+    'face_num': 0, 
+    'landmarks': {
+        'left_eye': [80, 92], 
+        'right_eye': [85, 93], 
+        'nose': [84, 95], 
+        'right_mouth': [81, 99], 
+        'left_mouth': [85, 98]
+    }, 
+    'confidence': 0.50370175, 
+    'model': 'yunet', 
+    'img_width': 960, 
+    'img_height': 540, 
+    'face_width': 28.799999999999983, 
+    'face_height': 21.599999999999994, 
+    'area': 622.0799999999995, 
+    'pct_of_frame': 0.001199999999999999
+  }
+]

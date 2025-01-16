@@ -15,6 +15,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Define other paths relative to the base directory
 DATABASE_DIR = BASE_DIR / "Reports"
 FACE_DIR = DATABASE_DIR / "saved_face"
+MODELS_DIR = BASE_DIR / ".models"
 DET_LOG_FILE_PATH = DATABASE_DIR / "detection_logs.txt"
 CAM_STAT_LOG_FILE_PATH = DATABASE_DIR / "cam_stat_logs.txt"
 EXEC_TIME_LOG_FILE_PATH = DATABASE_DIR / "exec_time_logs.txt"

@@ -2,7 +2,9 @@ pip install flask-socketio
 pip install flask-cors
 pip install flask-sqlalchemy
 pip install PyJWT
-
+pip install bcrypt
+pip install cached-property
+pip install gdown
 
 *************** sample - env *******************
 # Detection / Recognition threshold
@@ -23,3 +25,10 @@ CAMERA_SOURCES="{
 }"
 
 SECRET_KEY = "extreme_secret"
+
+FACE_DETECTION_PLUGIN = "facenet.FaceDetector"
+CALCULATION_PLUGIN = "facenet.Calculator"
+
+# FACE_DETECTION_PLUGIN=insightface.FaceDetector
+# CALCULATION_PLUGIN=insightface.Calculator
+# GPU_IDX=0

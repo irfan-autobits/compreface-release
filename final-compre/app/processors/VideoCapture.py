@@ -7,12 +7,13 @@ from threading import Thread, Lock
 class VideoStream(object):
     def __init__(self, src=0, width=960, height=540):
         """
-        Initializes the VideoStream instance with FFmpeg as the backend.
+        Initializes the VideoStream instance with FFmpeg or OpenCV as the backend.
 
         Args:
             src (str or int): Video source (e.g., RTSP link or webcam index).
             width (int): Width of the output frames.
             height (int): Height of the output frames.
+            backend (str): Backend for video capture ("ffmpeg" or "opencv").
         """
         self.src = src
         self.width = width
@@ -22,19 +23,27 @@ class VideoStream(object):
         self.read_lock = Lock()
         self.frame = None
         self.pipe = None
+        self.cap = None
 
     def start(self):
         """
-        Starts the FFmpeg subprocess and spawns a thread to read frames.
-
-        Returns:
-            self: The VideoStream instance.
+        Starts the video capture based on the selected backend.
         """
         if self.started:
             print("Stream already started!")
             return None
         self.started = True
-        self._start_ffmpeg()
+        if self.src == "0":
+            self.backend = "opencv"
+            print("opening opencv")
+            self._start_opencv()
+        else:
+            self.backend = "ffmpeg"
+            self._start_ffmpeg()
+        
+        # else:
+            # raise ValueError("Invalid backend. Choose 'ffmpeg' or 'opencv'.")
+
         self.thread = Thread(target=self._update, args=())
         self.thread.daemon = True
         self.thread.start()
@@ -56,22 +65,46 @@ class VideoStream(object):
             "-tune", "zerolatency",              # Optimize for low latency
             "-"                                  # Output to stdout
         ]
-        print(f"ffm-peg started for {self.src}")
+        print(f"FFmpeg started for {self.src}")
         self.pipe = subprocess.Popen(
             command, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, bufsize=10**8
         )
 
+    def _start_opencv(self):
+        """
+        Initializes OpenCV VideoCapture.
+        """
+        self.cap = cv2.VideoCapture(int(self.src))
+        print()
+        if not self.cap.isOpened():
+            raise RuntimeError(f"Failed to open video source {self.src} with OpenCV.")
+        print(f"OpenCV started for device camera {self.src}")
+        self.cap.set(cv2.CAP_PROP_FRAME_WIDTH, self.width)
+        self.cap.set(cv2.CAP_PROP_FRAME_HEIGHT, self.height)
+
     def _update(self):
         """
-        Continuously reads frames from FFmpeg's stdout and updates the frame buffer.
+        Continuously reads frames from the selected backend.
         """
         while self.started:
-            raw_frame = self.pipe.stdout.read(self.frame_size)
-            if len(raw_frame) != self.frame_size:
-                print("Failed to grab frame or end of stream")
-                self.started = False
-                break
-            frame = np.frombuffer(raw_frame, np.uint8).reshape((self.height, self.width, 3))
+            if self.backend == "ffmpeg":
+                raw_frame = self.pipe.stdout.read(self.frame_size)
+                if len(raw_frame) != self.frame_size:
+                    print("Failed to grab frame or end of stream")
+                    self.started = False
+                    break
+                frame = np.frombuffer(raw_frame, np.uint8).reshape((self.height, self.width, 3))
+            elif self.backend == "opencv":
+                print("update thread for opencv")
+                ret, frame = self.cap.read()
+                print("reading frames from opencv")
+                if not ret:
+                    print("Failed to grab frame from OpenCV.")
+                    self.started = False
+                    break
+            else:
+                frame = None
+            
             with self.read_lock:
                 self.frame = frame
 
@@ -83,31 +116,34 @@ class VideoStream(object):
             np.ndarray or None: The latest frame, or None if no frame is available.
         """
         with self.read_lock:
-            if self.frame is not None :
-                return self.frame.copy() 
-            else: 
+            if self.frame is not None:
+                return self.frame.copy()
+            else:
                 return None
 
     def stop(self):
         """
-        Stops the frame-reading thread and cleans up FFmpeg resources.
+        Stops the frame-reading thread and cleans up resources.
         """
         if not self.started:
             return
         self.started = False
         if self.thread.is_alive():
-            self.thread.join()        
-        if self.pipe:
+            self.thread.join()
+        
+        if self.backend == "ffmpeg" and self.pipe:
             try:
-                # Terminate the FFmpeg process
                 self.pipe.terminate()
-                self.pipe.wait(timeout=5)  # Wait for the process to terminate
+                self.pipe.wait(timeout=0.1)
             except subprocess.TimeoutExpired:
                 print("FFmpeg did not terminate, killing the process.")
-                self.pipe.kill()  # Force kill if termination fails
+                self.pipe.kill()
             finally:
                 self.pipe = None
-                print("ffmpeg process closed.")
+                print("FFmpeg process closed.")
+        elif self.backend == "opencv" and self.cap:
+            self.cap.release()
+            print("OpenCV capture closed.")
 
     def __del__(self):
         """

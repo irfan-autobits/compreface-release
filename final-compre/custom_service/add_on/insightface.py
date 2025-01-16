@@ -1,20 +1,26 @@
 import logging
-import cv2
+import ctypes
+from typing import List, Tuple
+import attr
 import numpy as np
-from time import time
-from typing import List
+from cached_property import cached_property
 
-# Replace with your actual implementation of BoundingBoxDTO and plugin_result
 from custom_service.DTOs.bounding_box import BoundingBoxDTO
+from custom_service.DTOs.json_encodable import JSONEncodable
 from custom_service.imgtools.imgscaler import ImgScaler
 from custom_service.add_on import base, mixins
+from custom_service.add_on import helpers as insight_helpers
+from custom_service.DTOs import plugin_result
 from custom_service.imgtools.types import Array3D
-from cached_property import cached_property
 import collections
 
-import ctypes
+
 logger = logging.getLogger(__name__)
 libc = ctypes.CDLL("libc.so.6")
+
+IMG_LENGTH_LIMIT = 640
+GPU_IDX = 0
+SKIP = False
 
 import mxnet as mx
 
@@ -30,8 +36,6 @@ class DetectionOnlyFaceAnalysis(FaceAnalysis):
     def __init__(self, file):
         self.det_model = face_detection.FaceDetector(file, 'net3')
 
-IMG_LENGTH_LIMIT = 640
-GPU_IDX = 0
 
 class InsightFaceMixin:
     _CTX_ID = GPU_IDX
@@ -41,7 +45,77 @@ class InsightFaceMixin:
         if not ml_model.exists():
             raise f'Model {ml_model.name} does not exists'
         return model_store.find_params_file(ml_model.path)
-    
+
+
+class FaceDetector(InsightFaceMixin, mixins.FaceDetectorMixin, base.BasePlugin):
+    ml_models = (
+        ('retinaface_mnet025_v1', '1ggNFFqpe0abWz6V1A82rnxD6fyxB8W2c'),
+        ('retinaface_mnet025_v2', '1EYTMxgcNdlvoL1fSC8N1zkaWrX75ZoNL'),
+        ('retinaface_r50_v1', '1LZ5h9f_YC5EdbIZAqVba9TKHipi90JBj'),
+    )
+    call_counter = 0
+    MAX_CALL_COUNTER = 1000
+    IMG_LENGTH_LIMIT = IMG_LENGTH_LIMIT
+    IMAGE_SIZE = 112
+    det_prob_threshold = 0.8
+
+    @cached_property
+    def _detection_model(self):
+        model_file = self.get_model_file(self.ml_model)
+        model = DetectionOnlyFaceAnalysis(model_file)
+        model.prepare(ctx_id=self._CTX_ID, nms=self._NMS)
+        return model
+
+    def find_faces(self, img: Array3D, det_prob_threshold: float = None) -> List[BoundingBoxDTO]:
+        if det_prob_threshold is None:
+            det_prob_threshold = self.det_prob_threshold
+        assert 0 <= det_prob_threshold <= 1
+        scaler = ImgScaler(self.IMG_LENGTH_LIMIT)
+        img = scaler.downscale_img(img)
+
+        if SKIP:
+            Face = collections.namedtuple('Face', [
+                'bbox', 'landmark', 'det_score', 'embedding', 'gender', 'age', 'embedding_norm', 'normed_embedding'])
+            ret = []
+            bbox = np.ndarray(shape=(4,), buffer=np.array([0, 0, float(img.shape[1]), float(img.shape[0])]), dtype=float)
+            det_score = 1.0
+            landmark = np.ndarray(shape=(5, 2), buffer=np.array([[float(img.shape[1]), 0.], [0., 0.], [0., 0.], [0., 0.], [0., 0.]]),
+                                  dtype=float)
+            face = Face(bbox=bbox, landmark=landmark, det_score=det_score, embedding=None, gender=None, age=None, normed_embedding=None, embedding_norm=None)
+            ret.append(face)
+            results = ret
+            det_prob_threshold = self.det_prob_threshold
+        else:
+            model = self._detection_model
+            results = model.get(img, det_thresh=det_prob_threshold)
+
+        boxes = []
+
+        self.call_counter +=1
+        if self.call_counter % self.MAX_CALL_COUNTER == 0:
+            libc.malloc_trim(0)
+            self.call_counter = 0
+            
+        for result in results:
+            downscaled_box_array = result.bbox.astype(np.int).flatten()
+            downscaled_box = BoundingBoxDTO(x_min=downscaled_box_array[0],
+                                            y_min=downscaled_box_array[1],
+                                            x_max=downscaled_box_array[2],
+                                            y_max=downscaled_box_array[3],
+                                            probability=result.det_score,
+                                            np_landmarks=result.landmark)
+            box = downscaled_box.scaled(scaler.upscale_coefficient)
+            if box.probability <= det_prob_threshold:
+                logger.debug(f'Box Filtered out because below threshold ({det_prob_threshold}: {box})')
+                continue
+            logger.debug(f"Found: {box}")
+            boxes.append(box)
+        return boxes
+
+    def crop_face(self, img: Array3D, box: BoundingBoxDTO) -> Array3D:
+        return face_align.norm_crop(img, landmark=box._np_landmarks,
+                                    image_size=self.IMAGE_SIZE)
+
 
 class Calculator(InsightFaceMixin, mixins.CalculatorMixin, base.BasePlugin):
     ml_models = (
@@ -65,70 +139,3 @@ class Calculator(InsightFaceMixin, mixins.CalculatorMixin, base.BasePlugin):
             self.ml_model.name, True, model_file)
         model.prepare(ctx_id=self._CTX_ID)
         return model
-
-class FaceDetector(InsightFaceMixin, mixins.FaceDetectorMixin, base.BasePlugin):
-    ml_models = (
-        ('retinaface_mnet025_v1', '1ggNFFqpe0abWz6V1A82rnxD6fyxB8W2c'),
-        ('retinaface_mnet025_v2', '1EYTMxgcNdlvoL1fSC8N1zkaWrX75ZoNL'),
-        ('retinaface_r50_v1', '1LZ5h9f_YC5EdbIZAqVba9TKHipi90JBj'),
-    )
-    call_counter = 0
-    MAX_CALL_COUNTER = 1000
-    IMG_LENGTH_LIMIT = IMG_LENGTH_LIMIT
-    IMAGE_SIZE = 112
-    det_prob_threshold = 0.8
-
-    @cached_property
-    def _detection_model(self):
-        model_file = self.get_model_file(self.ml_model)
-        model = DetectionOnlyFaceAnalysis(model_file)
-        model.prepare(ctx_id=self._CTX_ID, nms=self._NMS)
-        return model
-
-    def find_faces(self, img: Array3D, det_prob_threshold: float = None) -> List[BoundingBoxDTO]:
-        assert 0 <= det_prob_threshold <= 1
-        scaler = ImgScaler(self.IMG_LENGTH_LIMIT)
-        img = scaler.downscale_img(img)    
-
-        if skip:
-            Face = collections.namedtuple('Face', [
-                'bbox', 'landmark', 'det_score', 'embedding', 'gender', 'age', 'embedding_norm', 'normed_embedding'])
-            ret = []
-            bbox = np.ndarray(shape=(4,), buffer=np.array([0, 0, float(img.shape[1]), float(img.shape[0])]), dtype=float)
-            det_score = 1.0
-            landmark = np.ndarray(shape=(5, 2), buffer=np.array([[float(img.shape[1]), 0.], [0., 0.], [0., 0.], [0., 0.], [0., 0.]]),
-                                  dtype=float)
-            face = Face(bbox=bbox, landmark=landmark, det_score=det_score, embedding=None, gender=None, age=None, normed_embedding=None, embedding_norm=None)
-            ret.append(face)
-            results = ret
-            det_prob_threshold = self.det_prob_threshold
-        else:
-            model = self._detection_model
-            results = model.get(img, det_thresh=det_prob_threshold)        
-
-        boxes = []
-
-        self.call_counter +=1
-        if self.call_counter % self.MAX_CALL_COUNTER == 0:
-            libc.malloc_trim(0)
-            self.call_counter = 0            
-            
-        for result in results:
-            downscaled_box_array = result.bbox.astype(np.int).flatten()
-            downscaled_box = BoundingBoxDTO(x_min=downscaled_box_array[0],
-                                            y_min=downscaled_box_array[1],
-                                            x_max=downscaled_box_array[2],
-                                            y_max=downscaled_box_array[3],
-                                            probability=result.det_score,
-                                            np_landmarks=result.landmark)
-            box = downscaled_box.scaled(scaler.upscale_coefficient)
-            if box.probability <= det_prob_threshold:
-                logger.debug(f'Box Filtered out because below threshold ({det_prob_threshold}: {box})')
-                continue
-            logger.debug(f"Found: {box}")
-            boxes.append(box)
-        return boxes
-
-    def crop_face(self, img: Array3D, box: BoundingBoxDTO) -> Array3D:
-        return face_align.norm_crop(img, landmark=box._np_landmarks,
-                                    image_size=self.IMAGE_SIZE)            
