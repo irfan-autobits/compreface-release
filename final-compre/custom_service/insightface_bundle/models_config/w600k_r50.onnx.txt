@@ -1,0 +1,373 @@
+graph torch-jit-export (
+  %input.1[FLOAT, Nonex3x112x112]
+) initializers (
+  %layer1.0.bn1.weight[FLOAT, 64]
+  %layer1.0.bn1.bias[FLOAT, 64]
+  %layer1.0.bn1.running_mean[FLOAT, 64]
+  %layer1.0.bn1.running_var[FLOAT, 64]
+  %layer1.1.bn1.weight[FLOAT, 64]
+  %layer1.1.bn1.bias[FLOAT, 64]
+  %layer1.1.bn1.running_mean[FLOAT, 64]
+  %layer1.1.bn1.running_var[FLOAT, 64]
+  %layer1.2.bn1.weight[FLOAT, 64]
+  %layer1.2.bn1.bias[FLOAT, 64]
+  %layer1.2.bn1.running_mean[FLOAT, 64]
+  %layer1.2.bn1.running_var[FLOAT, 64]
+  %layer2.0.bn1.weight[FLOAT, 64]
+  %layer2.0.bn1.bias[FLOAT, 64]
+  %layer2.0.bn1.running_mean[FLOAT, 64]
+  %layer2.0.bn1.running_var[FLOAT, 64]
+  %layer2.1.bn1.weight[FLOAT, 128]
+  %layer2.1.bn1.bias[FLOAT, 128]
+  %layer2.1.bn1.running_mean[FLOAT, 128]
+  %layer2.1.bn1.running_var[FLOAT, 128]
+  %layer2.2.bn1.weight[FLOAT, 128]
+  %layer2.2.bn1.bias[FLOAT, 128]
+  %layer2.2.bn1.running_mean[FLOAT, 128]
+  %layer2.2.bn1.running_var[FLOAT, 128]
+  %layer2.3.bn1.weight[FLOAT, 128]
+  %layer2.3.bn1.bias[FLOAT, 128]
+  %layer2.3.bn1.running_mean[FLOAT, 128]
+  %layer2.3.bn1.running_var[FLOAT, 128]
+  %layer3.0.bn1.weight[FLOAT, 128]
+  %layer3.0.bn1.bias[FLOAT, 128]
+  %layer3.0.bn1.running_mean[FLOAT, 128]
+  %layer3.0.bn1.running_var[FLOAT, 128]
+  %layer3.1.bn1.weight[FLOAT, 256]
+  %layer3.1.bn1.bias[FLOAT, 256]
+  %layer3.1.bn1.running_mean[FLOAT, 256]
+  %layer3.1.bn1.running_var[FLOAT, 256]
+  %layer3.2.bn1.weight[FLOAT, 256]
+  %layer3.2.bn1.bias[FLOAT, 256]
+  %layer3.2.bn1.running_mean[FLOAT, 256]
+  %layer3.2.bn1.running_var[FLOAT, 256]
+  %layer3.3.bn1.weight[FLOAT, 256]
+  %layer3.3.bn1.bias[FLOAT, 256]
+  %layer3.3.bn1.running_mean[FLOAT, 256]
+  %layer3.3.bn1.running_var[FLOAT, 256]
+  %layer3.4.bn1.weight[FLOAT, 256]
+  %layer3.4.bn1.bias[FLOAT, 256]
+  %layer3.4.bn1.running_mean[FLOAT, 256]
+  %layer3.4.bn1.running_var[FLOAT, 256]
+  %layer3.5.bn1.weight[FLOAT, 256]
+  %layer3.5.bn1.bias[FLOAT, 256]
+  %layer3.5.bn1.running_mean[FLOAT, 256]
+  %layer3.5.bn1.running_var[FLOAT, 256]
+  %layer3.6.bn1.weight[FLOAT, 256]
+  %layer3.6.bn1.bias[FLOAT, 256]
+  %layer3.6.bn1.running_mean[FLOAT, 256]
+  %layer3.6.bn1.running_var[FLOAT, 256]
+  %layer3.7.bn1.weight[FLOAT, 256]
+  %layer3.7.bn1.bias[FLOAT, 256]
+  %layer3.7.bn1.running_mean[FLOAT, 256]
+  %layer3.7.bn1.running_var[FLOAT, 256]
+  %layer3.8.bn1.weight[FLOAT, 256]
+  %layer3.8.bn1.bias[FLOAT, 256]
+  %layer3.8.bn1.running_mean[FLOAT, 256]
+  %layer3.8.bn1.running_var[FLOAT, 256]
+  %layer3.9.bn1.weight[FLOAT, 256]
+  %layer3.9.bn1.bias[FLOAT, 256]
+  %layer3.9.bn1.running_mean[FLOAT, 256]
+  %layer3.9.bn1.running_var[FLOAT, 256]
+  %layer3.10.bn1.weight[FLOAT, 256]
+  %layer3.10.bn1.bias[FLOAT, 256]
+  %layer3.10.bn1.running_mean[FLOAT, 256]
+  %layer3.10.bn1.running_var[FLOAT, 256]
+  %layer3.11.bn1.weight[FLOAT, 256]
+  %layer3.11.bn1.bias[FLOAT, 256]
+  %layer3.11.bn1.running_mean[FLOAT, 256]
+  %layer3.11.bn1.running_var[FLOAT, 256]
+  %layer3.12.bn1.weight[FLOAT, 256]
+  %layer3.12.bn1.bias[FLOAT, 256]
+  %layer3.12.bn1.running_mean[FLOAT, 256]
+  %layer3.12.bn1.running_var[FLOAT, 256]
+  %layer3.13.bn1.weight[FLOAT, 256]
+  %layer3.13.bn1.bias[FLOAT, 256]
+  %layer3.13.bn1.running_mean[FLOAT, 256]
+  %layer3.13.bn1.running_var[FLOAT, 256]
+  %layer4.0.bn1.weight[FLOAT, 256]
+  %layer4.0.bn1.bias[FLOAT, 256]
+  %layer4.0.bn1.running_mean[FLOAT, 256]
+  %layer4.0.bn1.running_var[FLOAT, 256]
+  %layer4.1.bn1.weight[FLOAT, 512]
+  %layer4.1.bn1.bias[FLOAT, 512]
+  %layer4.1.bn1.running_mean[FLOAT, 512]
+  %layer4.1.bn1.running_var[FLOAT, 512]
+  %layer4.2.bn1.weight[FLOAT, 512]
+  %layer4.2.bn1.bias[FLOAT, 512]
+  %layer4.2.bn1.running_mean[FLOAT, 512]
+  %layer4.2.bn1.running_var[FLOAT, 512]
+  %bn2.weight[FLOAT, 512]
+  %bn2.bias[FLOAT, 512]
+  %bn2.running_mean[FLOAT, 512]
+  %bn2.running_var[FLOAT, 512]
+  %fc.weight[FLOAT, 512x25088]
+  %fc.bias[FLOAT, 512]
+  %features.weight[FLOAT, 512]
+  %features.bias[FLOAT, 512]
+  %features.running_mean[FLOAT, 512]
+  %features.running_var[FLOAT, 512]
+  %685[FLOAT, 64x3x3x3]
+  %686[FLOAT, 64]
+  %688[FLOAT, 64x64x3x3]
+  %689[FLOAT, 64]
+  %691[FLOAT, 64x64x3x3]
+  %692[FLOAT, 64]
+  %694[FLOAT, 64x64x1x1]
+  %695[FLOAT, 64]
+  %697[FLOAT, 64x64x3x3]
+  %698[FLOAT, 64]
+  %700[FLOAT, 64x64x3x3]
+  %701[FLOAT, 64]
+  %703[FLOAT, 64x64x3x3]
+  %704[FLOAT, 64]
+  %706[FLOAT, 64x64x3x3]
+  %707[FLOAT, 64]
+  %709[FLOAT, 128x64x3x3]
+  %710[FLOAT, 128]
+  %712[FLOAT, 128x128x3x3]
+  %713[FLOAT, 128]
+  %715[FLOAT, 128x64x1x1]
+  %716[FLOAT, 128]
+  %718[FLOAT, 128x128x3x3]
+  %719[FLOAT, 128]
+  %721[FLOAT, 128x128x3x3]
+  %722[FLOAT, 128]
+  %724[FLOAT, 128x128x3x3]
+  %725[FLOAT, 128]
+  %727[FLOAT, 128x128x3x3]
+  %728[FLOAT, 128]
+  %730[FLOAT, 128x128x3x3]
+  %731[FLOAT, 128]
+  %733[FLOAT, 128x128x3x3]
+  %734[FLOAT, 128]
+  %736[FLOAT, 256x128x3x3]
+  %737[FLOAT, 256]
+  %739[FLOAT, 256x256x3x3]
+  %740[FLOAT, 256]
+  %742[FLOAT, 256x128x1x1]
+  %743[FLOAT, 256]
+  %745[FLOAT, 256x256x3x3]
+  %746[FLOAT, 256]
+  %748[FLOAT, 256x256x3x3]
+  %749[FLOAT, 256]
+  %751[FLOAT, 256x256x3x3]
+  %752[FLOAT, 256]
+  %754[FLOAT, 256x256x3x3]
+  %755[FLOAT, 256]
+  %757[FLOAT, 256x256x3x3]
+  %758[FLOAT, 256]
+  %760[FLOAT, 256x256x3x3]
+  %761[FLOAT, 256]
+  %763[FLOAT, 256x256x3x3]
+  %764[FLOAT, 256]
+  %766[FLOAT, 256x256x3x3]
+  %767[FLOAT, 256]
+  %769[FLOAT, 256x256x3x3]
+  %770[FLOAT, 256]
+  %772[FLOAT, 256x256x3x3]
+  %773[FLOAT, 256]
+  %775[FLOAT, 256x256x3x3]
+  %776[FLOAT, 256]
+  %778[FLOAT, 256x256x3x3]
+  %779[FLOAT, 256]
+  %781[FLOAT, 256x256x3x3]
+  %782[FLOAT, 256]
+  %784[FLOAT, 256x256x3x3]
+  %785[FLOAT, 256]
+  %787[FLOAT, 256x256x3x3]
+  %788[FLOAT, 256]
+  %790[FLOAT, 256x256x3x3]
+  %791[FLOAT, 256]
+  %793[FLOAT, 256x256x3x3]
+  %794[FLOAT, 256]
+  %796[FLOAT, 256x256x3x3]
+  %797[FLOAT, 256]
+  %799[FLOAT, 256x256x3x3]
+  %800[FLOAT, 256]
+  %802[FLOAT, 256x256x3x3]
+  %803[FLOAT, 256]
+  %805[FLOAT, 256x256x3x3]
+  %806[FLOAT, 256]
+  %808[FLOAT, 256x256x3x3]
+  %809[FLOAT, 256]
+  %811[FLOAT, 256x256x3x3]
+  %812[FLOAT, 256]
+  %814[FLOAT, 256x256x3x3]
+  %815[FLOAT, 256]
+  %817[FLOAT, 256x256x3x3]
+  %818[FLOAT, 256]
+  %820[FLOAT, 256x256x3x3]
+  %821[FLOAT, 256]
+  %823[FLOAT, 512x256x3x3]
+  %824[FLOAT, 512]
+  %826[FLOAT, 512x512x3x3]
+  %827[FLOAT, 512]
+  %829[FLOAT, 512x256x1x1]
+  %830[FLOAT, 512]
+  %832[FLOAT, 512x512x3x3]
+  %833[FLOAT, 512]
+  %835[FLOAT, 512x512x3x3]
+  %836[FLOAT, 512]
+  %838[FLOAT, 512x512x3x3]
+  %839[FLOAT, 512]
+  %841[FLOAT, 512x512x3x3]
+  %842[FLOAT, 512]
+  %843[FLOAT, 64x1x1]
+  %844[FLOAT, 64x1x1]
+  %845[FLOAT, 64x1x1]
+  %846[FLOAT, 64x1x1]
+  %847[FLOAT, 128x1x1]
+  %848[FLOAT, 128x1x1]
+  %849[FLOAT, 128x1x1]
+  %850[FLOAT, 128x1x1]
+  %851[FLOAT, 256x1x1]
+  %852[FLOAT, 256x1x1]
+  %853[FLOAT, 256x1x1]
+  %854[FLOAT, 256x1x1]
+  %855[FLOAT, 256x1x1]
+  %856[FLOAT, 256x1x1]
+  %857[FLOAT, 256x1x1]
+  %858[FLOAT, 256x1x1]
+  %859[FLOAT, 256x1x1]
+  %860[FLOAT, 256x1x1]
+  %861[FLOAT, 256x1x1]
+  %862[FLOAT, 256x1x1]
+  %863[FLOAT, 256x1x1]
+  %864[FLOAT, 256x1x1]
+  %865[FLOAT, 512x1x1]
+  %866[FLOAT, 512x1x1]
+  %867[FLOAT, 512x1x1]
+) {
+  %684 = Conv[dilations = [1, 1], group = 1, kernel_shape = [3, 3], pads = [1, 1, 1, 1], strides = [1, 1]](%input.1, %685, %686)
+  %479 = PRelu(%684, %843)
+  %480 = BatchNormalization[epsilon = 9.99999974737875e-06, momentum = 0.899999976158142](%479, %layer1.0.bn1.weight, %layer1.0.bn1.bias, %layer1.0.bn1.running_mean, %layer1.0.bn1.running_var)
+  %687 = Conv[dilations = [1, 1], group = 1, kernel_shape = [3, 3], pads = [1, 1, 1, 1], strides = [1, 1]](%480, %688, %689)
+  %484 = PRelu(%687, %844)
+  %690 = Conv[dilations = [1, 1], group = 1, kernel_shape = [3, 3], pads = [1, 1, 1, 1], strides = [2, 2]](%484, %691, %692)
+  %693 = Conv[dilations = [1, 1], group = 1, kernel_shape = [1, 1], pads = [0, 0, 0, 0], strides = [2, 2]](%479, %694, %695)
+  %489 = Add(%690, %693)
+  %490 = BatchNormalization[epsilon = 9.99999974737875e-06, momentum = 0.899999976158142](%489, %layer1.1.bn1.weight, %layer1.1.bn1.bias, %layer1.1.bn1.running_mean, %layer1.1.bn1.running_var)
+  %696 = Conv[dilations = [1, 1], group = 1, kernel_shape = [3, 3], pads = [1, 1, 1, 1], strides = [1, 1]](%490, %697, %698)
+  %494 = PRelu(%696, %845)
+  %699 = Conv[dilations = [1, 1], group = 1, kernel_shape = [3, 3], pads = [1, 1, 1, 1], strides = [1, 1]](%494, %700, %701)
+  %497 = Add(%699, %489)
+  %498 = BatchNormalization[epsilon = 9.99999974737875e-06, momentum = 0.899999976158142](%497, %layer1.2.bn1.weight, %layer1.2.bn1.bias, %layer1.2.bn1.running_mean, %layer1.2.bn1.running_var)
+  %702 = Conv[dilations = [1, 1], group = 1, kernel_shape = [3, 3], pads = [1, 1, 1, 1], strides = [1, 1]](%498, %703, %704)
+  %502 = PRelu(%702, %846)
+  %705 = Conv[dilations = [1, 1], group = 1, kernel_shape = [3, 3], pads = [1, 1, 1, 1], strides = [1, 1]](%502, %706, %707)
+  %505 = Add(%705, %497)
+  %506 = BatchNormalization[epsilon = 9.99999974737875e-06, momentum = 0.899999976158142](%505, %layer2.0.bn1.weight, %layer2.0.bn1.bias, %layer2.0.bn1.running_mean, %layer2.0.bn1.running_var)
+  %708 = Conv[dilations = [1, 1], group = 1, kernel_shape = [3, 3], pads = [1, 1, 1, 1], strides = [1, 1]](%506, %709, %710)
+  %510 = PRelu(%708, %847)
+  %711 = Conv[dilations = [1, 1], group = 1, kernel_shape = [3, 3], pads = [1, 1, 1, 1], strides = [2, 2]](%510, %712, %713)
+  %714 = Conv[dilations = [1, 1], group = 1, kernel_shape = [1, 1], pads = [0, 0, 0, 0], strides = [2, 2]](%505, %715, %716)
+  %515 = Add(%711, %714)
+  %516 = BatchNormalization[epsilon = 9.99999974737875e-06, momentum = 0.899999976158142](%515, %layer2.1.bn1.weight, %layer2.1.bn1.bias, %layer2.1.bn1.running_mean, %layer2.1.bn1.running_var)
+  %717 = Conv[dilations = [1, 1], group = 1, kernel_shape = [3, 3], pads = [1, 1, 1, 1], strides = [1, 1]](%516, %718, %719)
+  %520 = PRelu(%717, %848)
+  %720 = Conv[dilations = [1, 1], group = 1, kernel_shape = [3, 3], pads = [1, 1, 1, 1], strides = [1, 1]](%520, %721, %722)
+  %523 = Add(%720, %515)
+  %524 = BatchNormalization[epsilon = 9.99999974737875e-06, momentum = 0.899999976158142](%523, %layer2.2.bn1.weight, %layer2.2.bn1.bias, %layer2.2.bn1.running_mean, %layer2.2.bn1.running_var)
+  %723 = Conv[dilations = [1, 1], group = 1, kernel_shape = [3, 3], pads = [1, 1, 1, 1], strides = [1, 1]](%524, %724, %725)
+  %528 = PRelu(%723, %849)
+  %726 = Conv[dilations = [1, 1], group = 1, kernel_shape = [3, 3], pads = [1, 1, 1, 1], strides = [1, 1]](%528, %727, %728)
+  %531 = Add(%726, %523)
+  %532 = BatchNormalization[epsilon = 9.99999974737875e-06, momentum = 0.899999976158142](%531, %layer2.3.bn1.weight, %layer2.3.bn1.bias, %layer2.3.bn1.running_mean, %layer2.3.bn1.running_var)
+  %729 = Conv[dilations = [1, 1], group = 1, kernel_shape = [3, 3], pads = [1, 1, 1, 1], strides = [1, 1]](%532, %730, %731)
+  %536 = PRelu(%729, %850)
+  %732 = Conv[dilations = [1, 1], group = 1, kernel_shape = [3, 3], pads = [1, 1, 1, 1], strides = [1, 1]](%536, %733, %734)
+  %539 = Add(%732, %531)
+  %540 = BatchNormalization[epsilon = 9.99999974737875e-06, momentum = 0.899999976158142](%539, %layer3.0.bn1.weight, %layer3.0.bn1.bias, %layer3.0.bn1.running_mean, %layer3.0.bn1.running_var)
+  %735 = Conv[dilations = [1, 1], group = 1, kernel_shape = [3, 3], pads = [1, 1, 1, 1], strides = [1, 1]](%540, %736, %737)
+  %544 = PRelu(%735, %851)
+  %738 = Conv[dilations = [1, 1], group = 1, kernel_shape = [3, 3], pads = [1, 1, 1, 1], strides = [2, 2]](%544, %739, %740)
+  %741 = Conv[dilations = [1, 1], group = 1, kernel_shape = [1, 1], pads = [0, 0, 0, 0], strides = [2, 2]](%539, %742, %743)
+  %549 = Add(%738, %741)
+  %550 = BatchNormalization[epsilon = 9.99999974737875e-06, momentum = 0.899999976158142](%549, %layer3.1.bn1.weight, %layer3.1.bn1.bias, %layer3.1.bn1.running_mean, %layer3.1.bn1.running_var)
+  %744 = Conv[dilations = [1, 1], group = 1, kernel_shape = [3, 3], pads = [1, 1, 1, 1], strides = [1, 1]](%550, %745, %746)
+  %554 = PRelu(%744, %852)
+  %747 = Conv[dilations = [1, 1], group = 1, kernel_shape = [3, 3], pads = [1, 1, 1, 1], strides = [1, 1]](%554, %748, %749)
+  %557 = Add(%747, %549)
+  %558 = BatchNormalization[epsilon = 9.99999974737875e-06, momentum = 0.899999976158142](%557, %layer3.2.bn1.weight, %layer3.2.bn1.bias, %layer3.2.bn1.running_mean, %layer3.2.bn1.running_var)
+  %750 = Conv[dilations = [1, 1], group = 1, kernel_shape = [3, 3], pads = [1, 1, 1, 1], strides = [1, 1]](%558, %751, %752)
+  %562 = PRelu(%750, %853)
+  %753 = Conv[dilations = [1, 1], group = 1, kernel_shape = [3, 3], pads = [1, 1, 1, 1], strides = [1, 1]](%562, %754, %755)
+  %565 = Add(%753, %557)
+  %566 = BatchNormalization[epsilon = 9.99999974737875e-06, momentum = 0.899999976158142](%565, %layer3.3.bn1.weight, %layer3.3.bn1.bias, %layer3.3.bn1.running_mean, %layer3.3.bn1.running_var)
+  %756 = Conv[dilations = [1, 1], group = 1, kernel_shape = [3, 3], pads = [1, 1, 1, 1], strides = [1, 1]](%566, %757, %758)
+  %570 = PRelu(%756, %854)
+  %759 = Conv[dilations = [1, 1], group = 1, kernel_shape = [3, 3], pads = [1, 1, 1, 1], strides = [1, 1]](%570, %760, %761)
+  %573 = Add(%759, %565)
+  %574 = BatchNormalization[epsilon = 9.99999974737875e-06, momentum = 0.899999976158142](%573, %layer3.4.bn1.weight, %layer3.4.bn1.bias, %layer3.4.bn1.running_mean, %layer3.4.bn1.running_var)
+  %762 = Conv[dilations = [1, 1], group = 1, kernel_shape = [3, 3], pads = [1, 1, 1, 1], strides = [1, 1]](%574, %763, %764)
+  %578 = PRelu(%762, %855)
+  %765 = Conv[dilations = [1, 1], group = 1, kernel_shape = [3, 3], pads = [1, 1, 1, 1], strides = [1, 1]](%578, %766, %767)
+  %581 = Add(%765, %573)
+  %582 = BatchNormalization[epsilon = 9.99999974737875e-06, momentum = 0.899999976158142](%581, %layer3.5.bn1.weight, %layer3.5.bn1.bias, %layer3.5.bn1.running_mean, %layer3.5.bn1.running_var)
+  %768 = Conv[dilations = [1, 1], group = 1, kernel_shape = [3, 3], pads = [1, 1, 1, 1], strides = [1, 1]](%582, %769, %770)
+  %586 = PRelu(%768, %856)
+  %771 = Conv[dilations = [1, 1], group = 1, kernel_shape = [3, 3], pads = [1, 1, 1, 1], strides = [1, 1]](%586, %772, %773)
+  %589 = Add(%771, %581)
+  %590 = BatchNormalization[epsilon = 9.99999974737875e-06, momentum = 0.899999976158142](%589, %layer3.6.bn1.weight, %layer3.6.bn1.bias, %layer3.6.bn1.running_mean, %layer3.6.bn1.running_var)
+  %774 = Conv[dilations = [1, 1], group = 1, kernel_shape = [3, 3], pads = [1, 1, 1, 1], strides = [1, 1]](%590, %775, %776)
+  %594 = PRelu(%774, %857)
+  %777 = Conv[dilations = [1, 1], group = 1, kernel_shape = [3, 3], pads = [1, 1, 1, 1], strides = [1, 1]](%594, %778, %779)
+  %597 = Add(%777, %589)
+  %598 = BatchNormalization[epsilon = 9.99999974737875e-06, momentum = 0.899999976158142](%597, %layer3.7.bn1.weight, %layer3.7.bn1.bias, %layer3.7.bn1.running_mean, %layer3.7.bn1.running_var)
+  %780 = Conv[dilations = [1, 1], group = 1, kernel_shape = [3, 3], pads = [1, 1, 1, 1], strides = [1, 1]](%598, %781, %782)
+  %602 = PRelu(%780, %858)
+  %783 = Conv[dilations = [1, 1], group = 1, kernel_shape = [3, 3], pads = [1, 1, 1, 1], strides = [1, 1]](%602, %784, %785)
+  %605 = Add(%783, %597)
+  %606 = BatchNormalization[epsilon = 9.99999974737875e-06, momentum = 0.899999976158142](%605, %layer3.8.bn1.weight, %layer3.8.bn1.bias, %layer3.8.bn1.running_mean, %layer3.8.bn1.running_var)
+  %786 = Conv[dilations = [1, 1], group = 1, kernel_shape = [3, 3], pads = [1, 1, 1, 1], strides = [1, 1]](%606, %787, %788)
+  %610 = PRelu(%786, %859)
+  %789 = Conv[dilations = [1, 1], group = 1, kernel_shape = [3, 3], pads = [1, 1, 1, 1], strides = [1, 1]](%610, %790, %791)
+  %613 = Add(%789, %605)
+  %614 = BatchNormalization[epsilon = 9.99999974737875e-06, momentum = 0.899999976158142](%613, %layer3.9.bn1.weight, %layer3.9.bn1.bias, %layer3.9.bn1.running_mean, %layer3.9.bn1.running_var)
+  %792 = Conv[dilations = [1, 1], group = 1, kernel_shape = [3, 3], pads = [1, 1, 1, 1], strides = [1, 1]](%614, %793, %794)
+  %618 = PRelu(%792, %860)
+  %795 = Conv[dilations = [1, 1], group = 1, kernel_shape = [3, 3], pads = [1, 1, 1, 1], strides = [1, 1]](%618, %796, %797)
+  %621 = Add(%795, %613)
+  %622 = BatchNormalization[epsilon = 9.99999974737875e-06, momentum = 0.899999976158142](%621, %layer3.10.bn1.weight, %layer3.10.bn1.bias, %layer3.10.bn1.running_mean, %layer3.10.bn1.running_var)
+  %798 = Conv[dilations = [1, 1], group = 1, kernel_shape = [3, 3], pads = [1, 1, 1, 1], strides = [1, 1]](%622, %799, %800)
+  %626 = PRelu(%798, %861)
+  %801 = Conv[dilations = [1, 1], group = 1, kernel_shape = [3, 3], pads = [1, 1, 1, 1], strides = [1, 1]](%626, %802, %803)
+  %629 = Add(%801, %621)
+  %630 = BatchNormalization[epsilon = 9.99999974737875e-06, momentum = 0.899999976158142](%629, %layer3.11.bn1.weight, %layer3.11.bn1.bias, %layer3.11.bn1.running_mean, %layer3.11.bn1.running_var)
+  %804 = Conv[dilations = [1, 1], group = 1, kernel_shape = [3, 3], pads = [1, 1, 1, 1], strides = [1, 1]](%630, %805, %806)
+  %634 = PRelu(%804, %862)
+  %807 = Conv[dilations = [1, 1], group = 1, kernel_shape = [3, 3], pads = [1, 1, 1, 1], strides = [1, 1]](%634, %808, %809)
+  %637 = Add(%807, %629)
+  %638 = BatchNormalization[epsilon = 9.99999974737875e-06, momentum = 0.899999976158142](%637, %layer3.12.bn1.weight, %layer3.12.bn1.bias, %layer3.12.bn1.running_mean, %layer3.12.bn1.running_var)
+  %810 = Conv[dilations = [1, 1], group = 1, kernel_shape = [3, 3], pads = [1, 1, 1, 1], strides = [1, 1]](%638, %811, %812)
+  %642 = PRelu(%810, %863)
+  %813 = Conv[dilations = [1, 1], group = 1, kernel_shape = [3, 3], pads = [1, 1, 1, 1], strides = [1, 1]](%642, %814, %815)
+  %645 = Add(%813, %637)
+  %646 = BatchNormalization[epsilon = 9.99999974737875e-06, momentum = 0.899999976158142](%645, %layer3.13.bn1.weight, %layer3.13.bn1.bias, %layer3.13.bn1.running_mean, %layer3.13.bn1.running_var)
+  %816 = Conv[dilations = [1, 1], group = 1, kernel_shape = [3, 3], pads = [1, 1, 1, 1], strides = [1, 1]](%646, %817, %818)
+  %650 = PRelu(%816, %864)
+  %819 = Conv[dilations = [1, 1], group = 1, kernel_shape = [3, 3], pads = [1, 1, 1, 1], strides = [1, 1]](%650, %820, %821)
+  %653 = Add(%819, %645)
+  %654 = BatchNormalization[epsilon = 9.99999974737875e-06, momentum = 0.899999976158142](%653, %layer4.0.bn1.weight, %layer4.0.bn1.bias, %layer4.0.bn1.running_mean, %layer4.0.bn1.running_var)
+  %822 = Conv[dilations = [1, 1], group = 1, kernel_shape = [3, 3], pads = [1, 1, 1, 1], strides = [1, 1]](%654, %823, %824)
+  %658 = PRelu(%822, %865)
+  %825 = Conv[dilations = [1, 1], group = 1, kernel_shape = [3, 3], pads = [1, 1, 1, 1], strides = [2, 2]](%658, %826, %827)
+  %828 = Conv[dilations = [1, 1], group = 1, kernel_shape = [1, 1], pads = [0, 0, 0, 0], strides = [2, 2]](%653, %829, %830)
+  %663 = Add(%825, %828)
+  %664 = BatchNormalization[epsilon = 9.99999974737875e-06, momentum = 0.899999976158142](%663, %layer4.1.bn1.weight, %layer4.1.bn1.bias, %layer4.1.bn1.running_mean, %layer4.1.bn1.running_var)
+  %831 = Conv[dilations = [1, 1], group = 1, kernel_shape = [3, 3], pads = [1, 1, 1, 1], strides = [1, 1]](%664, %832, %833)
+  %668 = PRelu(%831, %866)
+  %834 = Conv[dilations = [1, 1], group = 1, kernel_shape = [3, 3], pads = [1, 1, 1, 1], strides = [1, 1]](%668, %835, %836)
+  %671 = Add(%834, %663)
+  %672 = BatchNormalization[epsilon = 9.99999974737875e-06, momentum = 0.899999976158142](%671, %layer4.2.bn1.weight, %layer4.2.bn1.bias, %layer4.2.bn1.running_mean, %layer4.2.bn1.running_var)
+  %837 = Conv[dilations = [1, 1], group = 1, kernel_shape = [3, 3], pads = [1, 1, 1, 1], strides = [1, 1]](%672, %838, %839)
+  %676 = PRelu(%837, %867)
+  %840 = Conv[dilations = [1, 1], group = 1, kernel_shape = [3, 3], pads = [1, 1, 1, 1], strides = [1, 1]](%676, %841, %842)
+  %679 = Add(%840, %671)
+  %680 = BatchNormalization[epsilon = 9.99999974737875e-06, momentum = 0.899999976158142](%679, %bn2.weight, %bn2.bias, %bn2.running_mean, %bn2.running_var)
+  %681 = Flatten[axis = 1](%680)
+  %682 = Gemm[alpha = 1, beta = 1, transB = 1](%681, %fc.weight, %fc.bias)
+  %683 = BatchNormalization[epsilon = 9.99999974737875e-06, momentum = 0.899999976158142](%682, %features.weight, %features.bias, %features.running_mean, %features.running_var)
+  return %683
+}

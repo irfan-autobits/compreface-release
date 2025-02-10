@@ -16,6 +16,7 @@ def manage_table(purge=False, drop=False, spec=False):
             Camera_list.__table__.drop(db.engine)
             # db.session.commit()
             Face_recog_User.__table__.drop(db.engine)
+            # Detection.__table__.drop(db.engine)
             db.session.commit()
             db.create_all()
             print("Dropped everything apart from Detection.")

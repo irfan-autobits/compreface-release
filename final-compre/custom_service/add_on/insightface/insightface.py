@@ -9,7 +9,7 @@ from custom_service.DTOs.bounding_box import BoundingBoxDTO
 from custom_service.DTOs.json_encodable import JSONEncodable
 from custom_service.imgtools.imgscaler import ImgScaler
 from custom_service.add_on import base, mixins
-from custom_service.add_on import helpers as insight_helpers
+from custom_service.add_on.insightface import helpers as insight_helpers
 from custom_service.DTOs import plugin_result
 from custom_service.imgtools.types import Array3D
 import collections

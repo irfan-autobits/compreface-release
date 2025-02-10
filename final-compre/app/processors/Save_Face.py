@@ -14,6 +14,10 @@ def save_image(frame, cam_id, box, subject, similarity, is_unknown):
     timestamp = datetime.now().strftime('%y%m%d-%H:%M:%S-%f')[:-4]
     with lock:
         face_image = frame[box['y_min']:box['y_max'], box['x_min']:box['x_max']]
+
+    if face_image is None or face_image.size == 0:
+        print("Error: face_image is empty!")
+        return "None_img"
     face_image_name = f"{similarity}_{subject}_{cam_id}_{timestamp}_.jpg"
 
     # Create a directory for the subject if it doesn't exist

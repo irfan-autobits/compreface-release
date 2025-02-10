@@ -1,0 +1,14 @@
+flask-socketio
+flask-cors
+flask-sqlalchemy
+python-dotenv
+PyJWT
+pytz
+attrs
+scikit-image
+opencv-python
+bcrypt
+cached-property
+gdown
+psycopg2-binary
+mxnet-cu117  # MXNet with CUDA 11.8 support

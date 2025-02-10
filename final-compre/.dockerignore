@@ -1,0 +1,24 @@
+# Ignore common unnecessary files
+__pycache__/
+*.pyc
+*.pyo
+*.log
+
+# Ignore virtual environments
+venv/
+.env
+*.env
+*.sh
+*.bat
+
+# Ignore git and local files
+.git/
+.gitignore
+.DS_Store
+.vscode/
+.idea/
+
+# Ignore large files or model artifacts (if downloaded separately)
+Reports/
+embedding_req/
+**/tmp/

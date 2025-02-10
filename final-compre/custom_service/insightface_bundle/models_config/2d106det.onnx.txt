@@ -1,0 +1,267 @@
+graph mxnet_converted_model (
+  %data[FLOAT, Nonex3x192x192]
+) initializers (
+  %scalar_op1[FLOAT, 1]
+  %scalar_op2[FLOAT, 1]
+  %conv_1_conv2d_weight[FLOAT, 16x3x3x3]
+  %conv_1_batchnorm_gamma[FLOAT, 16]
+  %conv_1_batchnorm_beta[FLOAT, 16]
+  %conv_1_batchnorm_moving_mean[FLOAT, 16]
+  %conv_1_batchnorm_moving_var[FLOAT, 16]
+  %conv_2_dw_conv2d_weight[FLOAT, 16x1x3x3]
+  %conv_2_dw_batchnorm_gamma[FLOAT, 16]
+  %conv_2_dw_batchnorm_beta[FLOAT, 16]
+  %conv_2_dw_batchnorm_moving_mean[FLOAT, 16]
+  %conv_2_dw_batchnorm_moving_var[FLOAT, 16]
+  %conv_2_conv2d_weight[FLOAT, 32x16x1x1]
+  %conv_2_batchnorm_gamma[FLOAT, 32]
+  %conv_2_batchnorm_beta[FLOAT, 32]
+  %conv_2_batchnorm_moving_mean[FLOAT, 32]
+  %conv_2_batchnorm_moving_var[FLOAT, 32]
+  %conv_3_dw_conv2d_weight[FLOAT, 32x1x3x3]
+  %conv_3_dw_batchnorm_gamma[FLOAT, 32]
+  %conv_3_dw_batchnorm_beta[FLOAT, 32]
+  %conv_3_dw_batchnorm_moving_mean[FLOAT, 32]
+  %conv_3_dw_batchnorm_moving_var[FLOAT, 32]
+  %conv_3_conv2d_weight[FLOAT, 64x32x1x1]
+  %conv_3_batchnorm_gamma[FLOAT, 64]
+  %conv_3_batchnorm_beta[FLOAT, 64]
+  %conv_3_batchnorm_moving_mean[FLOAT, 64]
+  %conv_3_batchnorm_moving_var[FLOAT, 64]
+  %conv_4_dw_conv2d_weight[FLOAT, 64x1x3x3]
+  %conv_4_dw_batchnorm_gamma[FLOAT, 64]
+  %conv_4_dw_batchnorm_beta[FLOAT, 64]
+  %conv_4_dw_batchnorm_moving_mean[FLOAT, 64]
+  %conv_4_dw_batchnorm_moving_var[FLOAT, 64]
+  %conv_4_conv2d_weight[FLOAT, 64x64x1x1]
+  %conv_4_batchnorm_gamma[FLOAT, 64]
+  %conv_4_batchnorm_beta[FLOAT, 64]
+  %conv_4_batchnorm_moving_mean[FLOAT, 64]
+  %conv_4_batchnorm_moving_var[FLOAT, 64]
+  %conv_5_dw_conv2d_weight[FLOAT, 64x1x3x3]
+  %conv_5_dw_batchnorm_gamma[FLOAT, 64]
+  %conv_5_dw_batchnorm_beta[FLOAT, 64]
+  %conv_5_dw_batchnorm_moving_mean[FLOAT, 64]
+  %conv_5_dw_batchnorm_moving_var[FLOAT, 64]
+  %conv_5_conv2d_weight[FLOAT, 128x64x1x1]
+  %conv_5_batchnorm_gamma[FLOAT, 128]
+  %conv_5_batchnorm_beta[FLOAT, 128]
+  %conv_5_batchnorm_moving_mean[FLOAT, 128]
+  %conv_5_batchnorm_moving_var[FLOAT, 128]
+  %conv_6_dw_conv2d_weight[FLOAT, 128x1x3x3]
+  %conv_6_dw_batchnorm_gamma[FLOAT, 128]
+  %conv_6_dw_batchnorm_beta[FLOAT, 128]
+  %conv_6_dw_batchnorm_moving_mean[FLOAT, 128]
+  %conv_6_dw_batchnorm_moving_var[FLOAT, 128]
+  %conv_6_conv2d_weight[FLOAT, 128x128x1x1]
+  %conv_6_batchnorm_gamma[FLOAT, 128]
+  %conv_6_batchnorm_beta[FLOAT, 128]
+  %conv_6_batchnorm_moving_mean[FLOAT, 128]
+  %conv_6_batchnorm_moving_var[FLOAT, 128]
+  %conv_7_dw_conv2d_weight[FLOAT, 128x1x3x3]
+  %conv_7_dw_batchnorm_gamma[FLOAT, 128]
+  %conv_7_dw_batchnorm_beta[FLOAT, 128]
+  %conv_7_dw_batchnorm_moving_mean[FLOAT, 128]
+  %conv_7_dw_batchnorm_moving_var[FLOAT, 128]
+  %conv_7_conv2d_weight[FLOAT, 256x128x1x1]
+  %conv_7_batchnorm_gamma[FLOAT, 256]
+  %conv_7_batchnorm_beta[FLOAT, 256]
+  %conv_7_batchnorm_moving_mean[FLOAT, 256]
+  %conv_7_batchnorm_moving_var[FLOAT, 256]
+  %conv_8_dw_conv2d_weight[FLOAT, 256x1x3x3]
+  %conv_8_dw_batchnorm_gamma[FLOAT, 256]
+  %conv_8_dw_batchnorm_beta[FLOAT, 256]
+  %conv_8_dw_batchnorm_moving_mean[FLOAT, 256]
+  %conv_8_dw_batchnorm_moving_var[FLOAT, 256]
+  %conv_8_conv2d_weight[FLOAT, 256x256x1x1]
+  %conv_8_batchnorm_gamma[FLOAT, 256]
+  %conv_8_batchnorm_beta[FLOAT, 256]
+  %conv_8_batchnorm_moving_mean[FLOAT, 256]
+  %conv_8_batchnorm_moving_var[FLOAT, 256]
+  %conv_9_dw_conv2d_weight[FLOAT, 256x1x3x3]
+  %conv_9_dw_batchnorm_gamma[FLOAT, 256]
+  %conv_9_dw_batchnorm_beta[FLOAT, 256]
+  %conv_9_dw_batchnorm_moving_mean[FLOAT, 256]
+  %conv_9_dw_batchnorm_moving_var[FLOAT, 256]
+  %conv_9_conv2d_weight[FLOAT, 256x256x1x1]
+  %conv_9_batchnorm_gamma[FLOAT, 256]
+  %conv_9_batchnorm_beta[FLOAT, 256]
+  %conv_9_batchnorm_moving_mean[FLOAT, 256]
+  %conv_9_batchnorm_moving_var[FLOAT, 256]
+  %conv_10_dw_conv2d_weight[FLOAT, 256x1x3x3]
+  %conv_10_dw_batchnorm_gamma[FLOAT, 256]
+  %conv_10_dw_batchnorm_beta[FLOAT, 256]
+  %conv_10_dw_batchnorm_moving_mean[FLOAT, 256]
+  %conv_10_dw_batchnorm_moving_var[FLOAT, 256]
+  %conv_10_conv2d_weight[FLOAT, 256x256x1x1]
+  %conv_10_batchnorm_gamma[FLOAT, 256]
+  %conv_10_batchnorm_beta[FLOAT, 256]
+  %conv_10_batchnorm_moving_mean[FLOAT, 256]
+  %conv_10_batchnorm_moving_var[FLOAT, 256]
+  %conv_11_dw_conv2d_weight[FLOAT, 256x1x3x3]
+  %conv_11_dw_batchnorm_gamma[FLOAT, 256]
+  %conv_11_dw_batchnorm_beta[FLOAT, 256]
+  %conv_11_dw_batchnorm_moving_mean[FLOAT, 256]
+  %conv_11_dw_batchnorm_moving_var[FLOAT, 256]
+  %conv_11_conv2d_weight[FLOAT, 256x256x1x1]
+  %conv_11_batchnorm_gamma[FLOAT, 256]
+  %conv_11_batchnorm_beta[FLOAT, 256]
+  %conv_11_batchnorm_moving_mean[FLOAT, 256]
+  %conv_11_batchnorm_moving_var[FLOAT, 256]
+  %conv_12_dw_conv2d_weight[FLOAT, 256x1x3x3]
+  %conv_12_dw_batchnorm_gamma[FLOAT, 256]
+  %conv_12_dw_batchnorm_beta[FLOAT, 256]
+  %conv_12_dw_batchnorm_moving_mean[FLOAT, 256]
+  %conv_12_dw_batchnorm_moving_var[FLOAT, 256]
+  %conv_12_conv2d_weight[FLOAT, 256x256x1x1]
+  %conv_12_batchnorm_gamma[FLOAT, 256]
+  %conv_12_batchnorm_beta[FLOAT, 256]
+  %conv_12_batchnorm_moving_mean[FLOAT, 256]
+  %conv_12_batchnorm_moving_var[FLOAT, 256]
+  %conv_13_dw_conv2d_weight[FLOAT, 256x1x3x3]
+  %conv_13_dw_batchnorm_gamma[FLOAT, 256]
+  %conv_13_dw_batchnorm_beta[FLOAT, 256]
+  %conv_13_dw_batchnorm_moving_mean[FLOAT, 256]
+  %conv_13_dw_batchnorm_moving_var[FLOAT, 256]
+  %conv_13_conv2d_weight[FLOAT, 512x256x1x1]
+  %conv_13_batchnorm_gamma[FLOAT, 512]
+  %conv_13_batchnorm_beta[FLOAT, 512]
+  %conv_13_batchnorm_moving_mean[FLOAT, 512]
+  %conv_13_batchnorm_moving_var[FLOAT, 512]
+  %conv_14_dw_conv2d_weight[FLOAT, 512x1x3x3]
+  %conv_14_dw_batchnorm_gamma[FLOAT, 512]
+  %conv_14_dw_batchnorm_beta[FLOAT, 512]
+  %conv_14_dw_batchnorm_moving_mean[FLOAT, 512]
+  %conv_14_dw_batchnorm_moving_var[FLOAT, 512]
+  %conv_14_conv2d_weight[FLOAT, 512x512x1x1]
+  %conv_14_batchnorm_gamma[FLOAT, 512]
+  %conv_14_batchnorm_beta[FLOAT, 512]
+  %conv_14_batchnorm_moving_mean[FLOAT, 512]
+  %conv_14_batchnorm_moving_var[FLOAT, 512]
+  %conv_15_conv2d_weight[FLOAT, 64x512x3x3]
+  %conv_15_batchnorm_gamma[FLOAT, 64]
+  %conv_15_batchnorm_beta[FLOAT, 64]
+  %conv_15_batchnorm_moving_mean[FLOAT, 64]
+  %conv_15_batchnorm_moving_var[FLOAT, 64]
+  %fc1_weight[FLOAT, 212x576]
+  %fc1_bias[FLOAT, 212]
+  %conv_1_relu_gamma[FLOAT, 16x1x1]
+  %conv_2_dw_relu_gamma[FLOAT, 16x1x1]
+  %conv_2_relu_gamma[FLOAT, 32x1x1]
+  %conv_3_dw_relu_gamma[FLOAT, 32x1x1]
+  %conv_3_relu_gamma[FLOAT, 64x1x1]
+  %conv_4_dw_relu_gamma[FLOAT, 64x1x1]
+  %conv_4_relu_gamma[FLOAT, 64x1x1]
+  %conv_5_dw_relu_gamma[FLOAT, 64x1x1]
+  %conv_5_relu_gamma[FLOAT, 128x1x1]
+  %conv_6_dw_relu_gamma[FLOAT, 128x1x1]
+  %conv_6_relu_gamma[FLOAT, 128x1x1]
+  %conv_7_dw_relu_gamma[FLOAT, 128x1x1]
+  %conv_7_relu_gamma[FLOAT, 256x1x1]
+  %conv_8_dw_relu_gamma[FLOAT, 256x1x1]
+  %conv_8_relu_gamma[FLOAT, 256x1x1]
+  %conv_9_dw_relu_gamma[FLOAT, 256x1x1]
+  %conv_9_relu_gamma[FLOAT, 256x1x1]
+  %conv_10_dw_relu_gamma[FLOAT, 256x1x1]
+  %conv_10_relu_gamma[FLOAT, 256x1x1]
+  %conv_11_dw_relu_gamma[FLOAT, 256x1x1]
+  %conv_11_relu_gamma[FLOAT, 256x1x1]
+  %conv_12_dw_relu_gamma[FLOAT, 256x1x1]
+  %conv_12_relu_gamma[FLOAT, 256x1x1]
+  %conv_13_dw_relu_gamma[FLOAT, 256x1x1]
+  %conv_13_relu_gamma[FLOAT, 512x1x1]
+  %conv_14_dw_relu_gamma[FLOAT, 512x1x1]
+  %conv_14_relu_gamma[FLOAT, 512x1x1]
+  %conv_15_relu_gamma[FLOAT, 64x1x1]
+) {
+  %_minusscalar0 = Sub(%data, %scalar_op1)
+  %_mulscalar0 = Mul(%_minusscalar0, %scalar_op2)
+  %conv_1_conv2d = Conv[dilations = [1, 1], group = 1, kernel_shape = [3, 3], pads = [1, 1, 1, 1], strides = [2, 2]](%_mulscalar0, %conv_1_conv2d_weight)
+  %conv_1_batchnorm = BatchNormalization[epsilon = 0.00100000004749745, momentum = 0.899999976158142](%conv_1_conv2d, %conv_1_batchnorm_gamma, %conv_1_batchnorm_beta, %conv_1_batchnorm_moving_mean, %conv_1_batchnorm_moving_var)
+  %conv_1_relu = PRelu(%conv_1_batchnorm, %conv_1_relu_gamma)
+  %conv_2_dw_conv2d = Conv[dilations = [1, 1], group = 16, kernel_shape = [3, 3], pads = [1, 1, 1, 1], strides = [1, 1]](%conv_1_relu, %conv_2_dw_conv2d_weight)
+  %conv_2_dw_batchnorm = BatchNormalization[epsilon = 0.00100000004749745, momentum = 0.899999976158142](%conv_2_dw_conv2d, %conv_2_dw_batchnorm_gamma, %conv_2_dw_batchnorm_beta, %conv_2_dw_batchnorm_moving_mean, %conv_2_dw_batchnorm_moving_var)
+  %conv_2_dw_relu = PRelu(%conv_2_dw_batchnorm, %conv_2_dw_relu_gamma)
+  %conv_2_conv2d = Conv[dilations = [1, 1], group = 1, kernel_shape = [1, 1], pads = [0, 0, 0, 0], strides = [1, 1]](%conv_2_dw_relu, %conv_2_conv2d_weight)
+  %conv_2_batchnorm = BatchNormalization[epsilon = 0.00100000004749745, momentum = 0.899999976158142](%conv_2_conv2d, %conv_2_batchnorm_gamma, %conv_2_batchnorm_beta, %conv_2_batchnorm_moving_mean, %conv_2_batchnorm_moving_var)
+  %conv_2_relu = PRelu(%conv_2_batchnorm, %conv_2_relu_gamma)
+  %conv_3_dw_conv2d = Conv[dilations = [1, 1], group = 32, kernel_shape = [3, 3], pads = [1, 1, 1, 1], strides = [2, 2]](%conv_2_relu, %conv_3_dw_conv2d_weight)
+  %conv_3_dw_batchnorm = BatchNormalization[epsilon = 0.00100000004749745, momentum = 0.899999976158142](%conv_3_dw_conv2d, %conv_3_dw_batchnorm_gamma, %conv_3_dw_batchnorm_beta, %conv_3_dw_batchnorm_moving_mean, %conv_3_dw_batchnorm_moving_var)
+  %conv_3_dw_relu = PRelu(%conv_3_dw_batchnorm, %conv_3_dw_relu_gamma)
+  %conv_3_conv2d = Conv[dilations = [1, 1], group = 1, kernel_shape = [1, 1], pads = [0, 0, 0, 0], strides = [1, 1]](%conv_3_dw_relu, %conv_3_conv2d_weight)
+  %conv_3_batchnorm = BatchNormalization[epsilon = 0.00100000004749745, momentum = 0.899999976158142](%conv_3_conv2d, %conv_3_batchnorm_gamma, %conv_3_batchnorm_beta, %conv_3_batchnorm_moving_mean, %conv_3_batchnorm_moving_var)
+  %conv_3_relu = PRelu(%conv_3_batchnorm, %conv_3_relu_gamma)
+  %conv_4_dw_conv2d = Conv[dilations = [1, 1], group = 64, kernel_shape = [3, 3], pads = [1, 1, 1, 1], strides = [1, 1]](%conv_3_relu, %conv_4_dw_conv2d_weight)
+  %conv_4_dw_batchnorm = BatchNormalization[epsilon = 0.00100000004749745, momentum = 0.899999976158142](%conv_4_dw_conv2d, %conv_4_dw_batchnorm_gamma, %conv_4_dw_batchnorm_beta, %conv_4_dw_batchnorm_moving_mean, %conv_4_dw_batchnorm_moving_var)
+  %conv_4_dw_relu = PRelu(%conv_4_dw_batchnorm, %conv_4_dw_relu_gamma)
+  %conv_4_conv2d = Conv[dilations = [1, 1], group = 1, kernel_shape = [1, 1], pads = [0, 0, 0, 0], strides = [1, 1]](%conv_4_dw_relu, %conv_4_conv2d_weight)
+  %conv_4_batchnorm = BatchNormalization[epsilon = 0.00100000004749745, momentum = 0.899999976158142](%conv_4_conv2d, %conv_4_batchnorm_gamma, %conv_4_batchnorm_beta, %conv_4_batchnorm_moving_mean, %conv_4_batchnorm_moving_var)
+  %conv_4_relu = PRelu(%conv_4_batchnorm, %conv_4_relu_gamma)
+  %conv_5_dw_conv2d = Conv[dilations = [1, 1], group = 64, kernel_shape = [3, 3], pads = [1, 1, 1, 1], strides = [2, 2]](%conv_4_relu, %conv_5_dw_conv2d_weight)
+  %conv_5_dw_batchnorm = BatchNormalization[epsilon = 0.00100000004749745, momentum = 0.899999976158142](%conv_5_dw_conv2d, %conv_5_dw_batchnorm_gamma, %conv_5_dw_batchnorm_beta, %conv_5_dw_batchnorm_moving_mean, %conv_5_dw_batchnorm_moving_var)
+  %conv_5_dw_relu = PRelu(%conv_5_dw_batchnorm, %conv_5_dw_relu_gamma)
+  %conv_5_conv2d = Conv[dilations = [1, 1], group = 1, kernel_shape = [1, 1], pads = [0, 0, 0, 0], strides = [1, 1]](%conv_5_dw_relu, %conv_5_conv2d_weight)
+  %conv_5_batchnorm = BatchNormalization[epsilon = 0.00100000004749745, momentum = 0.899999976158142](%conv_5_conv2d, %conv_5_batchnorm_gamma, %conv_5_batchnorm_beta, %conv_5_batchnorm_moving_mean, %conv_5_batchnorm_moving_var)
+  %conv_5_relu = PRelu(%conv_5_batchnorm, %conv_5_relu_gamma)
+  %conv_6_dw_conv2d = Conv[dilations = [1, 1], group = 128, kernel_shape = [3, 3], pads = [1, 1, 1, 1], strides = [1, 1]](%conv_5_relu, %conv_6_dw_conv2d_weight)
+  %conv_6_dw_batchnorm = BatchNormalization[epsilon = 0.00100000004749745, momentum = 0.899999976158142](%conv_6_dw_conv2d, %conv_6_dw_batchnorm_gamma, %conv_6_dw_batchnorm_beta, %conv_6_dw_batchnorm_moving_mean, %conv_6_dw_batchnorm_moving_var)
+  %conv_6_dw_relu = PRelu(%conv_6_dw_batchnorm, %conv_6_dw_relu_gamma)
+  %conv_6_conv2d = Conv[dilations = [1, 1], group = 1, kernel_shape = [1, 1], pads = [0, 0, 0, 0], strides = [1, 1]](%conv_6_dw_relu, %conv_6_conv2d_weight)
+  %conv_6_batchnorm = BatchNormalization[epsilon = 0.00100000004749745, momentum = 0.899999976158142](%conv_6_conv2d, %conv_6_batchnorm_gamma, %conv_6_batchnorm_beta, %conv_6_batchnorm_moving_mean, %conv_6_batchnorm_moving_var)
+  %conv_6_relu = PRelu(%conv_6_batchnorm, %conv_6_relu_gamma)
+  %conv_7_dw_conv2d = Conv[dilations = [1, 1], group = 128, kernel_shape = [3, 3], pads = [1, 1, 1, 1], strides = [2, 2]](%conv_6_relu, %conv_7_dw_conv2d_weight)
+  %conv_7_dw_batchnorm = BatchNormalization[epsilon = 0.00100000004749745, momentum = 0.899999976158142](%conv_7_dw_conv2d, %conv_7_dw_batchnorm_gamma, %conv_7_dw_batchnorm_beta, %conv_7_dw_batchnorm_moving_mean, %conv_7_dw_batchnorm_moving_var)
+  %conv_7_dw_relu = PRelu(%conv_7_dw_batchnorm, %conv_7_dw_relu_gamma)
+  %conv_7_conv2d = Conv[dilations = [1, 1], group = 1, kernel_shape = [1, 1], pads = [0, 0, 0, 0], strides = [1, 1]](%conv_7_dw_relu, %conv_7_conv2d_weight)
+  %conv_7_batchnorm = BatchNormalization[epsilon = 0.00100000004749745, momentum = 0.899999976158142](%conv_7_conv2d, %conv_7_batchnorm_gamma, %conv_7_batchnorm_beta, %conv_7_batchnorm_moving_mean, %conv_7_batchnorm_moving_var)
+  %conv_7_relu = PRelu(%conv_7_batchnorm, %conv_7_relu_gamma)
+  %conv_8_dw_conv2d = Conv[dilations = [1, 1], group = 256, kernel_shape = [3, 3], pads = [1, 1, 1, 1], strides = [1, 1]](%conv_7_relu, %conv_8_dw_conv2d_weight)
+  %conv_8_dw_batchnorm = BatchNormalization[epsilon = 0.00100000004749745, momentum = 0.899999976158142](%conv_8_dw_conv2d, %conv_8_dw_batchnorm_gamma, %conv_8_dw_batchnorm_beta, %conv_8_dw_batchnorm_moving_mean, %conv_8_dw_batchnorm_moving_var)
+  %conv_8_dw_relu = PRelu(%conv_8_dw_batchnorm, %conv_8_dw_relu_gamma)
+  %conv_8_conv2d = Conv[dilations = [1, 1], group = 1, kernel_shape = [1, 1], pads = [0, 0, 0, 0], strides = [1, 1]](%conv_8_dw_relu, %conv_8_conv2d_weight)
+  %conv_8_batchnorm = BatchNormalization[epsilon = 0.00100000004749745, momentum = 0.899999976158142](%conv_8_conv2d, %conv_8_batchnorm_gamma, %conv_8_batchnorm_beta, %conv_8_batchnorm_moving_mean, %conv_8_batchnorm_moving_var)
+  %conv_8_relu = PRelu(%conv_8_batchnorm, %conv_8_relu_gamma)
+  %conv_9_dw_conv2d = Conv[dilations = [1, 1], group = 256, kernel_shape = [3, 3], pads = [1, 1, 1, 1], strides = [1, 1]](%conv_8_relu, %conv_9_dw_conv2d_weight)
+  %conv_9_dw_batchnorm = BatchNormalization[epsilon = 0.00100000004749745, momentum = 0.899999976158142](%conv_9_dw_conv2d, %conv_9_dw_batchnorm_gamma, %conv_9_dw_batchnorm_beta, %conv_9_dw_batchnorm_moving_mean, %conv_9_dw_batchnorm_moving_var)
+  %conv_9_dw_relu = PRelu(%conv_9_dw_batchnorm, %conv_9_dw_relu_gamma)
+  %conv_9_conv2d = Conv[dilations = [1, 1], group = 1, kernel_shape = [1, 1], pads = [0, 0, 0, 0], strides = [1, 1]](%conv_9_dw_relu, %conv_9_conv2d_weight)
+  %conv_9_batchnorm = BatchNormalization[epsilon = 0.00100000004749745, momentum = 0.899999976158142](%conv_9_conv2d, %conv_9_batchnorm_gamma, %conv_9_batchnorm_beta, %conv_9_batchnorm_moving_mean, %conv_9_batchnorm_moving_var)
+  %conv_9_relu = PRelu(%conv_9_batchnorm, %conv_9_relu_gamma)
+  %conv_10_dw_conv2d = Conv[dilations = [1, 1], group = 256, kernel_shape = [3, 3], pads = [1, 1, 1, 1], strides = [1, 1]](%conv_9_relu, %conv_10_dw_conv2d_weight)
+  %conv_10_dw_batchnorm = BatchNormalization[epsilon = 0.00100000004749745, momentum = 0.899999976158142](%conv_10_dw_conv2d, %conv_10_dw_batchnorm_gamma, %conv_10_dw_batchnorm_beta, %conv_10_dw_batchnorm_moving_mean, %conv_10_dw_batchnorm_moving_var)
+  %conv_10_dw_relu = PRelu(%conv_10_dw_batchnorm, %conv_10_dw_relu_gamma)
+  %conv_10_conv2d = Conv[dilations = [1, 1], group = 1, kernel_shape = [1, 1], pads = [0, 0, 0, 0], strides = [1, 1]](%conv_10_dw_relu, %conv_10_conv2d_weight)
+  %conv_10_batchnorm = BatchNormalization[epsilon = 0.00100000004749745, momentum = 0.899999976158142](%conv_10_conv2d, %conv_10_batchnorm_gamma, %conv_10_batchnorm_beta, %conv_10_batchnorm_moving_mean, %conv_10_batchnorm_moving_var)
+  %conv_10_relu = PRelu(%conv_10_batchnorm, %conv_10_relu_gamma)
+  %conv_11_dw_conv2d = Conv[dilations = [1, 1], group = 256, kernel_shape = [3, 3], pads = [1, 1, 1, 1], strides = [1, 1]](%conv_10_relu, %conv_11_dw_conv2d_weight)
+  %conv_11_dw_batchnorm = BatchNormalization[epsilon = 0.00100000004749745, momentum = 0.899999976158142](%conv_11_dw_conv2d, %conv_11_dw_batchnorm_gamma, %conv_11_dw_batchnorm_beta, %conv_11_dw_batchnorm_moving_mean, %conv_11_dw_batchnorm_moving_var)
+  %conv_11_dw_relu = PRelu(%conv_11_dw_batchnorm, %conv_11_dw_relu_gamma)
+  %conv_11_conv2d = Conv[dilations = [1, 1], group = 1, kernel_shape = [1, 1], pads = [0, 0, 0, 0], strides = [1, 1]](%conv_11_dw_relu, %conv_11_conv2d_weight)
+  %conv_11_batchnorm = BatchNormalization[epsilon = 0.00100000004749745, momentum = 0.899999976158142](%conv_11_conv2d, %conv_11_batchnorm_gamma, %conv_11_batchnorm_beta, %conv_11_batchnorm_moving_mean, %conv_11_batchnorm_moving_var)
+  %conv_11_relu = PRelu(%conv_11_batchnorm, %conv_11_relu_gamma)
+  %conv_12_dw_conv2d = Conv[dilations = [1, 1], group = 256, kernel_shape = [3, 3], pads = [1, 1, 1, 1], strides = [1, 1]](%conv_11_relu, %conv_12_dw_conv2d_weight)
+  %conv_12_dw_batchnorm = BatchNormalization[epsilon = 0.00100000004749745, momentum = 0.899999976158142](%conv_12_dw_conv2d, %conv_12_dw_batchnorm_gamma, %conv_12_dw_batchnorm_beta, %conv_12_dw_batchnorm_moving_mean, %conv_12_dw_batchnorm_moving_var)
+  %conv_12_dw_relu = PRelu(%conv_12_dw_batchnorm, %conv_12_dw_relu_gamma)
+  %conv_12_conv2d = Conv[dilations = [1, 1], group = 1, kernel_shape = [1, 1], pads = [0, 0, 0, 0], strides = [1, 1]](%conv_12_dw_relu, %conv_12_conv2d_weight)
+  %conv_12_batchnorm = BatchNormalization[epsilon = 0.00100000004749745, momentum = 0.899999976158142](%conv_12_conv2d, %conv_12_batchnorm_gamma, %conv_12_batchnorm_beta, %conv_12_batchnorm_moving_mean, %conv_12_batchnorm_moving_var)
+  %conv_12_relu = PRelu(%conv_12_batchnorm, %conv_12_relu_gamma)
+  %conv_13_dw_conv2d = Conv[dilations = [1, 1], group = 256, kernel_shape = [3, 3], pads = [1, 1, 1, 1], strides = [2, 2]](%conv_12_relu, %conv_13_dw_conv2d_weight)
+  %conv_13_dw_batchnorm = BatchNormalization[epsilon = 0.00100000004749745, momentum = 0.899999976158142](%conv_13_dw_conv2d, %conv_13_dw_batchnorm_gamma, %conv_13_dw_batchnorm_beta, %conv_13_dw_batchnorm_moving_mean, %conv_13_dw_batchnorm_moving_var)
+  %conv_13_dw_relu = PRelu(%conv_13_dw_batchnorm, %conv_13_dw_relu_gamma)
+  %conv_13_conv2d = Conv[dilations = [1, 1], group = 1, kernel_shape = [1, 1], pads = [0, 0, 0, 0], strides = [1, 1]](%conv_13_dw_relu, %conv_13_conv2d_weight)
+  %conv_13_batchnorm = BatchNormalization[epsilon = 0.00100000004749745, momentum = 0.899999976158142](%conv_13_conv2d, %conv_13_batchnorm_gamma, %conv_13_batchnorm_beta, %conv_13_batchnorm_moving_mean, %conv_13_batchnorm_moving_var)
+  %conv_13_relu = PRelu(%conv_13_batchnorm, %conv_13_relu_gamma)
+  %conv_14_dw_conv2d = Conv[dilations = [1, 1], group = 512, kernel_shape = [3, 3], pads = [1, 1, 1, 1], strides = [1, 1]](%conv_13_relu, %conv_14_dw_conv2d_weight)
+  %conv_14_dw_batchnorm = BatchNormalization[epsilon = 0.00100000004749745, momentum = 0.899999976158142](%conv_14_dw_conv2d, %conv_14_dw_batchnorm_gamma, %conv_14_dw_batchnorm_beta, %conv_14_dw_batchnorm_moving_mean, %conv_14_dw_batchnorm_moving_var)
+  %conv_14_dw_relu = PRelu(%conv_14_dw_batchnorm, %conv_14_dw_relu_gamma)
+  %conv_14_conv2d = Conv[dilations = [1, 1], group = 1, kernel_shape = [1, 1], pads = [0, 0, 0, 0], strides = [1, 1]](%conv_14_dw_relu, %conv_14_conv2d_weight)
+  %conv_14_batchnorm = BatchNormalization[epsilon = 0.00100000004749745, momentum = 0.899999976158142](%conv_14_conv2d, %conv_14_batchnorm_gamma, %conv_14_batchnorm_beta, %conv_14_batchnorm_moving_mean, %conv_14_batchnorm_moving_var)
+  %conv_14_relu = PRelu(%conv_14_batchnorm, %conv_14_relu_gamma)
+  %conv_15_conv2d = Conv[dilations = [1, 1], group = 1, kernel_shape = [3, 3], pads = [1, 1, 1, 1], strides = [2, 2]](%conv_14_relu, %conv_15_conv2d_weight)
+  %conv_15_batchnorm = BatchNormalization[epsilon = 0.00100000004749745, momentum = 0.899999976158142](%conv_15_conv2d, %conv_15_batchnorm_gamma, %conv_15_batchnorm_beta, %conv_15_batchnorm_moving_mean, %conv_15_batchnorm_moving_var)
+  %conv_15_relu = PRelu(%conv_15_batchnorm, %conv_15_relu_gamma)
+  %flatten0 = Flatten(%conv_15_relu)
+  %flatten_258 = Flatten(%flatten0)
+  %fc1 = Gemm[alpha = 1, beta = 1, transA = 0, transB = 1](%flatten_258, %fc1_weight, %fc1_bias)
+  return %fc1
+}

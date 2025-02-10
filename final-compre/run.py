@@ -1,5 +1,6 @@
 # final-compre/run.py
 import json
+import traceback
 from flask import Flask
 from flask_socketio import SocketIO, emit
 import cv2
@@ -26,6 +27,9 @@ def create_app():
 
 app = create_app()
 
+def wsgi_app():
+    return app
+
 # Enable CORS for all routes, including SocketIO
 # CORS(app, origins=["http://localhost:3000"])
 CORS(app, resources={r"/*": {"origins": "*"}})  # Adjust the wildcard "*" to specific origins for better security.
@@ -40,7 +44,7 @@ db.init_app(app)
 
 # add default camera
 with app.app_context():
-    manage_table(drop = True) # drop all tables
+    manage_table(spec = True) # drop all tables
     db_url = app.config['SQLALCHEMY_DATABASE_URI']
     import_tab(db_url)
     responce, status = Default_cameras()
@@ -48,7 +52,7 @@ with app.app_context():
 face_processor = FaceDetectionProcessor(cam_sources, db.session, app)
 
 def send_frame():
-    FPS = 1 / 10  # 30 FPS
+    FPS = 1 / 30  # 30 FPS
     log_interval = 1
     frame_count = defaultdict(int)
     last_frame_time = defaultdict(lambda: time.time())   
@@ -87,6 +91,8 @@ def send_frame():
     except Exception as e:
         cam_stat_logger.error(f"Error in send_frame: {e}")
         socketio.emit('error', {'error': str(e)})
+        print("An error occurred:")
+        traceback.print_exc() 
 
 if __name__ == '__main__':
     with app.app_context():

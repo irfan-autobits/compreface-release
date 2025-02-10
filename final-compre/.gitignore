@@ -1,2 +1,5 @@
 Reports/
 embedding_req/
+/.models/
+/Vis_res/
+weights/

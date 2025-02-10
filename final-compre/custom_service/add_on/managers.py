@@ -30,8 +30,12 @@ class PluginManager:
     @property
     def requirements(self):
         requirements = set()
+        print(f"requirements manager ::{self.plugins_modules}")
         for module in self.plugins_modules:
-            requirements |= set(module.requirements)
+            if hasattr(module, 'requirements'):
+                requirements |= set(module.requirements)
+            else:
+                print(f"Warning: {module} does not have 'requirements' attribute.")
         return requirements
 
     def get_plugins_names(self):

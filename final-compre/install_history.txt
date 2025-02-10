@@ -1,11 +1,120 @@
 pip install flask-socketio
 pip install flask-cors
 pip install flask-sqlalchemy
+pip install python-dotenv
 pip install PyJWT
+pip install pytz
+pip install attrs
+pip install scikit-image
+pip install opencv-python
 pip install bcrypt
 pip install cached-property
 pip install gdown
+pip install psycopg2
+# cpu
+pip install onnxruntime       
+# gpu
+pip install onnxruntime-gpu
+pip install uwsgi
+pip install insightface
 
+pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
+conda install -c conda-forge libstdcxx-ng
+
+additional cuda-toolkit (nvcc)-------------
+sudo apt update
+sudo apt install nvidia-cuda-toolkit
+
+gtk 2------------
+sudo apt update
+sudo apt install libgtk2.0-dev
+verify--
+pkg-config --modversion gtk+-2.0
+
+
+pip install mxnet-cu117==1.9.1
+pip install insightface==0.1.5
+
+************** new-cuda **********************
+sudo apt install -y cuda-11-8
+
+for nvcc --version (NVIDIA (R) Cuda compiler driver) 11.7
+gcc 10--------
+sudo apt update
+sudo apt install gcc-10 g++-10
+
+set as 10--
+sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-10 100
+sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-10 100
+
+check--
+gcc --version
+
+download--------
+wget -c https://developer.download.nvidia.com/compute/cuda/11.7.0/local_installers/cuda_11.7.0_515.43.04_linux.run
+install--
+sudo sh cuda_11.7.0_515.43.04_linux.run --silent --toolkit
+
+--------- cudnn-8.4.1. -------------------------
+tar -xvf cudnn-linux-x86_64-8.4.1.50_cuda11-archive.tar.xz
+sudo cp cudnn-linux-x86_64-8.4.1.50_cuda11-archive/include/* /usr/local/cuda/include/
+sudo cp cudnn-linux-x86_64-8.4.1.50_cuda11-archive/lib/* /usr/local/cuda/lib64/
+sudo chmod a+r /usr/local/cuda/include/cudnn*.h /usr/local/cuda/lib64/libcudnn*
+
+************** cuda *********************
+############ RESET CUDA ######################
+sudo apt remove --purge "*cublas*" "*cufft*" "*curand*" "*cusolver*" "*cusparse*" "*nvidia*"
+sudo apt autoremove
+sudo rm -rf /usr/local/cuda*
+
+########################################33333
+sudo apt-get update
+sudo apt-get install nvidia-container-toolkit
+
+sudo apt update
+sudo apt install nvidia-cuda-toolkit
+
+at ./bashrc~
+export PATH=/usr/local/cuda/bin:$PATH
+export LD_LIBRARY_PATH=/usr/local/cuda/lib64:$LD_LIBRARY_PATH
+
+cuDNN------------------------
+wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2404/x86_64/cuda-keyring_1.1-1_all.deb
+sudo dpkg -i cuda-keyring_1.1-1_all.deb
+sudo apt-get update
+
+sudo apt-get -y install cudnn-cuda-12
+
+check
+ldconfig -p | grep libcudnn
+export IMPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP
+export LD_LIBRARY_PATH=/lib/x86_64-linux-gnu:$LD_LIBRARY_PATH
+
+NCCL-------------------------------
+sudo apt-get update
+sudo apt-get install libnccl2 libnccl-dev
+for specific cuda 12
+sudo apt-get install libnccl2=2.14.3-1+cuda12.0 libnccl-dev=2.14.3-1+cuda12.0
+
+next------------
+sudo apt-get install cuda-11-0
+
+************ sec try ************************
+letest cuda--------
+sudo apt install nvidia-utils-535
+
+wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2404/x86_64/cuda-keyring_1.1-1_all.deb
+sudo dpkg -i cuda-keyring_1.1-1_all.deb
+sudo apt-get update
+sudo apt-get -y install cudnn-cuda-12
+
+req var----------------------
+export UWSGI_PROCESSES=1
+export UWSGI_THREADS=1
+export TF_FORCE_GPU_ALLOW_GROWTH=true
+export MXNET_CPU_WORKER_NTHREADS=24
+export MXNET_ENGINE_TYPE=ThreadedEnginePerDevice
+export MXNET_CUDNN_AUTOTUNE_DEFAULT=0
 *************** sample - env *******************
 # Detection / Recognition threshold
 FACE_DET_TH=0.8

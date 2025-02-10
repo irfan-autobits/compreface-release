@@ -1,0 +1,78 @@
+To install PyTorch with CUDA support on **Ubuntu 24.04**, follow these steps for compatibility with NVIDIA drivers, CUDA, and PyTorch:
+
+---
+
+### **1. Install NVIDIA Drivers**
+Ensure your GPU is compatible with CUDA (check [NVIDIA's CUDA-enabled GPUs list](https://developer.nvidia.com/cuda-gpus)).
+
+**Step-by-step:**
+1. Update your system:
+   ```bash
+   sudo apt update && sudo apt upgrade -y
+   ```
+
+2. Install the recommended NVIDIA driver (≥535 for CUDA 12.x):
+   ```bash
+   sudo ubuntu-drivers autoinstall
+   ```
+
+3. Reboot your system:
+   ```bash
+   sudo reboot
+   ```
+
+4. Verify the driver installation:
+   ```bash
+   nvidia-smi
+   ```
+   You should see GPU details and driver version (e.g., 535+).
+
+---
+
+### **2. Install PyTorch with CUDA Support**
+Use the **official PyTorch command** for CUDA 12.1 (latest stable version as of mid-2024):
+
+```bash
+pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
+```
+
+* This installs:
+  - PyTorch 2.3.0 (or latest)
+  - CUDA 12.1-compatible binaries.
+  - Compatible `torchvision` and `torchaudio`.
+
+---
+
+### **3. Verify Installation**
+Check if PyTorch detects CUDA:
+```python
+import torch
+print(torch.__version__)          # Should show ≥2.3.0
+print(torch.cuda.is_available())  # Should return True
+```
+
+---
+
+### **Notes**
+* **No Separate CUDA Toolkit Needed**: PyTorch includes required CUDA/cuDNN libraries.
+* **For Conda Users**: Use:
+  ```bash
+  conda install pytorch torchvision torchaudio pytorch-cuda=12.1 -c pytorch -c nvidia
+  ```
+* **Troubleshooting**:
+  - If `nvidia-smi` works but PyTorch doesn’t detect CUDA, reinstall PyTorch with the correct CUDA version.
+  - Ensure your GPU compute capability is supported (e.g., ≥3.5 for most modern GPUs).
+
+---
+
+### **Compatibility Table**
+| Component       | Recommended Version |
+|-----------------|---------------------|
+| **NVIDIA Driver**| ≥535                |
+| **CUDA**         | 12.1                |
+| **PyTorch**      | 2.3.0+              |
+| **Python**       | 3.10–3.12           |
+
+---
+
+Visit the [PyTorch Get Started Page](https://pytorch.org/get-started/locally/) for the latest commands.

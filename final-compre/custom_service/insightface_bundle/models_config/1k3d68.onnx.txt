@@ -1,0 +1,448 @@
+graph mxnet_converted_model (
+  %data[FLOAT, Nonex3x192x192]
+) initializers (
+  %bn_data_gamma[FLOAT, 3]
+  %bn_data_beta[FLOAT, 3]
+  %bn_data_moving_mean[FLOAT, 3]
+  %bn_data_moving_var[FLOAT, 3]
+  %conv0_weight[FLOAT, 64x3x7x7]
+  %bn0_gamma[FLOAT, 64]
+  %bn0_beta[FLOAT, 64]
+  %bn0_moving_mean[FLOAT, 64]
+  %bn0_moving_var[FLOAT, 64]
+  %stage1_unit1_bn1_gamma[FLOAT, 64]
+  %stage1_unit1_bn1_beta[FLOAT, 64]
+  %stage1_unit1_bn1_moving_mean[FLOAT, 64]
+  %stage1_unit1_bn1_moving_var[FLOAT, 64]
+  %stage1_unit1_conv1_weight[FLOAT, 64x64x1x1]
+  %stage1_unit1_bn2_gamma[FLOAT, 64]
+  %stage1_unit1_bn2_beta[FLOAT, 64]
+  %stage1_unit1_bn2_moving_mean[FLOAT, 64]
+  %stage1_unit1_bn2_moving_var[FLOAT, 64]
+  %stage1_unit1_conv2_weight[FLOAT, 64x64x3x3]
+  %stage1_unit1_bn3_gamma[FLOAT, 64]
+  %stage1_unit1_bn3_beta[FLOAT, 64]
+  %stage1_unit1_bn3_moving_mean[FLOAT, 64]
+  %stage1_unit1_bn3_moving_var[FLOAT, 64]
+  %stage1_unit1_conv3_weight[FLOAT, 256x64x1x1]
+  %stage1_unit1_sc_weight[FLOAT, 256x64x1x1]
+  %stage1_unit2_bn1_gamma[FLOAT, 256]
+  %stage1_unit2_bn1_beta[FLOAT, 256]
+  %stage1_unit2_bn1_moving_mean[FLOAT, 256]
+  %stage1_unit2_bn1_moving_var[FLOAT, 256]
+  %stage1_unit2_conv1_weight[FLOAT, 64x256x1x1]
+  %stage1_unit2_bn2_gamma[FLOAT, 64]
+  %stage1_unit2_bn2_beta[FLOAT, 64]
+  %stage1_unit2_bn2_moving_mean[FLOAT, 64]
+  %stage1_unit2_bn2_moving_var[FLOAT, 64]
+  %stage1_unit2_conv2_weight[FLOAT, 64x64x3x3]
+  %stage1_unit2_bn3_gamma[FLOAT, 64]
+  %stage1_unit2_bn3_beta[FLOAT, 64]
+  %stage1_unit2_bn3_moving_mean[FLOAT, 64]
+  %stage1_unit2_bn3_moving_var[FLOAT, 64]
+  %stage1_unit2_conv3_weight[FLOAT, 256x64x1x1]
+  %stage1_unit3_bn1_gamma[FLOAT, 256]
+  %stage1_unit3_bn1_beta[FLOAT, 256]
+  %stage1_unit3_bn1_moving_mean[FLOAT, 256]
+  %stage1_unit3_bn1_moving_var[FLOAT, 256]
+  %stage1_unit3_conv1_weight[FLOAT, 64x256x1x1]
+  %stage1_unit3_bn2_gamma[FLOAT, 64]
+  %stage1_unit3_bn2_beta[FLOAT, 64]
+  %stage1_unit3_bn2_moving_mean[FLOAT, 64]
+  %stage1_unit3_bn2_moving_var[FLOAT, 64]
+  %stage1_unit3_conv2_weight[FLOAT, 64x64x3x3]
+  %stage1_unit3_bn3_gamma[FLOAT, 64]
+  %stage1_unit3_bn3_beta[FLOAT, 64]
+  %stage1_unit3_bn3_moving_mean[FLOAT, 64]
+  %stage1_unit3_bn3_moving_var[FLOAT, 64]
+  %stage1_unit3_conv3_weight[FLOAT, 256x64x1x1]
+  %stage2_unit1_bn1_gamma[FLOAT, 256]
+  %stage2_unit1_bn1_beta[FLOAT, 256]
+  %stage2_unit1_bn1_moving_mean[FLOAT, 256]
+  %stage2_unit1_bn1_moving_var[FLOAT, 256]
+  %stage2_unit1_conv1_weight[FLOAT, 128x256x1x1]
+  %stage2_unit1_bn2_gamma[FLOAT, 128]
+  %stage2_unit1_bn2_beta[FLOAT, 128]
+  %stage2_unit1_bn2_moving_mean[FLOAT, 128]
+  %stage2_unit1_bn2_moving_var[FLOAT, 128]
+  %stage2_unit1_conv2_weight[FLOAT, 128x128x3x3]
+  %stage2_unit1_bn3_gamma[FLOAT, 128]
+  %stage2_unit1_bn3_beta[FLOAT, 128]
+  %stage2_unit1_bn3_moving_mean[FLOAT, 128]
+  %stage2_unit1_bn3_moving_var[FLOAT, 128]
+  %stage2_unit1_conv3_weight[FLOAT, 512x128x1x1]
+  %stage2_unit1_sc_weight[FLOAT, 512x256x1x1]
+  %stage2_unit2_bn1_gamma[FLOAT, 512]
+  %stage2_unit2_bn1_beta[FLOAT, 512]
+  %stage2_unit2_bn1_moving_mean[FLOAT, 512]
+  %stage2_unit2_bn1_moving_var[FLOAT, 512]
+  %stage2_unit2_conv1_weight[FLOAT, 128x512x1x1]
+  %stage2_unit2_bn2_gamma[FLOAT, 128]
+  %stage2_unit2_bn2_beta[FLOAT, 128]
+  %stage2_unit2_bn2_moving_mean[FLOAT, 128]
+  %stage2_unit2_bn2_moving_var[FLOAT, 128]
+  %stage2_unit2_conv2_weight[FLOAT, 128x128x3x3]
+  %stage2_unit2_bn3_gamma[FLOAT, 128]
+  %stage2_unit2_bn3_beta[FLOAT, 128]
+  %stage2_unit2_bn3_moving_mean[FLOAT, 128]
+  %stage2_unit2_bn3_moving_var[FLOAT, 128]
+  %stage2_unit2_conv3_weight[FLOAT, 512x128x1x1]
+  %stage2_unit3_bn1_gamma[FLOAT, 512]
+  %stage2_unit3_bn1_beta[FLOAT, 512]
+  %stage2_unit3_bn1_moving_mean[FLOAT, 512]
+  %stage2_unit3_bn1_moving_var[FLOAT, 512]
+  %stage2_unit3_conv1_weight[FLOAT, 128x512x1x1]
+  %stage2_unit3_bn2_gamma[FLOAT, 128]
+  %stage2_unit3_bn2_beta[FLOAT, 128]
+  %stage2_unit3_bn2_moving_mean[FLOAT, 128]
+  %stage2_unit3_bn2_moving_var[FLOAT, 128]
+  %stage2_unit3_conv2_weight[FLOAT, 128x128x3x3]
+  %stage2_unit3_bn3_gamma[FLOAT, 128]
+  %stage2_unit3_bn3_beta[FLOAT, 128]
+  %stage2_unit3_bn3_moving_mean[FLOAT, 128]
+  %stage2_unit3_bn3_moving_var[FLOAT, 128]
+  %stage2_unit3_conv3_weight[FLOAT, 512x128x1x1]
+  %stage2_unit4_bn1_gamma[FLOAT, 512]
+  %stage2_unit4_bn1_beta[FLOAT, 512]
+  %stage2_unit4_bn1_moving_mean[FLOAT, 512]
+  %stage2_unit4_bn1_moving_var[FLOAT, 512]
+  %stage2_unit4_conv1_weight[FLOAT, 128x512x1x1]
+  %stage2_unit4_bn2_gamma[FLOAT, 128]
+  %stage2_unit4_bn2_beta[FLOAT, 128]
+  %stage2_unit4_bn2_moving_mean[FLOAT, 128]
+  %stage2_unit4_bn2_moving_var[FLOAT, 128]
+  %stage2_unit4_conv2_weight[FLOAT, 128x128x3x3]
+  %stage2_unit4_bn3_gamma[FLOAT, 128]
+  %stage2_unit4_bn3_beta[FLOAT, 128]
+  %stage2_unit4_bn3_moving_mean[FLOAT, 128]
+  %stage2_unit4_bn3_moving_var[FLOAT, 128]
+  %stage2_unit4_conv3_weight[FLOAT, 512x128x1x1]
+  %stage3_unit1_bn1_gamma[FLOAT, 512]
+  %stage3_unit1_bn1_beta[FLOAT, 512]
+  %stage3_unit1_bn1_moving_mean[FLOAT, 512]
+  %stage3_unit1_bn1_moving_var[FLOAT, 512]
+  %stage3_unit1_conv1_weight[FLOAT, 256x512x1x1]
+  %stage3_unit1_bn2_gamma[FLOAT, 256]
+  %stage3_unit1_bn2_beta[FLOAT, 256]
+  %stage3_unit1_bn2_moving_mean[FLOAT, 256]
+  %stage3_unit1_bn2_moving_var[FLOAT, 256]
+  %stage3_unit1_conv2_weight[FLOAT, 256x256x3x3]
+  %stage3_unit1_bn3_gamma[FLOAT, 256]
+  %stage3_unit1_bn3_beta[FLOAT, 256]
+  %stage3_unit1_bn3_moving_mean[FLOAT, 256]
+  %stage3_unit1_bn3_moving_var[FLOAT, 256]
+  %stage3_unit1_conv3_weight[FLOAT, 1024x256x1x1]
+  %stage3_unit1_sc_weight[FLOAT, 1024x512x1x1]
+  %stage3_unit2_bn1_gamma[FLOAT, 1024]
+  %stage3_unit2_bn1_beta[FLOAT, 1024]
+  %stage3_unit2_bn1_moving_mean[FLOAT, 1024]
+  %stage3_unit2_bn1_moving_var[FLOAT, 1024]
+  %stage3_unit2_conv1_weight[FLOAT, 256x1024x1x1]
+  %stage3_unit2_bn2_gamma[FLOAT, 256]
+  %stage3_unit2_bn2_beta[FLOAT, 256]
+  %stage3_unit2_bn2_moving_mean[FLOAT, 256]
+  %stage3_unit2_bn2_moving_var[FLOAT, 256]
+  %stage3_unit2_conv2_weight[FLOAT, 256x256x3x3]
+  %stage3_unit2_bn3_gamma[FLOAT, 256]
+  %stage3_unit2_bn3_beta[FLOAT, 256]
+  %stage3_unit2_bn3_moving_mean[FLOAT, 256]
+  %stage3_unit2_bn3_moving_var[FLOAT, 256]
+  %stage3_unit2_conv3_weight[FLOAT, 1024x256x1x1]
+  %stage3_unit3_bn1_gamma[FLOAT, 1024]
+  %stage3_unit3_bn1_beta[FLOAT, 1024]
+  %stage3_unit3_bn1_moving_mean[FLOAT, 1024]
+  %stage3_unit3_bn1_moving_var[FLOAT, 1024]
+  %stage3_unit3_conv1_weight[FLOAT, 256x1024x1x1]
+  %stage3_unit3_bn2_gamma[FLOAT, 256]
+  %stage3_unit3_bn2_beta[FLOAT, 256]
+  %stage3_unit3_bn2_moving_mean[FLOAT, 256]
+  %stage3_unit3_bn2_moving_var[FLOAT, 256]
+  %stage3_unit3_conv2_weight[FLOAT, 256x256x3x3]
+  %stage3_unit3_bn3_gamma[FLOAT, 256]
+  %stage3_unit3_bn3_beta[FLOAT, 256]
+  %stage3_unit3_bn3_moving_mean[FLOAT, 256]
+  %stage3_unit3_bn3_moving_var[FLOAT, 256]
+  %stage3_unit3_conv3_weight[FLOAT, 1024x256x1x1]
+  %stage3_unit4_bn1_gamma[FLOAT, 1024]
+  %stage3_unit4_bn1_beta[FLOAT, 1024]
+  %stage3_unit4_bn1_moving_mean[FLOAT, 1024]
+  %stage3_unit4_bn1_moving_var[FLOAT, 1024]
+  %stage3_unit4_conv1_weight[FLOAT, 256x1024x1x1]
+  %stage3_unit4_bn2_gamma[FLOAT, 256]
+  %stage3_unit4_bn2_beta[FLOAT, 256]
+  %stage3_unit4_bn2_moving_mean[FLOAT, 256]
+  %stage3_unit4_bn2_moving_var[FLOAT, 256]
+  %stage3_unit4_conv2_weight[FLOAT, 256x256x3x3]
+  %stage3_unit4_bn3_gamma[FLOAT, 256]
+  %stage3_unit4_bn3_beta[FLOAT, 256]
+  %stage3_unit4_bn3_moving_mean[FLOAT, 256]
+  %stage3_unit4_bn3_moving_var[FLOAT, 256]
+  %stage3_unit4_conv3_weight[FLOAT, 1024x256x1x1]
+  %stage3_unit5_bn1_gamma[FLOAT, 1024]
+  %stage3_unit5_bn1_beta[FLOAT, 1024]
+  %stage3_unit5_bn1_moving_mean[FLOAT, 1024]
+  %stage3_unit5_bn1_moving_var[FLOAT, 1024]
+  %stage3_unit5_conv1_weight[FLOAT, 256x1024x1x1]
+  %stage3_unit5_bn2_gamma[FLOAT, 256]
+  %stage3_unit5_bn2_beta[FLOAT, 256]
+  %stage3_unit5_bn2_moving_mean[FLOAT, 256]
+  %stage3_unit5_bn2_moving_var[FLOAT, 256]
+  %stage3_unit5_conv2_weight[FLOAT, 256x256x3x3]
+  %stage3_unit5_bn3_gamma[FLOAT, 256]
+  %stage3_unit5_bn3_beta[FLOAT, 256]
+  %stage3_unit5_bn3_moving_mean[FLOAT, 256]
+  %stage3_unit5_bn3_moving_var[FLOAT, 256]
+  %stage3_unit5_conv3_weight[FLOAT, 1024x256x1x1]
+  %stage3_unit6_bn1_gamma[FLOAT, 1024]
+  %stage3_unit6_bn1_beta[FLOAT, 1024]
+  %stage3_unit6_bn1_moving_mean[FLOAT, 1024]
+  %stage3_unit6_bn1_moving_var[FLOAT, 1024]
+  %stage3_unit6_conv1_weight[FLOAT, 256x1024x1x1]
+  %stage3_unit6_bn2_gamma[FLOAT, 256]
+  %stage3_unit6_bn2_beta[FLOAT, 256]
+  %stage3_unit6_bn2_moving_mean[FLOAT, 256]
+  %stage3_unit6_bn2_moving_var[FLOAT, 256]
+  %stage3_unit6_conv2_weight[FLOAT, 256x256x3x3]
+  %stage3_unit6_bn3_gamma[FLOAT, 256]
+  %stage3_unit6_bn3_beta[FLOAT, 256]
+  %stage3_unit6_bn3_moving_mean[FLOAT, 256]
+  %stage3_unit6_bn3_moving_var[FLOAT, 256]
+  %stage3_unit6_conv3_weight[FLOAT, 1024x256x1x1]
+  %stage4_unit1_bn1_gamma[FLOAT, 1024]
+  %stage4_unit1_bn1_beta[FLOAT, 1024]
+  %stage4_unit1_bn1_moving_mean[FLOAT, 1024]
+  %stage4_unit1_bn1_moving_var[FLOAT, 1024]
+  %stage4_unit1_conv1_weight[FLOAT, 512x1024x1x1]
+  %stage4_unit1_bn2_gamma[FLOAT, 512]
+  %stage4_unit1_bn2_beta[FLOAT, 512]
+  %stage4_unit1_bn2_moving_mean[FLOAT, 512]
+  %stage4_unit1_bn2_moving_var[FLOAT, 512]
+  %stage4_unit1_conv2_weight[FLOAT, 512x512x3x3]
+  %stage4_unit1_bn3_gamma[FLOAT, 512]
+  %stage4_unit1_bn3_beta[FLOAT, 512]
+  %stage4_unit1_bn3_moving_mean[FLOAT, 512]
+  %stage4_unit1_bn3_moving_var[FLOAT, 512]
+  %stage4_unit1_conv3_weight[FLOAT, 2048x512x1x1]
+  %stage4_unit1_sc_weight[FLOAT, 2048x1024x1x1]
+  %stage4_unit2_bn1_gamma[FLOAT, 2048]
+  %stage4_unit2_bn1_beta[FLOAT, 2048]
+  %stage4_unit2_bn1_moving_mean[FLOAT, 2048]
+  %stage4_unit2_bn1_moving_var[FLOAT, 2048]
+  %stage4_unit2_conv1_weight[FLOAT, 512x2048x1x1]
+  %stage4_unit2_bn2_gamma[FLOAT, 512]
+  %stage4_unit2_bn2_beta[FLOAT, 512]
+  %stage4_unit2_bn2_moving_mean[FLOAT, 512]
+  %stage4_unit2_bn2_moving_var[FLOAT, 512]
+  %stage4_unit2_conv2_weight[FLOAT, 512x512x3x3]
+  %stage4_unit2_bn3_gamma[FLOAT, 512]
+  %stage4_unit2_bn3_beta[FLOAT, 512]
+  %stage4_unit2_bn3_moving_mean[FLOAT, 512]
+  %stage4_unit2_bn3_moving_var[FLOAT, 512]
+  %stage4_unit2_conv3_weight[FLOAT, 2048x512x1x1]
+  %stage4_unit3_bn1_gamma[FLOAT, 2048]
+  %stage4_unit3_bn1_beta[FLOAT, 2048]
+  %stage4_unit3_bn1_moving_mean[FLOAT, 2048]
+  %stage4_unit3_bn1_moving_var[FLOAT, 2048]
+  %stage4_unit3_conv1_weight[FLOAT, 512x2048x1x1]
+  %stage4_unit3_bn2_gamma[FLOAT, 512]
+  %stage4_unit3_bn2_beta[FLOAT, 512]
+  %stage4_unit3_bn2_moving_mean[FLOAT, 512]
+  %stage4_unit3_bn2_moving_var[FLOAT, 512]
+  %stage4_unit3_conv2_weight[FLOAT, 512x512x3x3]
+  %stage4_unit3_bn3_gamma[FLOAT, 512]
+  %stage4_unit3_bn3_beta[FLOAT, 512]
+  %stage4_unit3_bn3_moving_mean[FLOAT, 512]
+  %stage4_unit3_bn3_moving_var[FLOAT, 512]
+  %stage4_unit3_conv3_weight[FLOAT, 2048x512x1x1]
+  %bn8_gamma[FLOAT, 2048]
+  %bn8_beta[FLOAT, 2048]
+  %bn8_moving_mean[FLOAT, 2048]
+  %bn8_moving_var[FLOAT, 2048]
+  %conv2_weight[FLOAT, 256x2048x3x3]
+  %bn2_gamma[FLOAT, 256]
+  %bn2_beta[FLOAT, 256]
+  %bn2_moving_mean[FLOAT, 256]
+  %bn2_moving_var[FLOAT, 256]
+  %fc1_weight[FLOAT, 3309x2304]
+  %fc1_bias[FLOAT, 3309]
+) {
+  %id = Identity(%data)
+  %bn_data = BatchNormalization[epsilon = 1.99999994947575e-05, momentum = 0.899999976158142](%id, %bn_data_gamma, %bn_data_beta, %bn_data_moving_mean, %bn_data_moving_var)
+  %conv0 = Conv[dilations = [1, 1], group = 1, kernel_shape = [7, 7], pads = [3, 3, 3, 3], strides = [2, 2]](%bn_data, %conv0_weight)
+  %bn0 = BatchNormalization[epsilon = 1.99999994947575e-05, momentum = 0.899999976158142](%conv0, %bn0_gamma, %bn0_beta, %bn0_moving_mean, %bn0_moving_var)
+  %relu0 = Relu(%bn0)
+  %pooling0 = MaxPool[ceil_mode = 0, kernel_shape = [3, 3], pads = [1, 1, 1, 1], strides = [2, 2]](%relu0)
+  %stage1_unit1_bn1 = BatchNormalization[epsilon = 1.99999994947575e-05, momentum = 0.899999976158142](%pooling0, %stage1_unit1_bn1_gamma, %stage1_unit1_bn1_beta, %stage1_unit1_bn1_moving_mean, %stage1_unit1_bn1_moving_var)
+  %stage1_unit1_relu1 = Relu(%stage1_unit1_bn1)
+  %stage1_unit1_conv1 = Conv[dilations = [1, 1], group = 1, kernel_shape = [1, 1], pads = [0, 0, 0, 0], strides = [1, 1]](%stage1_unit1_relu1, %stage1_unit1_conv1_weight)
+  %stage1_unit1_bn2 = BatchNormalization[epsilon = 1.99999994947575e-05, momentum = 0.899999976158142](%stage1_unit1_conv1, %stage1_unit1_bn2_gamma, %stage1_unit1_bn2_beta, %stage1_unit1_bn2_moving_mean, %stage1_unit1_bn2_moving_var)
+  %stage1_unit1_relu2 = Relu(%stage1_unit1_bn2)
+  %stage1_unit1_conv2 = Conv[dilations = [1, 1], group = 1, kernel_shape = [3, 3], pads = [1, 1, 1, 1], strides = [1, 1]](%stage1_unit1_relu2, %stage1_unit1_conv2_weight)
+  %stage1_unit1_bn3 = BatchNormalization[epsilon = 1.99999994947575e-05, momentum = 0.899999976158142](%stage1_unit1_conv2, %stage1_unit1_bn3_gamma, %stage1_unit1_bn3_beta, %stage1_unit1_bn3_moving_mean, %stage1_unit1_bn3_moving_var)
+  %stage1_unit1_relu3 = Relu(%stage1_unit1_bn3)
+  %stage1_unit1_conv3 = Conv[dilations = [1, 1], group = 1, kernel_shape = [1, 1], pads = [0, 0, 0, 0], strides = [1, 1]](%stage1_unit1_relu3, %stage1_unit1_conv3_weight)
+  %stage1_unit1_sc = Conv[dilations = [1, 1], group = 1, kernel_shape = [1, 1], pads = [0, 0, 0, 0], strides = [1, 1]](%stage1_unit1_relu1, %stage1_unit1_sc_weight)
+  %_plus0 = Add(%stage1_unit1_conv3, %stage1_unit1_sc)
+  %stage1_unit2_bn1 = BatchNormalization[epsilon = 1.99999994947575e-05, momentum = 0.899999976158142](%_plus0, %stage1_unit2_bn1_gamma, %stage1_unit2_bn1_beta, %stage1_unit2_bn1_moving_mean, %stage1_unit2_bn1_moving_var)
+  %stage1_unit2_relu1 = Relu(%stage1_unit2_bn1)
+  %stage1_unit2_conv1 = Conv[dilations = [1, 1], group = 1, kernel_shape = [1, 1], pads = [0, 0, 0, 0], strides = [1, 1]](%stage1_unit2_relu1, %stage1_unit2_conv1_weight)
+  %stage1_unit2_bn2 = BatchNormalization[epsilon = 1.99999994947575e-05, momentum = 0.899999976158142](%stage1_unit2_conv1, %stage1_unit2_bn2_gamma, %stage1_unit2_bn2_beta, %stage1_unit2_bn2_moving_mean, %stage1_unit2_bn2_moving_var)
+  %stage1_unit2_relu2 = Relu(%stage1_unit2_bn2)
+  %stage1_unit2_conv2 = Conv[dilations = [1, 1], group = 1, kernel_shape = [3, 3], pads = [1, 1, 1, 1], strides = [1, 1]](%stage1_unit2_relu2, %stage1_unit2_conv2_weight)
+  %stage1_unit2_bn3 = BatchNormalization[epsilon = 1.99999994947575e-05, momentum = 0.899999976158142](%stage1_unit2_conv2, %stage1_unit2_bn3_gamma, %stage1_unit2_bn3_beta, %stage1_unit2_bn3_moving_mean, %stage1_unit2_bn3_moving_var)
+  %stage1_unit2_relu3 = Relu(%stage1_unit2_bn3)
+  %stage1_unit2_conv3 = Conv[dilations = [1, 1], group = 1, kernel_shape = [1, 1], pads = [0, 0, 0, 0], strides = [1, 1]](%stage1_unit2_relu3, %stage1_unit2_conv3_weight)
+  %_plus1 = Add(%stage1_unit2_conv3, %_plus0)
+  %stage1_unit3_bn1 = BatchNormalization[epsilon = 1.99999994947575e-05, momentum = 0.899999976158142](%_plus1, %stage1_unit3_bn1_gamma, %stage1_unit3_bn1_beta, %stage1_unit3_bn1_moving_mean, %stage1_unit3_bn1_moving_var)
+  %stage1_unit3_relu1 = Relu(%stage1_unit3_bn1)
+  %stage1_unit3_conv1 = Conv[dilations = [1, 1], group = 1, kernel_shape = [1, 1], pads = [0, 0, 0, 0], strides = [1, 1]](%stage1_unit3_relu1, %stage1_unit3_conv1_weight)
+  %stage1_unit3_bn2 = BatchNormalization[epsilon = 1.99999994947575e-05, momentum = 0.899999976158142](%stage1_unit3_conv1, %stage1_unit3_bn2_gamma, %stage1_unit3_bn2_beta, %stage1_unit3_bn2_moving_mean, %stage1_unit3_bn2_moving_var)
+  %stage1_unit3_relu2 = Relu(%stage1_unit3_bn2)
+  %stage1_unit3_conv2 = Conv[dilations = [1, 1], group = 1, kernel_shape = [3, 3], pads = [1, 1, 1, 1], strides = [1, 1]](%stage1_unit3_relu2, %stage1_unit3_conv2_weight)
+  %stage1_unit3_bn3 = BatchNormalization[epsilon = 1.99999994947575e-05, momentum = 0.899999976158142](%stage1_unit3_conv2, %stage1_unit3_bn3_gamma, %stage1_unit3_bn3_beta, %stage1_unit3_bn3_moving_mean, %stage1_unit3_bn3_moving_var)
+  %stage1_unit3_relu3 = Relu(%stage1_unit3_bn3)
+  %stage1_unit3_conv3 = Conv[dilations = [1, 1], group = 1, kernel_shape = [1, 1], pads = [0, 0, 0, 0], strides = [1, 1]](%stage1_unit3_relu3, %stage1_unit3_conv3_weight)
+  %_plus2 = Add(%stage1_unit3_conv3, %_plus1)
+  %stage2_unit1_bn1 = BatchNormalization[epsilon = 1.99999994947575e-05, momentum = 0.899999976158142](%_plus2, %stage2_unit1_bn1_gamma, %stage2_unit1_bn1_beta, %stage2_unit1_bn1_moving_mean, %stage2_unit1_bn1_moving_var)
+  %stage2_unit1_relu1 = Relu(%stage2_unit1_bn1)
+  %stage2_unit1_conv1 = Conv[dilations = [1, 1], group = 1, kernel_shape = [1, 1], pads = [0, 0, 0, 0], strides = [1, 1]](%stage2_unit1_relu1, %stage2_unit1_conv1_weight)
+  %stage2_unit1_bn2 = BatchNormalization[epsilon = 1.99999994947575e-05, momentum = 0.899999976158142](%stage2_unit1_conv1, %stage2_unit1_bn2_gamma, %stage2_unit1_bn2_beta, %stage2_unit1_bn2_moving_mean, %stage2_unit1_bn2_moving_var)
+  %stage2_unit1_relu2 = Relu(%stage2_unit1_bn2)
+  %stage2_unit1_conv2 = Conv[dilations = [1, 1], group = 1, kernel_shape = [3, 3], pads = [1, 1, 1, 1], strides = [2, 2]](%stage2_unit1_relu2, %stage2_unit1_conv2_weight)
+  %stage2_unit1_bn3 = BatchNormalization[epsilon = 1.99999994947575e-05, momentum = 0.899999976158142](%stage2_unit1_conv2, %stage2_unit1_bn3_gamma, %stage2_unit1_bn3_beta, %stage2_unit1_bn3_moving_mean, %stage2_unit1_bn3_moving_var)
+  %stage2_unit1_relu3 = Relu(%stage2_unit1_bn3)
+  %stage2_unit1_conv3 = Conv[dilations = [1, 1], group = 1, kernel_shape = [1, 1], pads = [0, 0, 0, 0], strides = [1, 1]](%stage2_unit1_relu3, %stage2_unit1_conv3_weight)
+  %stage2_unit1_sc = Conv[dilations = [1, 1], group = 1, kernel_shape = [1, 1], pads = [0, 0, 0, 0], strides = [2, 2]](%stage2_unit1_relu1, %stage2_unit1_sc_weight)
+  %_plus3 = Add(%stage2_unit1_conv3, %stage2_unit1_sc)
+  %stage2_unit2_bn1 = BatchNormalization[epsilon = 1.99999994947575e-05, momentum = 0.899999976158142](%_plus3, %stage2_unit2_bn1_gamma, %stage2_unit2_bn1_beta, %stage2_unit2_bn1_moving_mean, %stage2_unit2_bn1_moving_var)
+  %stage2_unit2_relu1 = Relu(%stage2_unit2_bn1)
+  %stage2_unit2_conv1 = Conv[dilations = [1, 1], group = 1, kernel_shape = [1, 1], pads = [0, 0, 0, 0], strides = [1, 1]](%stage2_unit2_relu1, %stage2_unit2_conv1_weight)
+  %stage2_unit2_bn2 = BatchNormalization[epsilon = 1.99999994947575e-05, momentum = 0.899999976158142](%stage2_unit2_conv1, %stage2_unit2_bn2_gamma, %stage2_unit2_bn2_beta, %stage2_unit2_bn2_moving_mean, %stage2_unit2_bn2_moving_var)
+  %stage2_unit2_relu2 = Relu(%stage2_unit2_bn2)
+  %stage2_unit2_conv2 = Conv[dilations = [1, 1], group = 1, kernel_shape = [3, 3], pads = [1, 1, 1, 1], strides = [1, 1]](%stage2_unit2_relu2, %stage2_unit2_conv2_weight)
+  %stage2_unit2_bn3 = BatchNormalization[epsilon = 1.99999994947575e-05, momentum = 0.899999976158142](%stage2_unit2_conv2, %stage2_unit2_bn3_gamma, %stage2_unit2_bn3_beta, %stage2_unit2_bn3_moving_mean, %stage2_unit2_bn3_moving_var)
+  %stage2_unit2_relu3 = Relu(%stage2_unit2_bn3)
+  %stage2_unit2_conv3 = Conv[dilations = [1, 1], group = 1, kernel_shape = [1, 1], pads = [0, 0, 0, 0], strides = [1, 1]](%stage2_unit2_relu3, %stage2_unit2_conv3_weight)
+  %_plus4 = Add(%stage2_unit2_conv3, %_plus3)
+  %stage2_unit3_bn1 = BatchNormalization[epsilon = 1.99999994947575e-05, momentum = 0.899999976158142](%_plus4, %stage2_unit3_bn1_gamma, %stage2_unit3_bn1_beta, %stage2_unit3_bn1_moving_mean, %stage2_unit3_bn1_moving_var)
+  %stage2_unit3_relu1 = Relu(%stage2_unit3_bn1)
+  %stage2_unit3_conv1 = Conv[dilations = [1, 1], group = 1, kernel_shape = [1, 1], pads = [0, 0, 0, 0], strides = [1, 1]](%stage2_unit3_relu1, %stage2_unit3_conv1_weight)
+  %stage2_unit3_bn2 = BatchNormalization[epsilon = 1.99999994947575e-05, momentum = 0.899999976158142](%stage2_unit3_conv1, %stage2_unit3_bn2_gamma, %stage2_unit3_bn2_beta, %stage2_unit3_bn2_moving_mean, %stage2_unit3_bn2_moving_var)
+  %stage2_unit3_relu2 = Relu(%stage2_unit3_bn2)
+  %stage2_unit3_conv2 = Conv[dilations = [1, 1], group = 1, kernel_shape = [3, 3], pads = [1, 1, 1, 1], strides = [1, 1]](%stage2_unit3_relu2, %stage2_unit3_conv2_weight)
+  %stage2_unit3_bn3 = BatchNormalization[epsilon = 1.99999994947575e-05, momentum = 0.899999976158142](%stage2_unit3_conv2, %stage2_unit3_bn3_gamma, %stage2_unit3_bn3_beta, %stage2_unit3_bn3_moving_mean, %stage2_unit3_bn3_moving_var)
+  %stage2_unit3_relu3 = Relu(%stage2_unit3_bn3)
+  %stage2_unit3_conv3 = Conv[dilations = [1, 1], group = 1, kernel_shape = [1, 1], pads = [0, 0, 0, 0], strides = [1, 1]](%stage2_unit3_relu3, %stage2_unit3_conv3_weight)
+  %_plus5 = Add(%stage2_unit3_conv3, %_plus4)
+  %stage2_unit4_bn1 = BatchNormalization[epsilon = 1.99999994947575e-05, momentum = 0.899999976158142](%_plus5, %stage2_unit4_bn1_gamma, %stage2_unit4_bn1_beta, %stage2_unit4_bn1_moving_mean, %stage2_unit4_bn1_moving_var)
+  %stage2_unit4_relu1 = Relu(%stage2_unit4_bn1)
+  %stage2_unit4_conv1 = Conv[dilations = [1, 1], group = 1, kernel_shape = [1, 1], pads = [0, 0, 0, 0], strides = [1, 1]](%stage2_unit4_relu1, %stage2_unit4_conv1_weight)
+  %stage2_unit4_bn2 = BatchNormalization[epsilon = 1.99999994947575e-05, momentum = 0.899999976158142](%stage2_unit4_conv1, %stage2_unit4_bn2_gamma, %stage2_unit4_bn2_beta, %stage2_unit4_bn2_moving_mean, %stage2_unit4_bn2_moving_var)
+  %stage2_unit4_relu2 = Relu(%stage2_unit4_bn2)
+  %stage2_unit4_conv2 = Conv[dilations = [1, 1], group = 1, kernel_shape = [3, 3], pads = [1, 1, 1, 1], strides = [1, 1]](%stage2_unit4_relu2, %stage2_unit4_conv2_weight)
+  %stage2_unit4_bn3 = BatchNormalization[epsilon = 1.99999994947575e-05, momentum = 0.899999976158142](%stage2_unit4_conv2, %stage2_unit4_bn3_gamma, %stage2_unit4_bn3_beta, %stage2_unit4_bn3_moving_mean, %stage2_unit4_bn3_moving_var)
+  %stage2_unit4_relu3 = Relu(%stage2_unit4_bn3)
+  %stage2_unit4_conv3 = Conv[dilations = [1, 1], group = 1, kernel_shape = [1, 1], pads = [0, 0, 0, 0], strides = [1, 1]](%stage2_unit4_relu3, %stage2_unit4_conv3_weight)
+  %_plus6 = Add(%stage2_unit4_conv3, %_plus5)
+  %stage3_unit1_bn1 = BatchNormalization[epsilon = 1.99999994947575e-05, momentum = 0.899999976158142](%_plus6, %stage3_unit1_bn1_gamma, %stage3_unit1_bn1_beta, %stage3_unit1_bn1_moving_mean, %stage3_unit1_bn1_moving_var)
+  %stage3_unit1_relu1 = Relu(%stage3_unit1_bn1)
+  %stage3_unit1_conv1 = Conv[dilations = [1, 1], group = 1, kernel_shape = [1, 1], pads = [0, 0, 0, 0], strides = [1, 1]](%stage3_unit1_relu1, %stage3_unit1_conv1_weight)
+  %stage3_unit1_bn2 = BatchNormalization[epsilon = 1.99999994947575e-05, momentum = 0.899999976158142](%stage3_unit1_conv1, %stage3_unit1_bn2_gamma, %stage3_unit1_bn2_beta, %stage3_unit1_bn2_moving_mean, %stage3_unit1_bn2_moving_var)
+  %stage3_unit1_relu2 = Relu(%stage3_unit1_bn2)
+  %stage3_unit1_conv2 = Conv[dilations = [1, 1], group = 1, kernel_shape = [3, 3], pads = [1, 1, 1, 1], strides = [2, 2]](%stage3_unit1_relu2, %stage3_unit1_conv2_weight)
+  %stage3_unit1_bn3 = BatchNormalization[epsilon = 1.99999994947575e-05, momentum = 0.899999976158142](%stage3_unit1_conv2, %stage3_unit1_bn3_gamma, %stage3_unit1_bn3_beta, %stage3_unit1_bn3_moving_mean, %stage3_unit1_bn3_moving_var)
+  %stage3_unit1_relu3 = Relu(%stage3_unit1_bn3)
+  %stage3_unit1_conv3 = Conv[dilations = [1, 1], group = 1, kernel_shape = [1, 1], pads = [0, 0, 0, 0], strides = [1, 1]](%stage3_unit1_relu3, %stage3_unit1_conv3_weight)
+  %stage3_unit1_sc = Conv[dilations = [1, 1], group = 1, kernel_shape = [1, 1], pads = [0, 0, 0, 0], strides = [2, 2]](%stage3_unit1_relu1, %stage3_unit1_sc_weight)
+  %_plus7 = Add(%stage3_unit1_conv3, %stage3_unit1_sc)
+  %stage3_unit2_bn1 = BatchNormalization[epsilon = 1.99999994947575e-05, momentum = 0.899999976158142](%_plus7, %stage3_unit2_bn1_gamma, %stage3_unit2_bn1_beta, %stage3_unit2_bn1_moving_mean, %stage3_unit2_bn1_moving_var)
+  %stage3_unit2_relu1 = Relu(%stage3_unit2_bn1)
+  %stage3_unit2_conv1 = Conv[dilations = [1, 1], group = 1, kernel_shape = [1, 1], pads = [0, 0, 0, 0], strides = [1, 1]](%stage3_unit2_relu1, %stage3_unit2_conv1_weight)
+  %stage3_unit2_bn2 = BatchNormalization[epsilon = 1.99999994947575e-05, momentum = 0.899999976158142](%stage3_unit2_conv1, %stage3_unit2_bn2_gamma, %stage3_unit2_bn2_beta, %stage3_unit2_bn2_moving_mean, %stage3_unit2_bn2_moving_var)
+  %stage3_unit2_relu2 = Relu(%stage3_unit2_bn2)
+  %stage3_unit2_conv2 = Conv[dilations = [1, 1], group = 1, kernel_shape = [3, 3], pads = [1, 1, 1, 1], strides = [1, 1]](%stage3_unit2_relu2, %stage3_unit2_conv2_weight)
+  %stage3_unit2_bn3 = BatchNormalization[epsilon = 1.99999994947575e-05, momentum = 0.899999976158142](%stage3_unit2_conv2, %stage3_unit2_bn3_gamma, %stage3_unit2_bn3_beta, %stage3_unit2_bn3_moving_mean, %stage3_unit2_bn3_moving_var)
+  %stage3_unit2_relu3 = Relu(%stage3_unit2_bn3)
+  %stage3_unit2_conv3 = Conv[dilations = [1, 1], group = 1, kernel_shape = [1, 1], pads = [0, 0, 0, 0], strides = [1, 1]](%stage3_unit2_relu3, %stage3_unit2_conv3_weight)
+  %_plus8 = Add(%stage3_unit2_conv3, %_plus7)
+  %stage3_unit3_bn1 = BatchNormalization[epsilon = 1.99999994947575e-05, momentum = 0.899999976158142](%_plus8, %stage3_unit3_bn1_gamma, %stage3_unit3_bn1_beta, %stage3_unit3_bn1_moving_mean, %stage3_unit3_bn1_moving_var)
+  %stage3_unit3_relu1 = Relu(%stage3_unit3_bn1)
+  %stage3_unit3_conv1 = Conv[dilations = [1, 1], group = 1, kernel_shape = [1, 1], pads = [0, 0, 0, 0], strides = [1, 1]](%stage3_unit3_relu1, %stage3_unit3_conv1_weight)
+  %stage3_unit3_bn2 = BatchNormalization[epsilon = 1.99999994947575e-05, momentum = 0.899999976158142](%stage3_unit3_conv1, %stage3_unit3_bn2_gamma, %stage3_unit3_bn2_beta, %stage3_unit3_bn2_moving_mean, %stage3_unit3_bn2_moving_var)
+  %stage3_unit3_relu2 = Relu(%stage3_unit3_bn2)
+  %stage3_unit3_conv2 = Conv[dilations = [1, 1], group = 1, kernel_shape = [3, 3], pads = [1, 1, 1, 1], strides = [1, 1]](%stage3_unit3_relu2, %stage3_unit3_conv2_weight)
+  %stage3_unit3_bn3 = BatchNormalization[epsilon = 1.99999994947575e-05, momentum = 0.899999976158142](%stage3_unit3_conv2, %stage3_unit3_bn3_gamma, %stage3_unit3_bn3_beta, %stage3_unit3_bn3_moving_mean, %stage3_unit3_bn3_moving_var)
+  %stage3_unit3_relu3 = Relu(%stage3_unit3_bn3)
+  %stage3_unit3_conv3 = Conv[dilations = [1, 1], group = 1, kernel_shape = [1, 1], pads = [0, 0, 0, 0], strides = [1, 1]](%stage3_unit3_relu3, %stage3_unit3_conv3_weight)
+  %_plus9 = Add(%stage3_unit3_conv3, %_plus8)
+  %stage3_unit4_bn1 = BatchNormalization[epsilon = 1.99999994947575e-05, momentum = 0.899999976158142](%_plus9, %stage3_unit4_bn1_gamma, %stage3_unit4_bn1_beta, %stage3_unit4_bn1_moving_mean, %stage3_unit4_bn1_moving_var)
+  %stage3_unit4_relu1 = Relu(%stage3_unit4_bn1)
+  %stage3_unit4_conv1 = Conv[dilations = [1, 1], group = 1, kernel_shape = [1, 1], pads = [0, 0, 0, 0], strides = [1, 1]](%stage3_unit4_relu1, %stage3_unit4_conv1_weight)
+  %stage3_unit4_bn2 = BatchNormalization[epsilon = 1.99999994947575e-05, momentum = 0.899999976158142](%stage3_unit4_conv1, %stage3_unit4_bn2_gamma, %stage3_unit4_bn2_beta, %stage3_unit4_bn2_moving_mean, %stage3_unit4_bn2_moving_var)
+  %stage3_unit4_relu2 = Relu(%stage3_unit4_bn2)
+  %stage3_unit4_conv2 = Conv[dilations = [1, 1], group = 1, kernel_shape = [3, 3], pads = [1, 1, 1, 1], strides = [1, 1]](%stage3_unit4_relu2, %stage3_unit4_conv2_weight)
+  %stage3_unit4_bn3 = BatchNormalization[epsilon = 1.99999994947575e-05, momentum = 0.899999976158142](%stage3_unit4_conv2, %stage3_unit4_bn3_gamma, %stage3_unit4_bn3_beta, %stage3_unit4_bn3_moving_mean, %stage3_unit4_bn3_moving_var)
+  %stage3_unit4_relu3 = Relu(%stage3_unit4_bn3)
+  %stage3_unit4_conv3 = Conv[dilations = [1, 1], group = 1, kernel_shape = [1, 1], pads = [0, 0, 0, 0], strides = [1, 1]](%stage3_unit4_relu3, %stage3_unit4_conv3_weight)
+  %_plus10 = Add(%stage3_unit4_conv3, %_plus9)
+  %stage3_unit5_bn1 = BatchNormalization[epsilon = 1.99999994947575e-05, momentum = 0.899999976158142](%_plus10, %stage3_unit5_bn1_gamma, %stage3_unit5_bn1_beta, %stage3_unit5_bn1_moving_mean, %stage3_unit5_bn1_moving_var)
+  %stage3_unit5_relu1 = Relu(%stage3_unit5_bn1)
+  %stage3_unit5_conv1 = Conv[dilations = [1, 1], group = 1, kernel_shape = [1, 1], pads = [0, 0, 0, 0], strides = [1, 1]](%stage3_unit5_relu1, %stage3_unit5_conv1_weight)
+  %stage3_unit5_bn2 = BatchNormalization[epsilon = 1.99999994947575e-05, momentum = 0.899999976158142](%stage3_unit5_conv1, %stage3_unit5_bn2_gamma, %stage3_unit5_bn2_beta, %stage3_unit5_bn2_moving_mean, %stage3_unit5_bn2_moving_var)
+  %stage3_unit5_relu2 = Relu(%stage3_unit5_bn2)
+  %stage3_unit5_conv2 = Conv[dilations = [1, 1], group = 1, kernel_shape = [3, 3], pads = [1, 1, 1, 1], strides = [1, 1]](%stage3_unit5_relu2, %stage3_unit5_conv2_weight)
+  %stage3_unit5_bn3 = BatchNormalization[epsilon = 1.99999994947575e-05, momentum = 0.899999976158142](%stage3_unit5_conv2, %stage3_unit5_bn3_gamma, %stage3_unit5_bn3_beta, %stage3_unit5_bn3_moving_mean, %stage3_unit5_bn3_moving_var)
+  %stage3_unit5_relu3 = Relu(%stage3_unit5_bn3)
+  %stage3_unit5_conv3 = Conv[dilations = [1, 1], group = 1, kernel_shape = [1, 1], pads = [0, 0, 0, 0], strides = [1, 1]](%stage3_unit5_relu3, %stage3_unit5_conv3_weight)
+  %_plus11 = Add(%stage3_unit5_conv3, %_plus10)
+  %stage3_unit6_bn1 = BatchNormalization[epsilon = 1.99999994947575e-05, momentum = 0.899999976158142](%_plus11, %stage3_unit6_bn1_gamma, %stage3_unit6_bn1_beta, %stage3_unit6_bn1_moving_mean, %stage3_unit6_bn1_moving_var)
+  %stage3_unit6_relu1 = Relu(%stage3_unit6_bn1)
+  %stage3_unit6_conv1 = Conv[dilations = [1, 1], group = 1, kernel_shape = [1, 1], pads = [0, 0, 0, 0], strides = [1, 1]](%stage3_unit6_relu1, %stage3_unit6_conv1_weight)
+  %stage3_unit6_bn2 = BatchNormalization[epsilon = 1.99999994947575e-05, momentum = 0.899999976158142](%stage3_unit6_conv1, %stage3_unit6_bn2_gamma, %stage3_unit6_bn2_beta, %stage3_unit6_bn2_moving_mean, %stage3_unit6_bn2_moving_var)
+  %stage3_unit6_relu2 = Relu(%stage3_unit6_bn2)
+  %stage3_unit6_conv2 = Conv[dilations = [1, 1], group = 1, kernel_shape = [3, 3], pads = [1, 1, 1, 1], strides = [1, 1]](%stage3_unit6_relu2, %stage3_unit6_conv2_weight)
+  %stage3_unit6_bn3 = BatchNormalization[epsilon = 1.99999994947575e-05, momentum = 0.899999976158142](%stage3_unit6_conv2, %stage3_unit6_bn3_gamma, %stage3_unit6_bn3_beta, %stage3_unit6_bn3_moving_mean, %stage3_unit6_bn3_moving_var)
+  %stage3_unit6_relu3 = Relu(%stage3_unit6_bn3)
+  %stage3_unit6_conv3 = Conv[dilations = [1, 1], group = 1, kernel_shape = [1, 1], pads = [0, 0, 0, 0], strides = [1, 1]](%stage3_unit6_relu3, %stage3_unit6_conv3_weight)
+  %_plus12 = Add(%stage3_unit6_conv3, %_plus11)
+  %stage4_unit1_bn1 = BatchNormalization[epsilon = 1.99999994947575e-05, momentum = 0.899999976158142](%_plus12, %stage4_unit1_bn1_gamma, %stage4_unit1_bn1_beta, %stage4_unit1_bn1_moving_mean, %stage4_unit1_bn1_moving_var)
+  %stage4_unit1_relu1 = Relu(%stage4_unit1_bn1)
+  %stage4_unit1_conv1 = Conv[dilations = [1, 1], group = 1, kernel_shape = [1, 1], pads = [0, 0, 0, 0], strides = [1, 1]](%stage4_unit1_relu1, %stage4_unit1_conv1_weight)
+  %stage4_unit1_bn2 = BatchNormalization[epsilon = 1.99999994947575e-05, momentum = 0.899999976158142](%stage4_unit1_conv1, %stage4_unit1_bn2_gamma, %stage4_unit1_bn2_beta, %stage4_unit1_bn2_moving_mean, %stage4_unit1_bn2_moving_var)
+  %stage4_unit1_relu2 = Relu(%stage4_unit1_bn2)
+  %stage4_unit1_conv2 = Conv[dilations = [1, 1], group = 1, kernel_shape = [3, 3], pads = [1, 1, 1, 1], strides = [2, 2]](%stage4_unit1_relu2, %stage4_unit1_conv2_weight)
+  %stage4_unit1_bn3 = BatchNormalization[epsilon = 1.99999994947575e-05, momentum = 0.899999976158142](%stage4_unit1_conv2, %stage4_unit1_bn3_gamma, %stage4_unit1_bn3_beta, %stage4_unit1_bn3_moving_mean, %stage4_unit1_bn3_moving_var)
+  %stage4_unit1_relu3 = Relu(%stage4_unit1_bn3)
+  %stage4_unit1_conv3 = Conv[dilations = [1, 1], group = 1, kernel_shape = [1, 1], pads = [0, 0, 0, 0], strides = [1, 1]](%stage4_unit1_relu3, %stage4_unit1_conv3_weight)
+  %stage4_unit1_sc = Conv[dilations = [1, 1], group = 1, kernel_shape = [1, 1], pads = [0, 0, 0, 0], strides = [2, 2]](%stage4_unit1_relu1, %stage4_unit1_sc_weight)
+  %_plus13 = Add(%stage4_unit1_conv3, %stage4_unit1_sc)
+  %stage4_unit2_bn1 = BatchNormalization[epsilon = 1.99999994947575e-05, momentum = 0.899999976158142](%_plus13, %stage4_unit2_bn1_gamma, %stage4_unit2_bn1_beta, %stage4_unit2_bn1_moving_mean, %stage4_unit2_bn1_moving_var)
+  %stage4_unit2_relu1 = Relu(%stage4_unit2_bn1)
+  %stage4_unit2_conv1 = Conv[dilations = [1, 1], group = 1, kernel_shape = [1, 1], pads = [0, 0, 0, 0], strides = [1, 1]](%stage4_unit2_relu1, %stage4_unit2_conv1_weight)
+  %stage4_unit2_bn2 = BatchNormalization[epsilon = 1.99999994947575e-05, momentum = 0.899999976158142](%stage4_unit2_conv1, %stage4_unit2_bn2_gamma, %stage4_unit2_bn2_beta, %stage4_unit2_bn2_moving_mean, %stage4_unit2_bn2_moving_var)
+  %stage4_unit2_relu2 = Relu(%stage4_unit2_bn2)
+  %stage4_unit2_conv2 = Conv[dilations = [1, 1], group = 1, kernel_shape = [3, 3], pads = [1, 1, 1, 1], strides = [1, 1]](%stage4_unit2_relu2, %stage4_unit2_conv2_weight)
+  %stage4_unit2_bn3 = BatchNormalization[epsilon = 1.99999994947575e-05, momentum = 0.899999976158142](%stage4_unit2_conv2, %stage4_unit2_bn3_gamma, %stage4_unit2_bn3_beta, %stage4_unit2_bn3_moving_mean, %stage4_unit2_bn3_moving_var)
+  %stage4_unit2_relu3 = Relu(%stage4_unit2_bn3)
+  %stage4_unit2_conv3 = Conv[dilations = [1, 1], group = 1, kernel_shape = [1, 1], pads = [0, 0, 0, 0], strides = [1, 1]](%stage4_unit2_relu3, %stage4_unit2_conv3_weight)
+  %_plus14 = Add(%stage4_unit2_conv3, %_plus13)
+  %stage4_unit3_bn1 = BatchNormalization[epsilon = 1.99999994947575e-05, momentum = 0.899999976158142](%_plus14, %stage4_unit3_bn1_gamma, %stage4_unit3_bn1_beta, %stage4_unit3_bn1_moving_mean, %stage4_unit3_bn1_moving_var)
+  %stage4_unit3_relu1 = Relu(%stage4_unit3_bn1)
+  %stage4_unit3_conv1 = Conv[dilations = [1, 1], group = 1, kernel_shape = [1, 1], pads = [0, 0, 0, 0], strides = [1, 1]](%stage4_unit3_relu1, %stage4_unit3_conv1_weight)
+  %stage4_unit3_bn2 = BatchNormalization[epsilon = 1.99999994947575e-05, momentum = 0.899999976158142](%stage4_unit3_conv1, %stage4_unit3_bn2_gamma, %stage4_unit3_bn2_beta, %stage4_unit3_bn2_moving_mean, %stage4_unit3_bn2_moving_var)
+  %stage4_unit3_relu2 = Relu(%stage4_unit3_bn2)
+  %stage4_unit3_conv2 = Conv[dilations = [1, 1], group = 1, kernel_shape = [3, 3], pads = [1, 1, 1, 1], strides = [1, 1]](%stage4_unit3_relu2, %stage4_unit3_conv2_weight)
+  %stage4_unit3_bn3 = BatchNormalization[epsilon = 1.99999994947575e-05, momentum = 0.899999976158142](%stage4_unit3_conv2, %stage4_unit3_bn3_gamma, %stage4_unit3_bn3_beta, %stage4_unit3_bn3_moving_mean, %stage4_unit3_bn3_moving_var)
+  %stage4_unit3_relu3 = Relu(%stage4_unit3_bn3)
+  %stage4_unit3_conv3 = Conv[dilations = [1, 1], group = 1, kernel_shape = [1, 1], pads = [0, 0, 0, 0], strides = [1, 1]](%stage4_unit3_relu3, %stage4_unit3_conv3_weight)
+  %_plus15 = Add(%stage4_unit3_conv3, %_plus14)
+  %bn8 = BatchNormalization[epsilon = 1.99999994947575e-05, momentum = 0.899999976158142](%_plus15, %bn8_gamma, %bn8_beta, %bn8_moving_mean, %bn8_moving_var)
+  %relu8 = Relu(%bn8)
+  %conv2 = Conv[dilations = [1, 1], group = 1, kernel_shape = [3, 3], pads = [1, 1, 1, 1], strides = [2, 2]](%relu8, %conv2_weight)
+  %bn2 = BatchNormalization[epsilon = 1.99999994947575e-05, momentum = 0.899999976158142](%conv2, %bn2_gamma, %bn2_beta, %bn2_moving_mean, %bn2_moving_var)
+  %relu2 = Relu(%bn2)
+  %flatten0 = Flatten(%relu2)
+  %flatten_441 = Flatten(%flatten0)
+  %fc1 = Gemm[alpha = 1, beta = 1, transA = 0, transB = 1](%flatten_441, %fc1_weight, %fc1_bias)
+  return %fc1
+}
