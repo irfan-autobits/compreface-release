@@ -14,7 +14,8 @@ BASE_DIR = Path(__file__).resolve().parent
 
 # Define directories
 # SUBJECT_DIR = BASE_DIR / "custom_service" / "Pytorch_Retinaface" / "subjects_img" / "train"
-SUBJECT_DIR = BASE_DIR / "custom_service" / "Pytorch_Retinaface" / "subjects_img" / "Hathi_pic"
+SUBJECT_DIR = BASE_DIR / "custom_service" / "Pytorch_Retinaface" / "subjects_img" / "Autobits_emp"
+SUBJECT_DIR = BASE_DIR / "custom_service" / "Pytorch_Retinaface" / "subjects_img" / "Hathi_pic" 
 TEST_DIR = BASE_DIR / "custom_service" / "Pytorch_Retinaface" / "subjects_img" / "test"
 MODELS_DIR = BASE_DIR / ".models"
 TEST_RES_DIR = BASE_DIR / "Vis_res" / "Test" # Folder for saving visualization images

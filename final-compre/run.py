@@ -52,7 +52,7 @@ with app.app_context():
 face_processor = FaceDetectionProcessor(cam_sources, db.session, app)
 
 def send_frame():
-    FPS = 1 / 30  # 30 FPS
+    FPS = 1 / 25  # 30 FPS
     log_interval = 1
     frame_count = defaultdict(int)
     last_frame_time = defaultdict(lambda: time.time())   

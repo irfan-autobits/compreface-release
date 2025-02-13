@@ -95,9 +95,7 @@ class VideoStream(object):
                     break
                 frame = np.frombuffer(raw_frame, np.uint8).reshape((self.height, self.width, 3))
             elif self.backend == "opencv":
-                print("update thread for opencv")
                 ret, frame = self.cap.read()
-                print("reading frames from opencv")
                 if not ret:
                     print("Failed to grab frame from OpenCV.")
                     self.started = False

@@ -18,7 +18,12 @@ pip install onnxruntime-gpu
 pip install uwsgi
 pip install insightface
 
+
 pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
+conda install -c conda-forge libstdcxx-ng
+
+# cpu 
+pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu
 conda install -c conda-forge libstdcxx-ng
 
 additional cuda-toolkit (nvcc)-------------
@@ -31,6 +36,13 @@ sudo apt install libgtk2.0-dev
 verify--
 pkg-config --modversion gtk+-2.0
 
+reset opencv after lib---
+pip uninstall opencv-python opencv-python-headless -y
+pip install opencv-python
+
+conda---
+conda remove --name antispoof --all -y
+conda create --name antispoof python=3.7 -y
 
 pip install mxnet-cu117==1.9.1
 pip install insightface==0.1.5

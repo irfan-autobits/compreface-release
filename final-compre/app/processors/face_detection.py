@@ -34,13 +34,19 @@ class FaceDetectionProcessor:
         if self.call_counter % self.max_call_counter == 0:
             self.libc.malloc_trim(0)  # Force memory release
             self.call_counter = 0  # Reset counter
+            print("Memory cleanup done.")
 
         # time_taken = timeit.timeit(lambda: compreface_api(frame), number=1)  # Execute 10 times
         # exec_time_logger.debug(f"compreface api Execution time: {time_taken / 10:.5f} seconds per run")
         if results:            
+            print("got res")
             for result in results:
                 box = result.get('box')
                 landmarks = result.get('landmarks')
+                landmark_3d_68 = result.get("landmark_3d_68")
+                spoof_res = result.get("spoof_res")
+                print(f"spoof res : {spoof_res}")
+
                 probability = box['probability']
                 if probability <= 0.57:
                     continue
@@ -63,23 +69,26 @@ class FaceDetectionProcessor:
                 # exec_time_logger.debug(f"detection - {detector_time/1000},calc - {calc_time/1000} camera :{cam_name} for {len(results)} result")
 
                 # visulize(embedding)
-                frame = Drawing_on_frame(frame, box, landmarks, subject, color, probability, draw_lan=True)  
-                face_path = save_image(frame, cam_name, box, subject, similarity, is_unknown)
-                # Use the app context explicitly
-                with self.app.app_context():
-                    detection = Detection(
-                        camera_name=cam_name, 
-                        det_face=face_path,
-                        det_score=probability * 100,
-                        person = subject, 
-                        similarity=similarity,
-                        timestamp=datetime.now()
-                    )
-                    self.db_session.add(detection)
-                    self.db_session.commit()
+                frame = Drawing_on_frame(frame, box, landmarks, landmark_3d_68, subject, color, probability, spoof_res, draw_lan=True)  
+                # face_path = save_image(frame, cam_name, box, subject, similarity, is_unknown)
+                # # Use the app context explicitly
+                # with self.app.app_context():
+                #     detection = Detection(
+                #         camera_name=cam_name, 
+                #         det_face=face_path,
+                #         det_score=probability * 100,
+                #         person = subject, 
+                #         similarity=similarity,
+                #         timestamp=datetime.now()
+                #     )
+                #     self.db_session.add(detection)
+                #     self.db_session.commit()
 
-                    # Commit every 10 detections
-                    if len(self.db_session.new) % 10 == 0:
-                        self.db_session.commit()
+                #     # Commit every 10 detections
+                #     if len(self.db_session.new) % 10 == 0:
+                #         self.db_session.commit()
+        else:
+            # print("no results")
+            pass
 
         return frame
