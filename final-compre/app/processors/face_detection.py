@@ -11,6 +11,7 @@ from config.logger_config import cam_stat_logger , console_logger, exec_time_log
 from datetime import datetime
 import timeit
 import time
+import psutil
 import ctypes
 
 class FaceDetectionProcessor:
@@ -32,9 +33,13 @@ class FaceDetectionProcessor:
 
         # Memory cleanup
         if self.call_counter % self.max_call_counter == 0:
+            process = psutil.Process()  # Get current process
+            mem_before = process.memory_info().rss  # Resident Set Size (RSS) in bytes
             self.libc.malloc_trim(0)  # Force memory release
-            self.call_counter = 0  # Reset counter
-            print("Memory cleanup done.")
+            mem_after = process.memory_info().rss  # Check memory after cleanup
+            freed_memory = mem_before - mem_after  # Calculate freed memory
+            print(f"Memory cleanup done. Freed: {freed_memory / (1024 * 1024):.2f} MB")
+            self.call_counter = 0  # Reset counter  
 
         # time_taken = timeit.timeit(lambda: compreface_api(frame), number=1)  # Execute 10 times
         # exec_time_logger.debug(f"compreface api Execution time: {time_taken / 10:.5f} seconds per run")

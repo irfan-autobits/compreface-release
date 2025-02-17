@@ -17,7 +17,7 @@ pip install onnxruntime
 pip install onnxruntime-gpu
 pip install uwsgi
 pip install insightface
-
+pip install psutil
 
 pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
 conda install -c conda-forge libstdcxx-ng
