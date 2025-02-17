@@ -1,0 +1,14 @@
+{
+  "key": "RMS",
+  "timestamp": 1797,
+  "aRMSx": 0.058253,
+  "aRMSy": 0.10074,
+  "aRMSz": 0.069074,
+  "vRMSx": 0.562099,
+  "vRMSy": 0.890409,
+  "vRMSz": 0.581903,
+  "temperature": 26.48119,
+  "aucaustic": 36.77222,
+  "aucausticRMS": 62.21385,
+  "mac": "E4:65:B8:2C:D8:B0"
+}

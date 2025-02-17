@@ -16,8 +16,9 @@ sine_wave = amplitude * np.sin(2 * np.pi * frequency * t)
 
 # FFT
 fft_result = fft(sine_wave)
-fft_magnitude = np.abs(fft_result)
-frequencies = fftfreq(len(sine_wave), 1 / Fs)
+N = len(sine_wave)
+fft_magnitude = (2 / N) * np.abs(fft_result[:N // 2])  # Normalize and keep single-sided spectrum
+frequencies = fftfreq(N, 1 / Fs)[:N // 2]
 
 # Plot time-domain signal
 plt.figure(figsize=(12, 6))
@@ -33,10 +34,10 @@ plt.legend()
 
 # Frequency-domain plot
 plt.subplot(1, 2, 2)
-plt.plot(frequencies[:len(frequencies)//2], fft_magnitude[:len(fft_magnitude)//2], label="FFT Magnitude", color="red")
+plt.plot(frequencies, fft_magnitude, label="FFT Magnitude", color="red")
 plt.title("Frequency Domain: FFT of Sine Wave")
 plt.xlabel("Frequency (Hz)")
-plt.ylabel("Magnitude")
+plt.ylabel("Amplitude (G)")
 plt.grid()
 plt.legend()
 

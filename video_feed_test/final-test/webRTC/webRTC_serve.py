@@ -22,23 +22,46 @@ class VideoStream(VideoStreamTrack):
         # Convert frame to VideoFrame (required by WebRTC)
         video_frame = VideoFrame.from_ndarray(frame, format="bgr24")
         video_frame.pts, video_frame.time_base = 0, 1 / 30  # Set frame rate (30 FPS)
+        print("frame return")
         return video_frame
 
 # Handle WebRTC offer
 async def offer(request):
-    params = await request.json()  # Receive the SDP offer from the client
-    pc = RTCPeerConnection()
-    pcs.add(pc)
+    try:
+        params = await request.json()
+        print("Received SDP offer:", params)
 
-    # Add the video stream to the connection
-    pc.addTrack(VideoStream())
+        # Create RTCPeerConnection
+        pc = RTCPeerConnection()
+        pcs.add(pc)
 
-    # Handle the offer and create an answer
-    await pc.setRemoteDescription(RTCSessionDescription(sdp=params["sdp"], type=params["type"]))
-    answer = await pc.createAnswer()
-    await pc.setLocalDescription(answer)
+        # Add a video track
+        pc.addTrack(VideoStream())
 
-    return web.json_response({"sdp": pc.localDescription.sdp, "type": pc.localDescription.type})
+        # Set the remote description from the client's SDP
+        sdp = params.get("sdp")
+        sdp_type = params.get("type")
+        if not sdp or not sdp_type:
+            raise ValueError("Invalid SDP or type in request")
+
+        await pc.setRemoteDescription(RTCSessionDescription(sdp=sdp, type=sdp_type))
+
+        # Create and set a local description
+        answer = await pc.createAnswer()
+        await pc.setLocalDescription(answer)
+
+        # Send the SDP answer back to the client
+        response_data = {
+            "sdp": pc.localDescription.sdp,
+            "type": pc.localDescription.type,
+        }
+        return web.json_response(response_data)
+
+    except Exception as e:
+        print(f"Error in offer handling: {e}")
+        return web.Response(status=500, text=f"Error: {str(e)}")
+
+
 
 # Clean up connections
 async def on_shutdown(app):

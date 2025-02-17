@@ -70,7 +70,7 @@ def plot_signals(duration, sampling_rate, N, acceleration_signal, velocity_signa
     axs[0, 1].legend()
     axs[0, 1].grid()
     # Set the x-axis limits to zoom in on the first 10,000 Hz
-    # axs[0, 1].set_xlim(0, 100)  
+    axs[0, 1].set_xlim(0, 200)  
 
     # Plot the velocity signal
     axs[1, 0].plot(t, velocity_signal, label="Velocity Signal")
@@ -86,7 +86,7 @@ def plot_signals(duration, sampling_rate, N, acceleration_signal, velocity_signa
     axs[1, 1].set_ylabel("Magnitude")
     axs[1, 1].legend()
     axs[1, 1].grid()
-    # axs[1, 1].set_xlim(0, 100)  
+    axs[1, 1].set_xlim(0, 200)  
 
     # Plot the displacement signal
     axs[2, 0].plot(t, dis_signal, label="Displacement Signal")
@@ -102,7 +102,7 @@ def plot_signals(duration, sampling_rate, N, acceleration_signal, velocity_signa
     axs[2, 1].set_ylabel("Magnitude")
     axs[2, 1].legend()
     axs[2, 1].grid()
-    # axs[2, 1].set_xlim(0, 100)  
+    axs[2, 1].set_xlim(0, 200)  
 
     # Adjust layout
     plt.tight_layout()

@@ -1,0 +1,3 @@
+after stream------------
+pip install aiortc opencv-python aiohttp av
+pip install aiohttp_cors

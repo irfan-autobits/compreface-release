@@ -1,116 +1,179 @@
+# fft/final_fft/subs.py
 import paho.mqtt.client as mqtt
-from struct import *
 import json
+import os
+from struct import unpack
+from datetime import datetime
+from index import process_live
+# Define topics
+TOPIC_RAW = "wired/rawdata/E4:65:B8:2C:D8:B0"
+TOPIC_RMS = "wired/rms/E4:65:B8:2C:D8:B0"
+
+# Directory for saving data files
+DATA_DIR = "data_files"
+os.makedirs(DATA_DIR, exist_ok=True)
+
+# Global variables
+sens_rawdata = {"axis_x": {}, "axis_y": {}, "axis_z": {}}
+sens_rmsdata = {}
+counter = 1
 
 
 def construct_metadata_format_string():
-    f_string = '<'              # little endian
-    f_string += 'c' * 18        # macId
-    f_string += 'd'             # timestamp
-    f_string += 'i'             # blockSize
-    f_string += 'f'             # samplingRate
-    f_string += 'i'             # sensitivity
-    f_string += 'c'             # axis
-    f_string += 'f'  # temp
-    return f_string
+    return {
+        "macIdSize": 18,
+        "timestampSize": 8,
+        "blockSizeSize": 4,
+        "samplingRateSize": 4,
+        "sensitivitySize": 4,
+        "axisSize": 1,
+        "tempSize": 4,
+        "totalMetadataSize": 43,  # Sum of all sizes
+    }
 
 
 def get_payload_info(data):
+    metadata_info = construct_metadata_format_string()
+    macId_size = metadata_info["macIdSize"]
+    timestamp_size = metadata_info["timestampSize"]
+    blockSize_size = metadata_info["blockSizeSize"]
+    samplingRate_size = metadata_info["samplingRateSize"]
+    sensitivity_size = metadata_info["sensitivitySize"]
+    axis_size = metadata_info["axisSize"]
+    temp_size = metadata_info["tempSize"]
+    total_metadata_size = metadata_info["totalMetadataSize"]
 
-    macId_size = 18
-    timestamp_size = 8
-    blockSize_size = 4
-    sampling_rate_size = 4
-    sensitivity_size = 4
-    axis_size = 1
-    temp_size = 4
-    total_metadata_size = macId_size + sensitivity_size + timestamp_size + \
-        blockSize_size + sampling_rate_size + axis_size + temp_size
+    # Ensure the buffer size is sufficient
+    if len(data) < total_metadata_size:
+        raise ValueError(f"Data too short. Expected at least {total_metadata_size} bytes, got {len(data)} bytes.")
 
-    scaling_factor = 1
-    g = 9.8
+    offset = 0
+    mac_id = data[offset:offset + macId_size].decode("utf-8").replace("\0", "")
+    offset += macId_size
 
-    f_string = construct_metadata_format_string()
-    metadata = data[:total_metadata_size]
+    timestamp = unpack("<d", data[offset:offset + timestamp_size])[0]
+    offset += timestamp_size
 
-    decoded_metadata = unpack(f_string, metadata)
+    block_size = unpack("<i", data[offset:offset + blockSize_size])[0]
+    offset += blockSize_size
 
-    mac_id = "".join(x.decode('utf-8')
-                        for x in decoded_metadata[0: macId_size]).rstrip('\0')
-    timestamp = decoded_metadata[-6]
-    block_size = decoded_metadata[-5]
-    sampling_rate = decoded_metadata[-4]
-    sensitivity = decoded_metadata[-3]
-    axis = decoded_metadata[-2].decode('utf-8')
-    temp = decoded_metadata[-1]
+    sampling_rate = unpack("<f", data[offset:offset + samplingRate_size])[0]
+    offset += samplingRate_size
 
-    raw_data_format_string = 'h' * block_size
-    decoded_raw_data = unpack(
-        raw_data_format_string, data[total_metadata_size:])
+    sensitivity = unpack("<i", data[offset:offset + sensitivity_size])[0]
+    offset += sensitivity_size
 
-    if sensitivity == 8:
-        scaling_factor = float(2 ** 12)
-    elif sensitivity == 16:
-        scaling_factor = float(2 ** 11)
-    elif sensitivity == 32:
-        scaling_factor = float(2 ** 10)
-    elif sensitivity == 64:
-        scaling_factor = float(2 ** 9)
+    axis = data[offset:offset + axis_size].decode("utf-8")
+    offset += axis_size
 
-    raw_values = list(map(float, decoded_raw_data))
-    raw_values = [x / scaling_factor for x in raw_values]
+    temp = unpack("<f", data[offset:offset + temp_size])[0]
+
+    raw_data_format_string = f"<{block_size}h"
+    raw_data = unpack(raw_data_format_string, data[total_metadata_size:])
+
+    scaling_factors = {8: 2 ** 12, 16: 2 ** 11, 32: 2 ** 10, 64: 2 ** 9}
+    scaling_factor = scaling_factors.get(sensitivity, 1)
+
+    raw_values = [x / scaling_factor for x in raw_data]
 
     return {
-        'raw_data': raw_values,
-        'mac_id': mac_id,
-        'timestamp': timestamp,
-        'block_size': block_size,
-        'sampling_rate': sampling_rate,
-        'sensitivity': sensitivity,
-        'axis': axis,
-        'temp': temp
+        "raw_data": raw_values,
+        "mac_id": mac_id,
+        "timestamp": timestamp,
+        "block_size": block_size,
+        "sampling_rate": sampling_rate,
+        "sensitivity": sensitivity,
+        "axis": axis,
+        "temp": temp,
     }
 
-# Define callback functions
-def on_connect(client, userdata, flags, rc):
-    print("Connected with result code "+str(rc))
-    # Subscribe to a topic when connected
-    client.subscribe("wired/rawdata/E4:65:B8:2C:D8:B0")
-    # wired/rms/E4:65:B8:2C:D8:B0
 
-def on_message(client, userdata, msg):
-    # Decode the payload
-    DecodedRawData = get_payload_info(msg.payload)
+# Callback for raw data topic
+def on_raw_message(client, userdata, msg):
+    global sens_rawdata, counter, send_raw
 
-    with open("Decoded_rms_RawData.json", "w") as file:
-        # Use json.dump() to save the data into the file
-        file.write(json.dumps(str(DecodedRawData)))
-        
-    # Print the decoded data
-    print("data received", 
-        DecodedRawData.get('mac_id'), DecodedRawData.get('timestamp'), DecodedRawData.get('block_size'), DecodedRawData.get('sampling_rate'),
-        DecodedRawData.get('sensitivity'),  DecodedRawData.get('axis'), DecodedRawData.get('temp'), DecodedRawData.get('raw_data'))
+    try:
+        decoded_raw_data = get_payload_info(msg.payload)
+        axis = decoded_raw_data["axis"]
+
+        # Update the appropriate axis in sens_rawdata
+        if axis == "X":
+            sens_rawdata["axis_x"] = {**decoded_raw_data, "entry_ts": datetime.now().timestamp()}
+        elif axis == "Y":
+            sens_rawdata["axis_y"] = {**decoded_raw_data, "entry_ts": datetime.now().timestamp()}
+        elif axis == "Z":
+            sens_rawdata["axis_z"] = {**decoded_raw_data, "entry_ts": datetime.now().timestamp()}
+
+        # Save the data to JSON
+        raw_data_file = os.path.join(DATA_DIR, f"New_RawData_{counter}.json")
+        with open(raw_data_file, "w") as file:
+            json.dump(sens_rawdata, file, indent=2)
+        send_raw = raw_data_file
+        print(f"Saved raw data to {raw_data_file}")
+
+    except Exception as e:
+        print(f"Error processing raw message: {e}")
 
 
+# Callback for RMS data topic
+def on_rms_message(client, userdata, msg):
+    global sens_rmsdata, counter
 
-# Create a client instance
+    try:
+        # Parse the RMS data
+        sens_rmsdata = json.loads(msg.payload.decode("utf-8"))
+        plots = process_live(sens_rmsdata)
+        # Save the RMS data to JSON
+        rms_data_file = os.path.join(DATA_DIR, f"New_RMSData_{counter}.json")
+        with open(rms_data_file, "w") as file:
+            json.dump(sens_rmsdata, file, indent=2)
+        print(f"Saved RMS data to {rms_data_file}")
+
+        counter += 1
+
+    except Exception as e:
+        print(f"Error processing RMS message: {e}")
+
+
+# Callback for connection to raw data topic
+def on_connect(client, userdata, flags,extra, rc):
+    print(f"Connected to MQTT broker with result code {rc}")
+    client.subscribe(TOPIC_RAW)
+
+# def on_connect(client, userdata, flags, rc):
+# def on_message(client, userdata, msg):
+# Callback for connection to RMS data topic
+def on_rms_connect(client, userdata, flags,extra, rc):
+    print(f"Connected to MQTT broker for RMS data with result code {rc}")
+    client.subscribe(TOPIC_RMS)
+
+
+# Initialize MQTT clients
 client = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2)
+rms_client = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2)
 
-# Set callback functions
 client.on_connect = on_connect
-client.on_message = on_message
+client.on_message = on_raw_message
 
-# Connect to the MQTT broker
-client.connect("192.168.1.193", 1883, 60)
+rms_client.on_connect = on_rms_connect
+rms_client.on_message = on_rms_message
 
-# Start the MQTT loop
+# Connect to MQTT broker
+BROKER = "192.168.1.213"
+PORT = 1883
+
+client.connect(BROKER, PORT, 60)
+rms_client.connect(BROKER, PORT, 60)
+
 client.loop_start()
+rms_client.loop_start()
 
-
-# Keep the program running
+# Keep script running
 try:
     while True:
         pass
 except KeyboardInterrupt:
     client.loop_stop()
+    rms_client.loop_stop()
     client.disconnect()
+    rms_client.disconnect()

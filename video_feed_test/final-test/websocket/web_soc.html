@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebSocket Video Stream</title>
+</head>
+<body>
+    <img id="video" alt="Video Stream" style="width: 100%; max-width: 640px; height: auto;">
+    <script>
+        const videoElement = document.getElementById('video');
+        const ws = new WebSocket('ws://localhost:8080/ws');
+
+        ws.onmessage = (event) => {
+            const imageData = event.data; // Base64-encoded frame
+            videoElement.src = `data:image/jpeg;base64,${imageData}`;
+        };
+
+        ws.onerror = (error) => {
+            console.error("WebSocket error:", error);
+        };
+
+        ws.onclose = () => {
+            console.log("WebSocket connection closed");
+        };
+    </script>
+</body>
+</html>

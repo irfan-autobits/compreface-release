@@ -13,8 +13,10 @@ from compreface import CompreFace
 from datetime import datetime
 import struct
 from dotenv import load_dotenv
+from sqlalchemy import QueuePool, create_engine, Column, Integer, Text, DateTime
+from sqlalchemy.orm import declarative_base
+from sqlalchemy.orm import sessionmaker
 import re
-from database import init_db, Session, RecognitionResult
 
 # Load environment variables from .env file
 load_dotenv()
@@ -26,9 +28,38 @@ print(f'FACE_REC_TH = {FACE_REC_TH}')
 
 os.environ['QT_QPA_PLATFORM'] = 'xcb'
 
-# Initialize database
-init_db()
-    
+# Database setup
+DATABASE_URL = "postgresql+psycopg2://postgres:postgres@localhost:6432/frs"
+engine = create_engine(DATABASE_URL, echo=False)
+# engine = create_engine(
+#     DATABASE_URL,
+#     poolclass=QueuePool,
+#     pool_size=10,          # Number of connections in the pool
+#     max_overflow=20,       # Additional connections when pool is full
+#     pool_timeout=30,       # Seconds to wait before giving up on a connection
+#     pool_recycle=3600,     # Seconds after which connections are recycled
+# )
+
+Base = declarative_base()
+
+class RecognitionResult(Base):
+    __tablename__ = 'Hathi_recognition'
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    camera = Column(Text)
+    person = Column(Text)
+    accuracy = Column(Text)
+    image = Column(Text)
+    time = Column(DateTime(timezone=True))
+# -------- uncmt to stop append mode---------------------------------------
+# Drop the table
+# Base.metadata.drop_all(engine)
+# print("All tables have been dropped.")
+# --------------------------------------------------------------------------
+# Create tables in the database
+Base.metadata.create_all(engine)
+# Regular session setup (no async)
+Session = sessionmaker(engine)
+
 class ThreadedCamera:
     def __init__(self, host, port, api_key, use_rtsp, camera_name,rtsp_url='0', data_dir='Report'):
         self.active = True
@@ -158,6 +189,7 @@ class ThreadedCamera:
 
     def save_to_database(self, results):
         # Save the results to the database (non-async)
+        session = Session()
         try:
             batch = []
             for result in results:

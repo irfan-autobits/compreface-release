@@ -7,3 +7,7 @@ pip install asyncpg
 pip install flask
 pip install snakeviz
 pip install psutil
+fft----------
+pip install pyfftw
+pip install paho-mqtt
+pip install websocket-client

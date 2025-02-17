@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>WebRTC Stream</title>
+</head>
+<body>
+    <h1>WebRTC Video Stream</h1>
+    <video id="video" autoplay playsinline></video>
+    <script>
+        async function start() {
+
+            const pc = new RTCPeerConnection();
+
+            async function makeOffer() {
+                try {
+                    const offer = await pc.createOffer();
+                    await pc.setLocalDescription(offer);
+                
+                    console.log("Sending SDP Offer to server:", offer);
+                
+                    const response = await fetch("http://localhost:8080/offer", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({
+                            sdp: pc.localDescription.sdp,
+                            type: pc.localDescription.type,
+                        }),
+                    });
+                
+                    if (!response.ok) {
+                        const errorText = await response.text();
+                        console.error("Server error:", errorText);
+                        throw new Error(`Server error: ${errorText}`);
+                    }
+                
+                    const answer = await response.json();
+                    console.log("Received SDP Answer from server:", answer);
+                    await pc.setRemoteDescription(answer);
+                
+                } catch (error) {
+                    console.error("Error during WebRTC setup:", error);
+                }
+            }
+            makeOffer();
+
+            // Play incoming video stream
+            pc.ontrack = (event) => {
+                const video = document.getElementById("video");
+                video.srcObject = event.streams[0];
+            };
+        }
+        start();
+    </script>
+</body>
+</html>
+
+
+

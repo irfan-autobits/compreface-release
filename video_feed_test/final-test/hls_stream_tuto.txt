@@ -1,0 +1,414 @@
+Today’s article aims to demonstrate how to stream video processed in OpenCV as an HLS (HTTP Live Streaming) video stream using C++. I will use just the FFmpeg library and not the GStreamer pipeline to achieve my goal.
+
+HLS has a significant advantage as it runs over the HTTP protocol, making it highly compatible with various devices and network policies. The two main components of HLS are playlists and video segments. The playlists refer to small video segments located locally or served through an HTTP server.
+Opencv output is hls video stream served by a simple go server and a stream captured by VLC.
+Overview
+
+The concept is simple: an OpenCV `Mat` frame from any source is passed to FFMPEG lib to create a playlist and video segments, which are stored in a local folder. Then, any HTTP server that supports correct MIME types can provide the HLS stream to a player. So what you can see in the picture below is described in the following text.
+Text architecture
+
+    Prerequisites (FFMPEG and OpenCV installation for C++ project)
+    FFMPEG code explanation
+    Full source code
+    CMake configuration
+    Build scripts for Visual Studio
+    Golang server for HLS stream
+
+Prerequisites: OpenCV and FFMPEG Libraries
+
+To start, you’ll need to install OpenCV and FFMPEG. I recommend using the VCPKG installation method described in the following links:
+
+    VCPKG Installation for CMake Project
+    VCPKG Installation for Visual Studio Project
+
+FFmpeg basic step description
+
+The following steps are needed to achieve our goal:
+
+    Define video stream format
+    Define codec
+    Convert Mat to FFmpeg AVframe
+
+Prepare format Context
+
+Here’s the code to initialize the format context and output format for HLS output. outputFormat = av_guess_format("hls", NULL, NULL);: Sets the output format to HLS. The av_guess_format function attempts to guess the output format based on the provided parameters. avformat_alloc_output_context2 Allocates and initializes AVFormatContext *formatContextbased on guessed outputFormat and Playlist file name c:\\hlsco\\output.m3u8.
+
+AVFormatContext *formatContext = nullptr;
+const AVOutputFormat *outputFormat = av_guess_format("hls", NULL, NULL);
+string playlist_name = "C:\\hlsco\\output.m3u8";
+avformat_alloc_output_context2(&formatContext, outputFormat, NULL, playlist_name.c_str());
+
+Configuring HLS Options
+
+Next, configure the HLS-specific options using an AVDictionary:
+
+    av_dict_set(&options, "hls_time", "5", 0);
+    Set the segment duration to 5 seconds.
+    av_dict_set(&options, "hls_base_url", "http://localhost:1234/", 0);
+    Set the base URL for the HLS, the server then needs to provide segments on this address encoded in the playlist. This needs to be adjusted according to the server network-specific configuration. For example localhost, concrete IP, or even the local host file system for VLC player.
+    av_dict_set(&options, "segment_format", "mpegts", 0);
+    Sets the segment format to MPEG-TS. TS is meant for the transport stream in this case.
+    av_dict_set(&options, "segment_list_type", "m3u8", 0);
+    Specifies HLS M3U8 playlist file. That will provide reference to TS segments and the server needs to consider specific MIME types for the server M3U8 file.
+    av_dict_set(&options, "segment_list", playlist_name.c_str(), 0);
+    Sets the path where the playlist file will be stored string playlist_name = "C:\\hlsco\\output.m3u8";
+    This value is set in the first section of the code as C:\hlsco\utput.m3u8. Here my playlist will be allocated and content created/updated.
+    av_dict_set(&options, "segment_time", "5.0", 0);
+    Defines the segment duration as 5 seconds.
+    av_dict_set(&options, "segment_list_flags", "cache+live", 0); Configures the segment list behavior to include caching and live streaming features.
+
+AVDictionary *options = NULL;
+av_dict_set(&options, "hls_time", "5", 0); // Set segment duration to 5 seconds
+av_dict_set(&options, "hls_base_url", "http://localhost:1234/", 0);
+av_dict_set(&options, "segment_format", "mpegts", 0);
+av_dict_set(&options, "segment_list_type", "m3u8", 0);
+av_dict_set(&options, "segment_list", playlist_name.c_str(), 0);
+av_dict_set_int(&options, "segment_list_size", 0, 0);
+av_dict_set(&options, "segment_time_delta", "1.0", 0);
+av_dict_set(&options, "segment_time", "5.0", 0);
+av_dict_set(&options, "segment_list_flags", "cache+live", 0);
+
+Initializing the Stream and Codec
+
+It depends on what is your FFMPEG installation capable of (FFMPEG build options). I tested H264 and also H265. So in the following section, video encoding using the H.264 codec is used.
+
+    The first line creates a new stream within the given formatContext.
+    The second line avcodec_find_encoder(AV_CODEC_ID_H264);`: Searches for an H.264 video encoder codec. It depends on the FFMPEG configuration.
+    The third line allocates memory for an AVCodecContext associated with the chosen codec.
+
+Setting codec context parameters:
+
+    codecContext->width and codecContext->height
+    Set the video frame size.
+    codecContext->time_base
+    Specifies the time base for the stream.
+    codecContext->framerate
+    Defines the frame rate.
+    codecContext->pix_fmt = AV_PIX_FMT_YUV420P
+    Specifies the pixel format. This is important once the MAT will be converted to FFMPEG format.
+    codecContext->codec_id = AV_CODEC_ID_H264
+    Indicates the codec type.
+    codecContext->codec_type = AVMEDIA_TYPE_VIDEO
+    Specifies that this context is for video.
+    avcodec_open2
+    The line opens the codec for encoding.
+    avcodec_parameters_from_context(stream->codecpar, codecContext);
+    Now let our stream use codec context
+    avformat_write_header(formatContext, &options);
+    Write the format header to the output file.
+
+AVStream *stream = avformat_new_stream(formatContext, NULL);
+const AVCodec *codec = avcodec_find_encoder(AV_CODEC_ID_H264);
+AVCodecContext *codecContext = avcodec_alloc_context3(codec);
+codecContext->width = cap.get(cv::CAP_PROP_FRAME_WIDTH);
+codecContext->height = cap.get(cv::CAP_PROP_FRAME_HEIGHT);
+codecContext->time_base = av_make_q(1, 25);
+codecContext->framerate = av_make_q(25, 1);
+codecContext->pix_fmt = AV_PIX_FMT_YUV420P;
+codecContext->codec_id = AV_CODEC_ID_H264;
+codecContext->codec_type = AVMEDIA_TYPE_VIDEO;
+avcodec_open2(codecContext, codec, NULL);
+avcodec_parameters_from_context(stream->codecpar, codecContext);
+avformat_write_header(formatContext, &options);
+
+Allocating and Setting AVFrame Parameters
+
+The following code allocates and sets the parameters for an AVFrame to hold video data. The CV::Mat will be later filled by video data and moved to avFrame, when SwsContext will help with image representation translated from Opencv BGR to FFmpeg YUV.
+
+    AVFrame *avFrame = av_frame_alloc();
+    Allocates memory for an AVFrame structure to hold video data.
+    Setting AVFrame parameters
+    avFrame->format = AV_PIX_FMT_YUV420P;
+    Specifies the pixel format for the frame.
+    avFrame->width = codecContext->width;
+    Sets the frame width.
+    avFrame->height = codecContext->height;
+    Sets the frame height.
+    av_frame_get_buffer(avFrame, 0);
+    Allocates memory for the frame buffer.
+    struct SwsContext *swsContext = sws_getContext(...);
+    Creates a scaling context using the sws_getContext function to convert the OpenCV Mat BGR (blue, green, red) format to the YUV format defined in the codec.
+
+cv::Mat frame;
+AVFrame *avFrame = av_frame_alloc();
+avFrame->format = AV_PIX_FMT_YUV420P;
+avFrame->width = codecContext->width;
+avFrame->height = codecContext->height;
+av_frame_get_buffer(avFrame, 0);
+struct SwsContext *swsContext = sws_getContext(
+    codecContext->width, codecContext->height, AV_PIX_FMT_BGR24,
+    codecContext->width, codecContext->height, AV_PIX_FMT_YUV420P,
+    SWS_BILINEAR, NULL, NULL, NULL
+);
+
+Processing and Streaming Video Frames
+
+Finally, all configuration is prepared to do the job for us. So now, process and stream the opencv Mat frames till the break while looping.
+
+frame.data: This is the raw data of Mat structure in memory. (uint8_t *)frame.data: The frame.data is cast to a uint8_t pointer type to match the format expected by FFmpeg.
+
+int linesize[1] = {3 * frame.cols}; For video, size in bytes of each picture line. There are n rows (line) of video. The size of the line is the number of cols multiplied by 3. 3 represents RGB color channels.
+
+The sws_scale the function is called to scale the image data from the source pointer to frame.data and line size to the destination frame (avFrame->data and avFrame->linesize), performing necessary format conversions as defined by the swsContext.
+
+The avFrame->pts is set to the current presentation timestamp (PTS) based on the frame counter, time base, and frame rate, which helps in synchronizing the video playback.
+
+An AVPacket is initialized, which will store the encoded data. The packet's data and size are set to NULL, preparing it for receiving encoded data from the codec.
+
+The raw frame is sent to the encoder using avcodec_send_frame, and if successful, avcodec_receive_packet is used to get the encoded packet back. Now the encoded video is prepared. The packet is unreferenced after writing, and the frame counter is incremented for the next frame.
+av_interleaved_write_frame(formatContext, &pkt): writes the encoded packet to the output media. Now as the packet is sent to the output medium the packet can be freed and prepared for the next loop iterationav_packet_unref(&pkt);.
+
+while (true) {
+    if (!cap.read(frame)) {
+        break;
+    }
+
+    uint8_t *data[1] = {(uint8_t *)frame.data};
+    int linesize[1] = {3 * frame.cols};
+    sws_scale(swsContext, data, linesize, 0, frame.rows, avFrame->data, avFrame->linesize);
+    avFrame->pts = frameCounter * (formatContext->streams[0]->time_base.den) / frameRate;
+
+    AVPacket pkt;
+    av_init_packet(&pkt);
+    pkt.data = NULL;
+    pkt.size = 0;
+
+    if (avcodec_send_frame(codecContext, avFrame) == 0) {
+        if (avcodec_receive_packet(codecContext, &pkt) == 0) {
+            av_interleaved_write_frame(formatContext, &pkt);
+            av_packet_unref(&pkt);
+        }
+    }
+    frameCounter++;
+}
+
+Building the Project
+
+My environment consists of CMake for project configuration, Visual Studio 17 for project building and linking, and VCPKG for library dependency management of FFmpeg and Opencv. More details in the links above related to VCPKG.
+Project Structure
+
+Kind of standard, the result will be stored in the build directory.
+
+/tutorial_hls
+/tutorial_hls/build
+/tutorial_hls/main.cpp
+/tutorial_hls/CMakeLists.txt
+/tutorial_hls/Makefile.ps1
+CMake Configuration: CMakeLists.txt
+
+cmake_minimum_required(VERSION 3.15)
+project(opencv_p1 CXX)
+find_package(OpenCV REQUIRED)
+find_package(protobuf REQUIRED)
+find_package(FFMPEG REQUIRED)
+add_executable(main main.cpp)
+target_include_directories(main PRIVATE ${FFMPEG_INCLUDE_DIRS})
+target_link_directories(main PRIVATE ${FFMPEG_LIBRARY_DIRS})
+target_link_libraries(main PRIVATE ${OpenCV_LIBS} ${FFMPEG_LIBRARIES} protobuf::libprotoc protobuf::libprotobuf protobuf::libprotobuf-lite)
+
+PowerShell Build Script: Makefile.ps1
+
+param (
+    [Parameter(Mandatory=$true)]
+    [string]$Action
+)
+$project = Get-Location
+switch ($Action) {
+    "conf" {
+        mkdir build
+        Set-Location -Path $project\build
+        Write-Host "Configuring..."
+        cmake .. "-DCMAKE_TOOLCHAIN_FILE=C:/vcpkg/vcpkg/scripts/buildsystems/vcpkg.cmake" -G "Visual Studio 17 2022" -DCMAKE_CXX_STANDARD=17 -A x64
+        Set-Location -Path $project
+    }
+    "del" {
+        Write-Host "Delete..."
+        RM -r build
+    }
+    "build" {
+        Set-Location -Path $project\build
+        Write-Host "Building..."
+        cmake --build .
+        Set-Location -Path $project
+    }
+    default {
+        Write-Host "Unknown action: $Action"
+    }
+}
+
+Usage
+
+In PowerShell, you can use the following commands to configure, build, and delete the old build:
+
+.\Makefile.ps1 conf
+.\Makefile.ps1 del
+.\Makefile.ps1 build
+
+Full Source Code: main.cpp
+
+#include <opencv2/opencv.hpp>
+#include <string>
+#include <thread>
+extern "C" {
+#include <libavformat/avformat.h>
+#include <libavcodec/avcodec.h>
+#include <libswscale/swscale.h>
+#include <libavdevice/avdevice.h>
+}
+#include <iostream>
+using namespace std;
+int main() {
+    cv::VideoCapture cap("C:\\www\\town0.avi"); // Open the video file
+    AVFormatContext *formatContext = nullptr;
+    const AVOutputFormat *outputFormat = av_guess_format("hls", NULL, NULL);
+    string playlist_name = "C:\\hlsco\\playlist.m3u8";
+    avformat_alloc_output_context2(&formatContext, outputFormat, NULL, playlist_name.c_str());
+    AVDictionary *options = NULL;
+    av_dict_set(&options, "hls_time", "5", 0); // Set segment duration to 10 seconds
+    av_dict_set(&options, "hls_base_url", "http://localhost:8080/hls/", 0);
+    av_dict_set(&options, "segment_format", "mpegts", 0);
+    av_dict_set(&options, "segment_list_type", "m3u8", 0);
+    av_dict_set(&options, "segment_list", playlist_name.c_str(), 0);
+    av_dict_set_int(&options, "segment_list_size", 0, 0);
+    av_dict
+    _set(&options, "segment_time_delta", "1.0", 0);
+    av_dict_set(&options, "segment_time", "5.0", 0);
+    av_dict_set(&options, "segment_list_flags", "cache+live", 0);
+    AVStream *stream = avformat_new_stream(formatContext, NULL);
+    const AVCodec *codec = avcodec_find_encoder(AV_CODEC_ID_H264);
+    AVCodecContext *codecContext = avcodec_alloc_context3(codec);
+    codecContext->width = cap.get(cv::CAP_PROP_FRAME_WIDTH);
+    codecContext->height = cap.get(cv::CAP_PROP_FRAME_HEIGHT);
+    codecContext->time_base = av_make_q(1, 25);
+    codecContext->framerate = av_make_q(25, 1);
+    codecContext->pix_fmt = AV_PIX_FMT_YUV420P;
+    codecContext->codec_id = AV_CODEC_ID_H264;
+    codecContext->codec_type = AVMEDIA_TYPE_VIDEO;
+    avcodec_open2(codecContext, codec, NULL);
+    avcodec_parameters_from_context(stream->codecpar, codecContext);
+    avformat_write_header(formatContext, &options);
+    cv::Mat frame;
+    AVFrame *avFrame = av_frame_alloc();
+    avFrame->format = AV_PIX_FMT_YUV420P;
+    avFrame->width = codecContext->width;
+    avFrame->height = codecContext->height;
+    av_frame_get_buffer(avFrame, 0);
+    struct SwsContext *swsContext = sws_getContext(
+        codecContext->width, codecContext->height, AV_PIX_FMT_BGR24,
+        codecContext->width, codecContext->height, AV_PIX_FMT_YUV420P,
+        SWS_BILINEAR, NULL, NULL, NULL
+    );
+    int frameCounter = 0;
+    int frameRate = 25; // Frame rate of the output video
+    while (true) {
+        if (!cap.read(frame)) {
+            break;
+        }
+        uint8_t *data[1] = {(uint8_t *)frame.data};
+        int linesize[1] = {3 * frame.cols};
+        sws_scale(swsContext, data, linesize, 0, frame.rows, avFrame->data, avFrame->linesize);
+        avFrame->pts = frameCounter * (formatContext->streams[0]->time_base.den) / frameRate;
+        AVPacket pkt;
+        av_init_packet(&pkt);
+        pkt.data = NULL;
+        pkt.size = 0;
+        if (avcodec_send_frame(codecContext, avFrame) == 0) {
+            if (avcodec_receive_packet(codecContext, &pkt) == 0) {
+                av_interleaved_write_frame(formatContext, &pkt);
+                av_packet_unref(&pkt);
+            }
+        }
+        frameCounter++;
+    }
+    av_write_trailer(formatContext);
+    av_frame_free(&avFrame);
+    avcodec_free_context(&codecContext);
+    avio_closep(&formatContext->pb);
+    avformat_free_context(formatContext);
+    return 0;
+}
+
+Go based server
+
+The C++ app above will produce a stream within the file system that needs to be served through the server. The server needs to be able to reach playlists and segments and send them as requested. The server needs to support specific Mime typesapplication/vnd.apple.mpegurl and video/mp2t. I will use Go Lang to write a simple server. The server will listed on localhost port 8080 and the rest is described in the code.
+
+These three commands will let you run the provided code if Go is installed on your machine.
+go mod init hls-server
+go mod tidy
+go run main.go
+
+main.go with the content below
+
+package main
+import (
+ "log"
+ "net/http"
+ "path/filepath"
+ "strings"
+)
+
+
+// Define the MIME types for HLS
+const (
+ MimeTypeM3U8 = "application/vnd.apple.mpegurl"
+ MimeTypeTS   = "video/mp2t"
+)
+
+// Base directory for HLS files
+const baseDir = "C:/hlsco"
+// Handler for serving HLS files
+
+
+func hlsHandler(w http.ResponseWriter, r *http.Request) {
+ // Log the incoming request URL
+ log.Printf("Received request for: %s\n", r.URL.Path)
+ // Ensure the request path starts with "/hls/"
+ if !strings.HasPrefix(r.URL.Path, "/hls/") {
+  http.Error(w, "Invalid request path", http.StatusBadRequest)
+  return
+ }
+ // Get the file path from the request and map it to the base directory
+ filePath := filepath.Join(baseDir, r.URL.Path[len("/hls/"):])
+ // Log the resolved file path
+ log.Printf("Resolved file path: %s\n", filePath)
+ // Determine the MIME type based on the file extension
+ var mimeType string
+ switch filepath.Ext(filePath) {
+ case ".m3u8":
+  mimeType = MimeTypeM3U8
+ case ".ts":
+  mimeType = MimeTypeTS
+ default:
+  http.Error(w, "Unsupported file type", http.StatusUnsupportedMediaType)
+  return
+ }
+ // Set the appropriate content type
+ w.Header().Set("Content-Type", mimeType)
+ // Serve the file
+ http.ServeFile(w, r, filePath)
+}
+
+
+func main() {
+ // Define the HLS route
+ http.HandleFunc("/hls/", hlsHandler)
+ // Start the server
+ port := ":8080"
+ log.Printf("Starting server on %s\n", port)
+ if err := http.ListenAndServe(port, nil); err != nil {
+  log.Fatalf("Could not start server: %s\n", err)
+ }
+}
+
+Video player
+
+You can write a web video player that will point to the playlist. This tutorial is already too long to include this. I use VLC to capture network streams to produce my program and go server.
+VLC captures HLS stream
+Conclusion
+
+In this tutorial, I went through the process of setting up an HLS stream from Opencv Mat frame using FFmpeg. This stream can be served via an HTTP server and viewed on various devices supporting the HLS protocol like VLC or webplayer. All was achieved without Opencv build with Gstreamer support.
+
+This approach leverages the HTTP protocol’s advantages and enables streaming across various devices and networks of processed Opencv video.
+
+Leave me clap and follow for more.
+Thank you

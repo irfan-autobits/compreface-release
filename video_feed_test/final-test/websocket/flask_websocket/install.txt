@@ -1,0 +1,8 @@
+pip install flask-socketio
+pip install flask-cors
+pip install flask-sqlalchemy
+pip install PyJWT
+
+pip install eventlet
+pip install gevent gevent-websocket
+pip uninstall gevent-websocket gevent eventlet

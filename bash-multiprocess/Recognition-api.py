@@ -1,16 +1,23 @@
-import logging
+# bash-multiprocess/ffmpeg-cuda-batch-compreface.py
+import json
 import os
-import subprocess
+import sys
 import cv2
-import argparse
 import time
-from threading import Thread
-
-from compreface import CompreFace
-from compreface.service import RecognitionService
-from dotenv import load_dotenv
+import argparse
+import shutil
 import numpy as np
-
+import subprocess
+from threading import Thread, Lock
+from compreface import CompreFace
+from datetime import datetime
+import struct
+from dotenv import load_dotenv
+from sqlalchemy import QueuePool, create_engine, Column, Integer, Text, DateTime
+from sqlalchemy.orm import declarative_base
+from sqlalchemy.orm import sessionmaker
+import re
+from multiprocessing import Queue
 # Load environment variables from .env file
 load_dotenv()
 FACE_DET_TH = float(os.getenv("FACE_DET_TH", 0.8))
@@ -21,101 +28,113 @@ print(f'FACE_REC_TH = {FACE_REC_TH}')
 
 os.environ['QT_QPA_PLATFORM'] = 'xcb'
 
-
 class ThreadedCamera:
     def __init__(self, host, port, api_key, use_rtsp, camera_name,rtsp_url='0', data_dir='Report'):
         self.active = True
         self.results = []
-        self.start_ffmpeg(rtsp_url)
+        self.lock = Lock()
+        self.use_rtsp = use_rtsp
+        self.rtsp_url = rtsp_url
+        self.database_dir = data_dir
+        self.camera_name = camera_name
+        self.acc_file_path = os.path.join(self.database_dir, "logs.txt")
+        self.start_time = time.time()
+        # shutil.rmtree(self.database_dir, ignore_errors=True)
+        os.makedirs(self.database_dir, exist_ok=True)
 
-        compre_face: CompreFace = CompreFace(host, port, {
+        if use_rtsp:
+            self.start_ffmpeg(rtsp_url)
+        else:
+            self.capture = cv2.VideoCapture(0)
+            self.get_stream_info(self.capture, "Internal Camera")
+        
+        compre_face = CompreFace(host, port, {
             "limit": 0,
             "det_prob_threshold": FACE_DET_TH,
             "prediction_count": 1,
             "status": False
         })
+        self.recognition = compre_face.init_face_recognition(api_key)
 
-        self.recognition: RecognitionService = compre_face.init_face_recognition(api_key)
+        self.FPS = 1 / 25
+        self.FPS_MS = int(self.FPS * 1000)
+        self.frame = None
 
-        self.FPS = 1/25
-
-        # Start frame retrieval thread
-        self.thread = Thread(target=self.show_frame, args=())
-        self.thread.daemon = True
-        self.thread.start()
+        # Start the capture thread for continuous frame fetching
+        self.capture_thread = Thread(target=self.update, args=())
+        self.capture_thread.daemon = True
+        self.capture_thread.start()
+        self.detection_history = []  # Store history of detections
+        self.max_history = 10  # Keep track of the last 10 detections
+        self.repeat_threshold = 5  # Number of repeated detections to consider stuck
 
     def start_ffmpeg(self, src):
         command = [
-            'nice', '-n', '10',    # Lower priority
-            'ffmpeg',
-            '-i', src, 
+            'nice', '-n', '10',
+            'ffmpeg', 
+            # '-hwaccel', 'cuda', 
+            '-i', src,
             '-vf', 'scale=960:540',
-            '-f', 'rawvideo',      
-            '-pix_fmt', 'bgr24',   
-            '-an',                  
-            '-sn',                  
-            '-'
+            '-f', 'rawvideo', 
+            '-pix_fmt', 'bgr24', 
+            # '-pix_fmt', 'nv12', 
+            # '-pix_fmt', 'yuv420p',
+            '-an', '-sn', '-'
         ]
         self.pipe = subprocess.Popen(command, stdout=subprocess.PIPE, bufsize=10**8)
-        
-    def show_frame(self):
-        print("Started")
-        while True:
-            raw_frame = self.pipe.stdout.read(960 * 540 * 3)  # Assuming 1920x1080 resolution
-            self.frame = np.frombuffer(raw_frame, np.uint8).reshape((540, 960, 3)).copy()
-
-
-            if self.results:
-                results = self.results
-                for result in results:
-                    box = result.get('box')
-                    subjects = result.get('subjects')
-                    if box:
-                        cv2.rectangle(img=self.frame, pt1=(box['x_min'], box['y_min']),
-                                      pt2=(box['x_max'], box['y_max']), color=(0, 255, 0), thickness=1)
-                        if subjects:
-                            subjects = sorted(subjects, key=lambda k: k['similarity'], reverse=True)
-                            subject = f"Subject: {subjects[0]['subject']}"
-                            similarity = f"Similarity: {subjects[0]['similarity']}"
-                            cv2.putText(self.frame, subject, (box['x_max'], box['y_min'] + 75),
-                                        cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 0), 1)
-                            cv2.putText(self.frame, similarity, (box['x_max'], box['y_min'] + 95),
-                                        cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 0), 1)
-                        else:
-                            subject = f"No known faces"
-                            cv2.putText(self.frame, subject, (box['x_max'], box['y_min'] + 75),
-                                        cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 0), 1)
-
-            cv2.imshow('CompreFace demo', self.frame)
-            time.sleep(self.FPS)
-
-            if cv2.waitKey(1) & 0xFF == 27:
-                self.capture.release()
-                cv2.destroyAllWindows()
-                self.active=False
-
-    def is_active(self):
-        return self.active
 
     def update(self):
-        if not hasattr(self, 'frame'):
+        frame_width = 960
+        frame_height = 540
+        frame_size = frame_width * frame_height * 3
+        while self.active:
+            if self.use_rtsp and self.pipe:
+                raw_frame = self.pipe.stdout.read(frame_size)
+                if len(raw_frame) != frame_size:
+                    print("Failed to grab frame from FFmpeg")
+                    break
+                with self.lock:
+                    self.frame = np.frombuffer(raw_frame, np.uint8).reshape((frame_height, frame_width, 3)).copy()
+
+    def show_frame(self, frame_count, frame_queue: Queue):
+        if self.frame is None:
             return
+    
+        with self.lock:
+            display_frame = self.frame.copy()
+    
+        cv2.imshow('Frame', display_frame)
+    
+        # Check if queue is full to avoid blocking
+        if not frame_queue.full():
+            frame_queue.put(display_frame)
+        else:
+            print("Frame queue is full!")  # Debug print
+    
+        key = cv2.waitKey(self.FPS_MS) & 0xFF
+        if key == ord('q') or key == 27:
+            print("Exiting..................................................")
+            self.active = False
+            cv2.destroyAllWindows()
 
-        _, im_buf_arr = cv2.imencode(".jpg", self.frame)
-        byte_im = im_buf_arr.tobytes()
-        # start_time = time.time()
-        data = self.recognition.recognize(byte_im)
-        # api_time = time.time() - start_time
-        # logging.info(f"API response time: {api_time} seconds")
-        # print(f"API response time: {api_time} seconds")
-        self.results = data.get('result')
-        
+import signal
+import sys
 
+def signal_handler(sig, frame):
+    print("Interrupt received. Cleaning up...")
+    print("Exiting..................................................")
+    cv2.destroyAllWindows()
+    sys.exit(0)
 
+# Attach the handler
+signal.signal(signal.SIGINT, signal_handler)
+
+# Main entry point
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument("--rtsp-url", type=str, default='0')
     parser.add_argument("--data-dir", type=str, default='Report')
+    parser.add_argument("--frame-queue", type=str, default='0')
     args = parser.parse_args()
     frame_count = 0 
     host = 'http://localhost'
@@ -123,11 +142,22 @@ if __name__ == '__main__':
     api_key = API_KEY
     use_rtsp = args.rtsp_url != '0'
 
+    frame_queue = Queue()
+    print(f"frame_queue initialized: {frame_queue}")
+
 
     # Append database directory to the camera name
     camera_name = f"{args.data_dir}"
+    
     threaded_camera = ThreadedCamera(host, port, api_key, use_rtsp, camera_name ,args.rtsp_url, args.data_dir)
-    while threaded_camera.is_active():
-        if frame_count % 1 ==0:
-            threaded_camera.update()
-        frame_count+=1
+    database_dir = args.data_dir
+
+    while threaded_camera.active:
+        try :
+            # if frame_count % 2 == 0:
+            threaded_camera.show_frame(frame_count, frame_queue)
+            frame_count+=1
+        except KeyboardInterrupt:
+            # This ensures that pressing Ctrl+C will exit cleanly
+            signal_handler(None, None)
+            break
