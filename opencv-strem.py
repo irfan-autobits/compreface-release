@@ -73,8 +73,9 @@ if __name__ == '__main__':
     src = 'rtsp://autobits:Autobits@123@192.168.1.204:554'
     # src1 = 'rtsp://autobits:Autobits@1234@192.168.1.202:554'
     src1 = 'rtsp://autobits:Autobits%401234@192.168.1.202:554'
+    st = "rtsp://marketingoffice:CameraOffice@999@10.20.11.2:554/unicast/c4/s0/live"
     try:
-        threaded_camera = ThreadedCamera()
+        threaded_camera = ThreadedCamera(st)
         while True:
             try:
                 threaded_camera.show_frame()

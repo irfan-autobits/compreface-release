@@ -44,7 +44,6 @@ const CameraFeed = () => {
                             id={'feed_' + cameraName}
                             src={`data:image/jpeg;base64,${cameraFeeds[cameraName].image}`}
                             alt={cameraName}
-                            width="320"
                         />
                     </div>
                 ))}

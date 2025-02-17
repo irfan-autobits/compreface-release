@@ -158,8 +158,30 @@ const Dashboard = () => {
         console.error("Error stopping camera:", error);
       });
   }
+
+  function getRecoTable () {
+    fetch("/api/reco_table", {
+      method: "GET"
+    })
+      .then(async (response) => {
+        const responseData = await response.json(); // Parse JSON response
+        if (!response.ok) {
+          // Handle HTTP error responses
+          throw new Error(responseData.error || "Something went wrong");
+        }
+        
+        return responseData; // Successful response
+      })
+      .then((data) => {
+        console.log("reco_table :", data);
+      })
+      .catch((error) => {
+        console.error("Error stopping camera:", error);
+      });
+  }
   useEffect(() => {
     getCamerasList();
+    getRecoTable();
   }, []);
 
   const [cameraFeeds, setCameraFeeds] = useState({});
@@ -329,26 +351,37 @@ const Dashboard = () => {
                               [cameraName]: false,
                             });
                             handle_stop_Submit(cameraName);
-                          }}
-                        />
-                      </div>
+                            }}
+                            />
+                          </div>
+                          </div>
+                        </div>
+                        <div className="cam-preview" onClick={() => {
+                          const imgElement = document.getElementById("feed_" + cameraName);
+                          if (imgElement.requestFullscreen) {
+                          imgElement.requestFullscreen();
+                          } else if (imgElement.mozRequestFullScreen) { // Firefox
+                          imgElement.mozRequestFullScreen();
+                          } else if (imgElement.webkitRequestFullscreen) { // Chrome, Safari and Opera
+                          imgElement.webkitRequestFullscreen();
+                          } else if (imgElement.msRequestFullscreen) { // IE/Edge
+                          imgElement.msRequestFullscreen();
+                          }
+                        }}>
+                          <img
+                          id={"feed_" + cameraName}
+                          src={`data:image/jpeg;base64,${cameraFeeds[cameraName].image}`}
+                          alt={cameraName}
+                          style={{ width: "100%", height: "auto", objectFit: "contain" }}
+                          />
+                        </div>
+                        </div>
+                      )}
+                      </Fragment>
+                    ))}
                     </div>
                   </div>
-                  <div className="cam-preview">
-                    <img
-                      id={"feed_" + cameraName}
-                      src={`data:image/jpeg;base64,${cameraFeeds[cameraName].image}`}
-                      alt={cameraName}
-                      width="400"
-                    />
                   </div>
-                </div>
-              )}
-            </Fragment>
-          ))}
-        </div>
-      </div>
-    </div>
     // <div>
     //   <h1>Welcome to the Dashboard</h1>
     // <form onSubmit={handle_add_Submit}>

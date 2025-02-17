@@ -1,4 +1,5 @@
 import os
+import time
 import cv2
 import numpy as np
 import subprocess
@@ -26,16 +27,23 @@ class ThreadedCamera(object):
     def start_ffmpeg(self):
         command = [
             'ffmpeg',
-            "-hwaccel", "cuda",                 # Enable CUDA hardware acceleration
-            "-hwaccel_output_format", "cuda",   # Use CUDA for the output format
-            '-i', self.src,                     # Input RTSP stream
-            '-f', 'rawvideo',                   # Output format
-            '-pix_fmt', 'bgr24',                # Pixel format for OpenCV
-            '-sn',                              # Disable subtitles
-            '-tune', 'zerolatency',             # Tune for low latency
+            # "-hwaccel", "cuda",                 # Enable CUDA hardware acceleration
+            '-i', self.src,
+            '-f', 'rawvideo',
+            '-pix_fmt', 'bgr24',
+            '-sn',
+            '-tune', 'zerolatency',
             '-'
         ]
-        self.pipe = subprocess.Popen(command, stdout=subprocess.PIPE, bufsize=10**8)
+        try:
+            self.pipe = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, bufsize=10**8)
+            time.sleep(1)  # give it a moment to start
+            if self.pipe.poll() is not None:
+                err = self.pipe.stderr.read().decode()
+                print("FFmpeg process terminated immediately:", err)            
+        except Exception as e:
+            print(f"Error starting FFmpeg: {e}")
+
 
     def start_audio(self):
         # Start ffplay to play only the audio part of the RTSP stream
@@ -46,9 +54,12 @@ class ThreadedCamera(object):
 
     def update(self):
         while True:
-            raw_frame = self.pipe.stdout.read(1920 * 1080 * 3)  # Assuming 1920x1080 resolution
+            raw_frame = self.pipe.stdout.read(1920 * 1080 * 3)
+            print("Read", len(raw_frame), "bytes")  # diagnostic print
             if len(raw_frame) != 1920 * 1080 * 3:
-                print("Failed to grab frame from FFmpeg")
+                err = self.pipe.stderr.read().decode()
+                print("Failed to grab frame from FFmpeg. Expected", 1920 * 1080 * 3, "bytes, got", len(raw_frame))
+                print("FFmpeg stderr:", err)
                 break
             self.frames = np.frombuffer(raw_frame, np.uint8).reshape((1080, 1920, 3))
 
