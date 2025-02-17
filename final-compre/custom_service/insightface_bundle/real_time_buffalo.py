@@ -5,6 +5,9 @@ from custom_service.insightface_bundle.verify_euclidean_dis import verify_identi
 from app.models.model import Raw_Embedding, db
 from flask import current_app      
 
+from custom_service.insightface_bundle.silent_antispoof.real_time_antispoof import test
+from config.Paths import MODELS_DIR, INSIGHT_MODELS
+spoof_dir = MODELS_DIR / "anti_spoof_models"
 # Initialize the InsightFace app with detection and recognition modules.
 # analy_app = FaceAnalysis(allowed_modules=['detection', 'recognition'])
 model_zoo = ['buffalo_l', 'buffalo_m', 'buffalo_s']
@@ -12,12 +15,10 @@ model_pack_name = model_zoo[1]
 analy_app = FaceAnalysis(name=model_pack_name ,allowed_modules=['detection', 'landmark_3d_68'])
 analy_app.prepare(ctx_id=0, det_size=(640, 640))
 
-rec_handler = get_model('/home/irfan/.insightface/models/buffalo_m/w600k_r50.onnx')
+rec_model = INSIGHT_MODELS / model_pack_name / "w600k_r50.onnx"
+rec_handler = get_model(str(rec_model))
+# rec_handler = get_model('/home/irfan/.insightface/models/buffalo_m/w600k_r50.onnx')
 rec_handler.prepare(ctx_id=0)
-
-from custom_service.insightface_bundle.silent_antispoof.real_time_antispoof import test
-from config.Paths import MODELS_DIR
-spoof_dir = MODELS_DIR / "anti_spoof_models"
 
 def verification(input_embedding):
     # Example usage with known embeddings from the database

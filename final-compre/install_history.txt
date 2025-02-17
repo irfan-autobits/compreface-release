@@ -11,20 +11,21 @@ pip install bcrypt
 pip install cached-property
 pip install gdown
 pip install psycopg2
-# cpu
-pip install onnxruntime       
-# gpu
-pip install onnxruntime-gpu
 pip install uwsgi
 pip install insightface
 pip install psutil
 
+# gpu
+pip install onnxruntime-gpu
 pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
 conda install -c conda-forge libstdcxx-ng
 
-# cpu 
+# cpu
+pip install onnxruntime 
 pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu
 conda install -c conda-forge libstdcxx-ng
+
+pip uninstall torch torchvision torchaudio
 
 additional cuda-toolkit (nvcc)-------------
 sudo apt update

@@ -11,6 +11,8 @@ load_dotenv()
 
 # Define the base directory as the directory where the script is located
 BASE_DIR = Path(__file__).resolve().parent.parent
+INSIGHTFACE_ROOT = Path('~/.insightface').expanduser()
+INSIGHT_MODELS = INSIGHTFACE_ROOT / "models"
 
 # Define other paths relative to the base directory
 DATABASE_DIR = BASE_DIR / "Reports"
