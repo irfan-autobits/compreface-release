@@ -10,7 +10,8 @@ class ThreadedCamera(object):
         self.capture = cv2.VideoCapture(src)
         # self.capture.set(cv2.CAP_PROP_BUFFERSIZE, 0)
         self.get_stream_info(self.capture, "RTSP")
-        
+        self.new_width = 0
+        self.new_height = 0
         # Ensure the video capture is successfully opened
         if not self.capture.isOpened():
             raise Exception(f"Failed to open video source: {src}")
@@ -41,7 +42,12 @@ class ThreadedCamera(object):
     def show_frame(self):
         
         if self.frame is not None:
-            # self.frame = self.prewhiten(self.frame)
+            # Resize the frame to 1080p resolution
+            scale_factor = 2  # Modify as needed
+            h, w = self.frame.shape[:2]
+            self.new_width = w * scale_factor
+            self.new_height = h * scale_factor
+            self.frame = cv2.resize(self.frame, (self.new_width, self.new_height))
             cv2.imshow('frame', self.frame)
             cv2.waitKey(self.FPS_MS)
         else:
@@ -61,10 +67,9 @@ class ThreadedCamera(object):
         codec_bytes = struct.unpack('4s', struct.pack('<I', int(codec)))[0]
         codec_str = codec_bytes.decode('utf-8').strip()
 
-
-
         print(f"{stream_type} Stream Info:")
         print(f"Resolution: {int(width)} x {int(height)}")
+        # print(f"New Res   : {int(self.new_width)} x {int(self.new_height)}")
         print(f"Frame rate: {fps} FPS")
         print(f"Codec: {codec_str}")
         print("------------------------------")
@@ -75,7 +80,7 @@ if __name__ == '__main__':
     src1 = 'rtsp://autobits:Autobits%401234@192.168.1.202:554'
     st = "rtsp://marketingoffice:CameraOffice@999@10.20.11.2:554/unicast/c4/s0/live"
     try:
-        threaded_camera = ThreadedCamera(st)
+        threaded_camera = ThreadedCamera()
         while True:
             try:
                 threaded_camera.show_frame()

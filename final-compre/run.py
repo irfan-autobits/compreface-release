@@ -5,6 +5,9 @@ from flask import Flask
 from flask_socketio import SocketIO, emit
 import cv2
 import base64
+
+import torch
+# import nvtx
 from config.Paths import frame_lock, cam_sources, vs_list
 from config.logger_config import cam_stat_logger , console_logger, exec_time_logger
 from config.config import Config
@@ -27,9 +30,6 @@ def create_app():
 
 app = create_app()
 
-def wsgi_app():
-    return app
-
 # Enable CORS for all routes, including SocketIO
 # CORS(app, origins=["http://localhost:3000"])
 CORS(app, resources={r"/*": {"origins": "*"}})  # Adjust the wildcard "*" to specific origins for better security.
@@ -46,6 +46,7 @@ db.init_app(app)
 with app.app_context():
     manage_table(spec = True) # drop all tables
     db_url = app.config['SQLALCHEMY_DATABASE_URI']
+    print(f"dburl: {db_url}")
     import_tab(db_url)
     responce, status = Default_cameras()
 
@@ -56,6 +57,8 @@ def send_frame():
     log_interval = 1
     frame_count = defaultdict(int)
     last_frame_time = defaultdict(lambda: time.time())   
+    start_time = defaultdict(lambda: time.time())   
+    frame_time = defaultdict(lambda: time.time())   
     is_compre = True 
     """function to send frames to the client from all cameras"""
     try:
@@ -65,19 +68,29 @@ def send_frame():
                     for cam_name, vs in list(vs_list.items()):  # Create a list to avoid runtime changes
                         frame = vs.read()                            
                         # frame cal
-                        if frame_count[cam_name] % log_interval == 0:
-                            current_time = time.time()
-                            time_diff = current_time - last_frame_time[cam_name]
-                            fps = 1 / time_diff if time_diff > 0 else 0
-                            last_frame_time[cam_name] = current_time 
+                        # if frame_count[cam_name] % log_interval == 0:
+                        #     current_time = time.time()
+                        #     time_diff = current_time - last_frame_time[cam_name]
+                        #     fps = 1 / time_diff if time_diff > 0 else 0
+                        #     last_frame_time[cam_name] = current_time 
                             
-                            exec_time_logger.debug(f"took {time_diff:.4f} seconds with compreface as :{is_compre} for camera {cam_name}")
+                            # exec_time_logger.debug(f"took {time_diff:.4f} seconds with compreface as :{is_compre} for camera {cam_name}")
                         frame_count[cam_name] += 1
                         if frame is not None:
                             if frame_count[cam_name] % log_interval == 0:
                                 cam_stat_logger.debug(f"Processed {frame_count[cam_name]} frames from camera {cam_name} at {fps:.2f} FPS")
-                            if frame_count[cam_name] % 1 == 0 and is_compre:
+                            if frame_count[cam_name] % 6 < 3 and is_compre:
+                                start_time[cam_name] = time.time()  # Start timing before reading the frame
+                                
+                                # with torch.profiler.profile(activities=[torch.profiler.ProfilerActivity.CUDA]) as prof:
+                                    # torch.cuda.nvtx.range_push(f"Processing frame for {cam_name}")
                                 frame = face_processor.process_frame(frame, cam_name)
+                                    # torch.cuda.nvtx.range_pop()
+                                    
+                                # print(prof.key_averages().table(sort_by="cuda_time_total"))                                 
+                                frame_time[cam_name] = time.time() - start_time[cam_name] 
+                                exec_time_logger.debug(f"took {frame_time[cam_name]:.4f} seconds for camera {cam_name}")
+
                             # Encode the frame as JPEG
                             _, buffer = cv2.imencode('.jpg', frame)
                             frame_data = base64.b64encode(buffer).decode('utf-8')
@@ -85,7 +98,7 @@ def send_frame():
                             socketio.emit('frame', {'camera_name': cam_name, 'image': frame_data})
                         else:
                             if frame_count[cam_name] % log_interval == 0:
-                                cam_stat_logger.warning(f"No frame read from camera {cam_name} after {frame_count[cam_name]} attempts at {fps:.2f} FPS")
+                                cam_stat_logger.warning(f"No frame read from camera {cam_name} after {frame_count[cam_name]} attempts ")
                             socketio.emit('frame', {'camera_name': cam_name})
                 socketio.sleep(FPS)     
     except Exception as e:

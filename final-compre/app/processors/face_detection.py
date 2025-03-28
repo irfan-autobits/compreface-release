@@ -35,7 +35,7 @@ class FaceDetectionProcessor:
         if self.call_counter % self.max_call_counter == 0:
             process = psutil.Process()  # Get current process
             mem_before = process.memory_info().rss  # Resident Set Size (RSS) in bytes
-            self.libc.malloc_trim(0)  # Force memory release
+            # self.libc.malloc_trim(0)  # Force memory release
             mem_after = process.memory_info().rss  # Check memory after cleanup
             freed_memory = mem_before - mem_after  # Calculate freed memory
             print(f"Memory cleanup done. Freed: {freed_memory / (1024 * 1024):.2f} MB")
@@ -44,13 +44,13 @@ class FaceDetectionProcessor:
         # time_taken = timeit.timeit(lambda: compreface_api(frame), number=1)  # Execute 10 times
         # exec_time_logger.debug(f"compreface api Execution time: {time_taken / 10:.5f} seconds per run")
         if results:            
-            print("got res")
+            # print("got res")
             for result in results:
                 box = result.get('box')
                 landmarks = result.get('landmarks')
                 landmark_3d_68 = result.get("landmark_3d_68")
                 spoof_res = result.get("spoof_res")
-                print(f"spoof res : {spoof_res}")
+                # print(f"spoof res : {spoof_res}")
 
                 probability = box['probability']
                 if probability <= 0.57:
@@ -64,7 +64,7 @@ class FaceDetectionProcessor:
                 is_unknown = False
                 # if similarity >= float(FACE_REC_TH):
                 # if probability > 0.57:
-                if similarity <= 1.25:
+                if similarity <= 1.17:
                     color = (0, 255, 0)  # Green color for text                        
                 else:
                     color = (0, 0, 255)
@@ -74,7 +74,7 @@ class FaceDetectionProcessor:
                 # exec_time_logger.debug(f"detection - {detector_time/1000},calc - {calc_time/1000} camera :{cam_name} for {len(results)} result")
 
                 # visulize(embedding)
-                frame = Drawing_on_frame(frame, box, landmarks, landmark_3d_68, subject, color, probability, spoof_res, draw_lan=True)  
+                frame = Drawing_on_frame(frame, box, landmarks, landmark_3d_68, subject, color, probability, spoof_res, similarity, draw_lan=False)  
                 # face_path = save_image(frame, cam_name, box, subject, similarity, is_unknown)
                 # # Use the app context explicitly
                 # with self.app.app_context():

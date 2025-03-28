@@ -2,4 +2,4 @@ Reports/
 embedding_req/
 /.models/
 /Vis_res/
-weights/
+weights/conda install -c conda-forge pycuda

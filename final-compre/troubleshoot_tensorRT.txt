@@ -1,0 +1,17 @@
+check for a cuDNN file-
+find $CONDA_PREFIX -name "libcudnn.so*"
+
+check path --
+echo $LD_LIBRARY_PATH
+
+fix path--
+export LD_LIBRARY_PATH=$CONDA_PREFIX/lib:$LD_LIBRARY_PATH
+
+install onnxruntime 
+conda install -c conda-forge onnxruntime
+
+remove it 
+conda remove onnxruntime
+
+backup env 
+conda env export > environment_backup.yml

@@ -1,0 +1,21 @@
+docker build -t tensor .
+docker build -t tensor -f run.Dockerfile .
+
+docker run --gpus all -p 5757:5757 tensor
+
+docker run -it --rm --gpus all nvcr.io/nvidia/tensorrt:23.03-py3 bash
+# binding with container this uses 
+docker run -it --rm --gpus all -v /home/autobits/.insightface/models/buffalo_l:/workspace/buffalo_l nvcr.io/nvidia/tensorrt:23.03-py3 bash
+# or optimized
+docker run -it --rm --gpus all \
+  --ulimit memlock=-1 \
+  --shm-size=8g \
+  -v /home/autobits/.insightface/models/buffalo_l:/workspace/buffalo_l \
+  nvcr.io/nvidia/tensorrt:23.03-py3 bash
+
+
+docker run -it --rm --gpus all tensor bash
+
+docker run -it --rm --gpus all docker_rt-app bash
+# shell in running container
+docker compose exec tensor_app bash

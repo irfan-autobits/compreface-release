@@ -12,7 +12,11 @@ profile_stats
 /embeddings/facenet/
 /embeddings/insightface/
 *.png
-
+*.jpg
+*.jpeg
+*.onnx
+*.pth
+*.tar.xz
 # dev_req.txt
 tmp/
 .env

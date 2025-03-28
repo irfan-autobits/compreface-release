@@ -1,0 +1,29 @@
+name: tensorruntime
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.10.16
+  - libstdcxx-ng
+  - pip
+  - pip:
+      - flask-socketio
+      - flask-cors
+      - flask-sqlalchemy
+      - python-dotenv
+      - PyJWT
+      - pytz
+      - attrs
+      - scikit-image
+      - opencv-python-headless
+      - bcrypt
+      - cached-property
+      - gdown
+      - psycopg2
+      - uwsgi
+      - insightface
+      - psutil
+      - onnxruntime-gpu
+      - torch
+      - torchvision
+      - torchaudio

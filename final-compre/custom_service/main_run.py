@@ -13,7 +13,8 @@ from config.logger_config import cam_stat_logger , console_logger, exec_time_log
 
 # retinaface imports
 # from custom_service.Pytorch_Retinaface.Real_time_detector import FaceDetectorRetinaFace
-from custom_service.insightface_bundle.real_time_buffalo import run_buffalo
+from custom_service.insightface_bundle.real_time_buffalo import run_buffalo 
+from custom_service.pytorch_tensorRT.real_time_trt import run_trt
 
 # from custom_service.pytorch_arcface.recognition import cal_embedding
 
@@ -53,50 +54,14 @@ def insightface_buffalo(frame):
 
         compreface_results = []   
     return compreface_results
+
+def tensorrt_buffalo(frame):
+    try:
+        compreface_results = run_trt(frame)
+    except Exception as e:
+        print(e)
+        traceback.print_exc() 
+
+        compreface_results = []   
+    return compreface_results    
     
-DET_PROB_THRESHOLD = 0.8
-# frame_bgr = frame_rgb[..., ::-1]  # Convert RGB to BGR
-
-# def init_model() -> None:
-#     detector = managers.plugin_manager.detector
-#     face_plugins = managers.plugin_manager.face_plugins
-#     detector(
-#         img=read_img(str(IMG_DIR / 'einstein.jpeg')),
-#         det_prob_threshold= DET_PROB_THRESHOLD,
-#         face_plugins=face_plugins
-#     )
-#     print("Starting to load ML models")
-#     return None
-
-# def find_faces_post(frame):
-#     try:
-#         detector = managers.plugin_manager.detector
-#         faces = detector(
-#             img=frame,
-#             det_prob_threshold= DET_PROB_THRESHOLD,
-#             face_plugins= []
-#         )
-#         det_logger.info(f"returned faces-----------:{faces}")
-#         compreface_results = process_detection_dto(faces)
-#         print(f"formatted {compreface_results}")
-#     except Exception as e:
-#         print(e)
-#         traceback.print_exc() 
-#         compreface_results = []
-
-#     return compreface_results
-
-# def scan_faces_post(frame):
-#     try:
-#         faces = scanner.scan(
-#             img=frame,
-#             det_prob_threshold= DET_PROB_THRESHOLD
-#         )
-#         det_logger.info(f"returned faces-----------:{faces}")
-#         # compreface_results = process_face_dto(faces, scanner.ID)
-#         print(f"formatted {compreface_results}")
-#     except Exception as e:
-#         print(e)
-#         compreface_results = []
-
-#     return compreface_results

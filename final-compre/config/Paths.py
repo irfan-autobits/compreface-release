@@ -13,6 +13,9 @@ load_dotenv()
 BASE_DIR = Path(__file__).resolve().parent.parent
 INSIGHTFACE_ROOT = Path('~/.insightface').expanduser()
 INSIGHT_MODELS = INSIGHTFACE_ROOT / "models"
+# model_zoo = ['buffalo_l', 'buffalo_m', 'buffalo_s']
+# model_pack_name = model_zoo[1]
+model_pack_name = os.getenv("model_pack_name", "buffalo_l")
 
 # Define other paths relative to the base directory
 DATABASE_DIR = BASE_DIR / "Reports"

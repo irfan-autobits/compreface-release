@@ -1,0 +1,61 @@
+
+volumes:
+  postgres-data:
+
+services:
+
+  db:
+    container_name: postgres-db
+    restart: always
+    build:
+      context: ./db    
+    ports:
+      - "6432:5432"
+    environment:
+      - POSTGRES_USER=${postgres_username}
+      - POSTGRES_PASSWORD=${postgres_password}
+      - POSTGRES_HOST=${postgres_domain}
+      - POSTGRES_PORT=${postgres_port}
+      - POSTGRES_DB=${postgres_db}
+
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+
+  app:
+    build:
+      context: .
+      dockerfile: main.Dockerfile
+    container_name: tensor_app
+    ports:
+      - "5757:5757"
+    depends_on:
+      - db
+    runtime: nvidia
+    environment:
+      - PYTHONUNBUFFERED=1    
+      - SQLALCHEMY_DATABASE_URI=postgresql+psycopg2://${postgres_username}:${postgres_password}@${postgres_domain}:${postgres_port}/${postgres_db}
+      - NVIDIA_VISIBLE_DEVICES=all
+      - CAMERA_SOURCES=${CAMERA_SOURCES}
+      - SECRET_KEY=${SECRET_KEY}
+      - model_pack_name=${model_pack_name}
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    # command: ["conda", "run", "-n", "tensorruntime", "python", "run.py"]
+
+  react_ui:
+    build:
+      context: ./react
+      dockerfile: dockerfile.react
+    container_name: react_ui
+    ports:
+      - "3000:3000"
+    environment:
+      # Optional: if you need to force polling for file changes in some environments
+      - CHOKIDAR_USEPOLLING=true
+    depends_on:
+      - app

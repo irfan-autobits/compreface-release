@@ -15,17 +15,29 @@ pip install uwsgi
 pip install insightface
 pip install psutil
 
-# gpu
 pip install onnxruntime-gpu
 pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
 conda install -c conda-forge libstdcxx-ng
+# and tensorrt latest (can be run on py 3.8 to 3.12, ubuntu 20.0 to latest 24.04 , cuda 11.x or 12.x )-----------
+python3 -m pip install nvidia-pyindex
+python3 -m pip install --upgrade nvidia-tensorrt
 
+# downgrade to 8.5 if using pascal gpu-------------
+python3 -m pip uninstall nvidia-tensorrt tensorrt tensorrt_cu12
+python3 -m pip install nvidia-tensorrt==8.5
 # cpu
 pip install onnxruntime 
 pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu
 conda install -c conda-forge libstdcxx-ng
 
 pip uninstall torch torchvision torchaudio
+
+cuda 12.8 ----------------
+wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2404/x86_64/cuda-keyring_1.1-1_all.deb
+
+sudo dpkg -i cuda-keyring_1.1-1_all.deb
+sudo apt-get update
+sudo apt-get -y install cuda-toolkit-12-8
 
 additional cuda-toolkit (nvcc)-------------
 sudo apt update
@@ -153,4 +165,21 @@ CALCULATION_PLUGIN = "facenet.Calculator"
 
 # FACE_DETECTION_PLUGIN=insightface.FaceDetector
 # CALCULATION_PLUGIN=insightface.Calculator
-# GPU_IDX=0
+# GPU_IDX=
+
+
+cuda profiler by nvidia-------------------------------
+https://developer.nvidia.com/downloads/assets/tools/secure/nsight-systems/2025_1/nsight-systems-2025.1.1_2025.1.1.103-1_amd64.deb
+
+nsys profile --trace=cuda,nvtx,osrt -o profile_output python3 run.py
+nsys profile --trace=cuda,nvtx,osrt --cuda-memory-usage=true -o profile_output python3 run.py
+nsys profile --trace=cuda,nvtx,osrt,cublas,cusolver,cusparse -o profile_output python3 run.py
+
+nsys profile --trace=cuda,nvtx,osrt --cuda-memory-usage=true --wait=all -o profile_output python3 run.py
+nsys profile --trace=cuda,nvtx,osrt --cuda-memory-usage=true -o ~/profile_output python3 run.py
+
+nsys profile --duration=60 --trace=cuda,nvtx,osrt --cuda-memory-usage=true --wait=all -o ~/profile_output python3 run.py
+nsys profile --trace=cuda,nvtx,osrt --cuda-memory-usage=true --wait=all -o ~/profile_output python3 run.py
+
+nsys-ui profile_output.qdrep
+nsys stats profile_output.qdrep

@@ -1,0 +1,497 @@
+# other cuda install ref:
+https://gist.github.com/bennyistanto/46d8cfaf88aaa881ec69a2b5ce60cb58/revisions
+
+conda create -n tensorrt python=3.10
+conda activate tensorrt
+
+----------------------------------------------------------------------------------------------
+conda install -c conda-forge cudatoolkit=11.8.0 -y
+wget https://developer.nvidia.com/compute/cudnn/secure/8.6.0/local_installers/11.8/cudnn-linux-x86_64-8.6.0.163_cuda11-archive.tar.xz
+
+tar -xvf cudnn-linux-x86_64-8.6.0.163_cuda11-archive.tar.xz
+cp cudnn-*-archive/include/cudnn*.h $CONDA_PREFIX/include/
+cp cudnn-*-archive/lib/libcudnn* $CONDA_PREFIX/lib/
+chmod a+r $CONDA_PREFIX/include/cudnn*.h $CONDA_PREFIX/lib/libcudnn*
+
+# Check Conda environment paths
+echo $CONDA_PREFIX/lib
+ldd $CONDA_PREFIX/lib/libcudnn.so | grep cuda 
+# or
+ldd $CONDA_PREFIX/lib/libcudnn.so
+
+# Should show paths inside your Conda environment, not system paths
+# or check
+export LD_LIBRARY_PATH=$CONDA_PREFIX/lib:$LD_LIBRARY_PATH
+
+conda install -c conda-forge nvcc_linux-64 -y
+
+# extra c++ version linking
+conda install -c conda-forge libstdcxx-ng
+
+-------------------------------------------------------------------------------------------------
+conda install -c conda-forge pycuda
+pip install tensorrt==8.5.3.1
+
+# Install TensorRT with correct version
+pip install tensorrt==8.5.3.1
+pip install tensorrt-bindings==8.5.3.1
+pip install tensorrt-dispatch==8.5.3.1 
+
+# Install compatible PyTorch for CUDA 11.8
+pip install torch==2.0.1+cu118 torchvision==0.15.2+cu118 --extra-index-url https://download.pytorch.org/whl/cu118
+pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
+
+pip install flask-socketio
+pip install flask-cors
+pip install flask-sqlalchemy
+pip install python-dotenv
+pip install PyJWT
+pip install pytz
+pip install attrs
+pip install scikit-image
+pip install bcrypt
+pip install cached-property
+pip install gdown
+pip install psycopg2
+pip install uwsgi
+pip install psutil
+
+pip install opencv-python # headless included in insightface
+pip install onnxruntime-gpu
+# downgrade numpy-----------
+pip install insightface
+
+conda install numpy=1.23.5
+conda install -c conda-forge scipy=1.10.1 albumentations=1.3.0
+pip install onnxruntime-gpu==1.11.1
+pip install markupsafe
+conda install -c conda-forge typing_extensions
+conda install -c conda-forge opencv-headless
+
+--------------------- CONVERSION ------------------------------------
+.  ..  1k3d68.onnx  2d106det.onnx  det_10g.onnx  genderage.onnx  w600k_r50.onnx
+
+# For detection model
+trtexec --onnx=det_10g.onnx --saveEngine=det_10g.trt --fp16 --workspace=2048
+trtexec --onnx=det_10g.onnx --saveEngine=det_10g.trt --fp16 --workspace=2048 > trtexec_output.log 2>&1
+
+
+# For recognition model
+trtexec --onnx=w600k_r50.onnx --saveEngine=w600k_r50.trt --fp16 --workspace=2048
+
+-------------- EXTENDED -------------------
+
+trtexec --onnx=det_10g.onnx --saveEngine=det_10g.trt --fp16 --memPoolSize=workspace:4096 --shapes=input.1:1x3x640x640 --optShapes=input.1:1x3x640x640 --maxShapes=input.1:1x3x640x640 --useCudaGraph --useSpinWait --noDataTransfers --persistentCacheRatio=0.5 > trtexec_output_det_10g.log 2>&1
+trtexec --onnx=w600k_r50.onnx --saveEngine=w600k_r50.trt --fp16 --memPoolSize=workspace:4096 --shapes=input.1:1x3x112x112 --useCudaGraph --useSpinWait --noDataTransfers  > trtexec_output_w600k_r50.log 2>&1
+
+no batch
+trtexec --onnx=det_10g.onnx --saveEngine=det_10g.trt --fp16 --memPoolSize=workspace:4096 --shapes=input.1:1x3x640x640 --useCudaGraph --noDataTransfers > trtexec_output_det_10g.log 2>&1
+
+batch-patch 
+trtexec --onnx=det_10g.onnx --saveEngine=det_10g.trt --fp16 --memPoolSize=workspace:4096 --explicitBatch --shapes=input.1:1x3x640x640 --useCudaGraph --noDataTransfers > trtexec_output_det_10g.log 2>&1
+trtexec --onnx=w600k_r50.onnx --saveEngine=w600k_r50.trt --fp16 --memPoolSize=workspace:4096 --explicitBatch --shapes=input.1:1x3x112x112 --useCudaGraph --noDataTransfers > trtexec_output_w600k_r50.log 2>&1
+
+
+
+conda list --------------------------------
+(trtruntime) autobits@autobits-A520M-K-V2:~/Autobits-emp-att/web-cli/final-compre$ conda list
+# packages in environment at /home/autobits/anaconda3/envs/trtruntime:
+#
+# Name                    Version                   Build  Channel
+_libgcc_mutex             0.1                        main  
+_openmp_mutex             5.1                       1_gnu  
+attrs                     25.1.0                   pypi_0    pypi
+bcrypt                    4.2.1                    pypi_0    pypi
+beautifulsoup4            4.13.3                   pypi_0    pypi
+bidict                    0.23.1                   pypi_0    pypi
+blinker                   1.9.0                    pypi_0    pypi
+bzip2                     1.0.8                h5eee18b_6  
+ca-certificates           2025.2.25            h06a4308_0  
+cached-property           2.0.1                    pypi_0    pypi
+certifi                   2025.1.31                pypi_0    pypi
+charset-normalizer        3.4.1                    pypi_0    pypi
+click                     8.1.8                    pypi_0    pypi
+cmake                     3.31.4                   pypi_0    pypi
+cudatoolkit               11.8.0              h4ba93d1_13    conda-forge
+filelock                  3.17.0                   pypi_0    pypi
+flask                     3.1.0                    pypi_0    pypi
+flask-cors                5.0.1                    pypi_0    pypi
+flask-socketio            5.5.1                    pypi_0    pypi
+flask-sqlalchemy          3.1.1                    pypi_0    pypi
+gdown                     5.2.0                    pypi_0    pypi
+greenlet                  3.1.1                    pypi_0    pypi
+h11                       0.14.0                   pypi_0    pypi
+idna                      3.10                     pypi_0    pypi
+imageio                   2.37.0                   pypi_0    pypi
+itsdangerous              2.2.0                    pypi_0    pypi
+jinja2                    3.1.5                    pypi_0    pypi
+kernel-headers_linux-64   3.10.0              he073ed8_18    conda-forge
+lazy-loader               0.4                      pypi_0    pypi
+ld_impl_linux-64          2.40                 h12ee557_0  
+libffi                    3.4.4                h6a678d5_1  
+libgcc                    14.2.0               h767d61c_2    conda-forge
+libgcc-ng                 14.2.0               h69a702a_2    conda-forge
+libgomp                   14.2.0               h767d61c_2    conda-forge
+libstdcxx                 14.2.0               h8f9b012_2    conda-forge
+libstdcxx-ng              14.2.0               h4852527_2    conda-forge
+libuuid                   1.41.5               h5eee18b_0  
+libzlib                   1.2.13               h4ab18f5_6    conda-forge
+lit                       18.1.8                   pypi_0    pypi
+markupsafe                3.0.2                    pypi_0    pypi
+mpmath                    1.3.0                    pypi_0    pypi
+ncurses                   6.4                  h6a678d5_0  
+networkx                  3.4.2                    pypi_0    pypi
+numpy                     1.24.4                   pypi_0    pypi
+nvcc_linux-64             11.8                h9852d18_26    conda-forge
+nvidia-cublas-cu11        2022.4.8                 pypi_0    pypi
+nvidia-cublas-cu117       11.10.1.25               pypi_0    pypi
+nvidia-cuda-runtime-cu11  2022.4.25                pypi_0    pypi
+nvidia-cuda-runtime-cu117 11.7.60                  pypi_0    pypi
+nvidia-cudnn-cu11         2022.5.19                pypi_0    pypi
+nvidia-cudnn-cu116        8.4.0.27                 pypi_0    pypi
+opencv-python             4.11.0.86                pypi_0    pypi
+openssl                   3.4.1                h7b32b05_0    conda-forge
+packaging                 24.2                     pypi_0    pypi
+pillow                    11.1.0                   pypi_0    pypi
+pip                       25.0            py310h06a4308_0  
+psutil                    7.0.0                    pypi_0    pypi
+psycopg2                  2.9.10                   pypi_0    pypi
+pyjwt                     2.10.1                   pypi_0    pypi
+pysocks                   1.7.1                    pypi_0    pypi
+python                    3.10.16              he870216_1  
+python-dotenv             1.0.1                    pypi_0    pypi
+python-engineio           4.11.2                   pypi_0    pypi
+python-socketio           5.12.1                   pypi_0    pypi
+pytz                      2025.1                   pypi_0    pypi
+readline                  8.2                  h5eee18b_0  
+requests                  2.32.3                   pypi_0    pypi
+scikit-image              0.25.2                   pypi_0    pypi
+scipy                     1.15.2                   pypi_0    pypi
+sed                       4.8                  he412f7d_0    conda-forge
+setuptools                75.8.0          py310h06a4308_0  
+simple-websocket          1.1.0                    pypi_0    pypi
+soupsieve                 2.6                      pypi_0    pypi
+sqlalchemy                2.0.38                   pypi_0    pypi
+sqlite                    3.45.3               h5eee18b_0  
+sympy                     1.13.3                   pypi_0    pypi
+sysroot_linux-64          2.17                h0157908_18    conda-forge
+tifffile                  2025.2.18                pypi_0    pypi
+tk                        8.6.14               h39e8969_0  
+torch                     2.0.1+cu118              pypi_0    pypi
+torchvision               0.15.2+cu118             pypi_0    pypi
+tqdm                      4.67.1                   pypi_0    pypi
+triton                    2.0.0                    pypi_0    pypi
+typing-extensions         4.12.2                   pypi_0    pypi
+tzdata                    2025a                h04d1e81_0  
+urllib3                   2.3.0                    pypi_0    pypi
+werkzeug                  3.1.3                    pypi_0    pypi
+wheel                     0.45.1          py310h06a4308_0  
+wsproto                   1.2.0                    pypi_0    pypi
+xz                        5.6.4                h5eee18b_1  
+zlib                      1.2.13               h4ab18f5_6    conda-forge
+bash: /home/autobits/anaconda3/envs/trtruntime/lib/libtinfo.so.6: no version information available (required by bash)
+bash: /home/autobits/anaconda3/envs/trtruntime/lib/libtinfo.so.6: no version information available (required by bash)
+bash: /home/autobits/anaconda3/envs/trtruntime/lib/libtinfo.so.6: no version information available (required by bash)
+
+---------------------------------------------------------------------------------------------------------------
+(trtruntime) autobits@autobits-A520M-K-V2:~/Autobits-emp-att/web-cli/final-compre$ conda install -c conda-forge pycuda
+Channels:
+ - conda-forge
+ - nvidia
+ - defaults
+Platform: linux-64
+Collecting package metadata (repodata.json): done
+Solving environment: done
+
+## Package Plan ##
+
+  environment location: /home/autobits/anaconda3/envs/trtruntime
+
+  added / updated specs:
+    - pycuda
+
+
+The following NEW packages will be INSTALLED:
+
+  appdirs            conda-forge/noarch::appdirs-1.4.4-pyhd8ed1ab_1 
+  icu                conda-forge/linux-64::icu-73.2-h59595ed_0 
+  importlib-metadata conda-forge/noarch::importlib-metadata-8.6.1-pyha770c72_0 
+  libblas            conda-forge/linux-64::libblas-3.9.0-31_h59b9bed_openblas 
+  libboost           conda-forge/linux-64::libboost-1.84.0-hba137d9_3 
+  libboost-python    conda-forge/linux-64::libboost-python-1.84.0-py310ha2bacc8_7 
+  libcblas           conda-forge/linux-64::libcblas-3.9.0-31_he106b2a_openblas 
+  libgfortran        conda-forge/linux-64::libgfortran-14.2.0-h69a702a_2 
+  libgfortran5       conda-forge/linux-64::libgfortran5-14.2.0-hf1ad2bd_2 
+  liblapack          conda-forge/linux-64::liblapack-3.9.0-31_h7ac8fdf_openblas 
+  libopenblas        conda-forge/linux-64::libopenblas-0.3.29-pthreads_h94d23a6_0 
+  mako               conda-forge/noarch::mako-1.3.9-pyhd8ed1ab_0 
+  markupsafe         conda-forge/linux-64::markupsafe-3.0.2-py310h89163eb_1 
+  numpy              conda-forge/linux-64::numpy-1.26.4-py310hb13e2d6_0 
+  platformdirs       conda-forge/noarch::platformdirs-4.3.6-pyhd8ed1ab_1 
+  pycuda             conda-forge/linux-64::pycuda-2024.1-py310h6007a64_3 
+  python_abi         conda-forge/linux-64::python_abi-3.10-2_cp310 
+  pytools            conda-forge/noarch::pytools-2025.1.1-pyhd8ed1ab_0 
+  siphash24          conda-forge/linux-64::siphash24-1.7-py310ha75aee5_0 
+  typing-extensions  conda-forge/noarch::typing-extensions-4.12.2-hd8ed1ab_1 
+  typing_extensions  conda-forge/noarch::typing_extensions-4.12.2-pyha770c72_1 
+  zipp               conda-forge/noarch::zipp-3.21.0-pyhd8ed1ab_1 
+  zstd               conda-forge/linux-64::zstd-1.5.6-ha6fb4c9_0 
+
+
+Proceed ([y]/n)? 
+(trtruntime) autobits@autobits-A520M-K-V2:~/Autobits-emp-att/web-cli/final-compre$ conda list
+# packages in environment at /home/autobits/anaconda3/envs/trtruntime:
+#
+# Name                    Version                   Build  Channel
+_libgcc_mutex             0.1                        main  
+_openmp_mutex             5.1                       1_gnu  
+appdirs                   1.4.4              pyhd8ed1ab_1    conda-forge
+attrs                     25.1.0                   pypi_0    pypi
+bcrypt                    4.2.1                    pypi_0    pypi
+beautifulsoup4            4.13.3                   pypi_0    pypi
+bidict                    0.23.1                   pypi_0    pypi
+blinker                   1.9.0                    pypi_0    pypi
+bzip2                     1.0.8                h5eee18b_6  
+ca-certificates           2025.2.25            h06a4308_0  
+cached-property           2.0.1                    pypi_0    pypi
+certifi                   2025.1.31                pypi_0    pypi
+charset-normalizer        3.4.1                    pypi_0    pypi
+click                     8.1.8                    pypi_0    pypi
+cmake                     3.31.4                   pypi_0    pypi
+cudatoolkit               11.8.0              h4ba93d1_13    conda-forge
+filelock                  3.17.0                   pypi_0    pypi
+flask                     3.1.0                    pypi_0    pypi
+flask-cors                5.0.1                    pypi_0    pypi
+flask-socketio            5.5.1                    pypi_0    pypi
+flask-sqlalchemy          3.1.1                    pypi_0    pypi
+gdown                     5.2.0                    pypi_0    pypi
+greenlet                  3.1.1                    pypi_0    pypi
+h11                       0.14.0                   pypi_0    pypi
+icu                       73.2                 h59595ed_0    conda-forge
+idna                      3.10                     pypi_0    pypi
+imageio                   2.37.0                   pypi_0    pypi
+importlib-metadata        8.6.1              pyha770c72_0    conda-forge
+itsdangerous              2.2.0                    pypi_0    pypi
+jinja2                    3.1.5                    pypi_0    pypi
+kernel-headers_linux-64   3.10.0              he073ed8_18    conda-forge
+lazy-loader               0.4                      pypi_0    pypi
+ld_impl_linux-64          2.40                 h12ee557_0  
+libblas                   3.9.0           31_h59b9bed_openblas    conda-forge
+libboost                  1.84.0               hba137d9_3    conda-forge
+libboost-python           1.84.0          py310ha2bacc8_7    conda-forge
+libcblas                  3.9.0           31_he106b2a_openblas    conda-forge
+libffi                    3.4.4                h6a678d5_1  
+libgcc                    14.2.0               h767d61c_2    conda-forge
+libgcc-ng                 14.2.0               h69a702a_2    conda-forge
+libgfortran               14.2.0               h69a702a_2    conda-forge
+libgfortran5              14.2.0               hf1ad2bd_2    conda-forge
+libgomp                   14.2.0               h767d61c_2    conda-forge
+liblapack                 3.9.0           31_h7ac8fdf_openblas    conda-forge
+libopenblas               0.3.29          pthreads_h94d23a6_0    conda-forge
+libstdcxx                 14.2.0               h8f9b012_2    conda-forge
+libstdcxx-ng              14.2.0               h4852527_2    conda-forge
+libuuid                   1.41.5               h5eee18b_0  
+libzlib                   1.2.13               h4ab18f5_6    conda-forge
+lit                       18.1.8                   pypi_0    pypi
+mako                      1.3.9              pyhd8ed1ab_0    conda-forge
+markupsafe                3.0.2           py310h89163eb_1    conda-forge
+mpmath                    1.3.0                    pypi_0    pypi
+ncurses                   6.4                  h6a678d5_0  
+networkx                  3.4.2                    pypi_0    pypi
+numpy                     1.24.4                   pypi_0    pypi
+nvcc_linux-64             11.8                h9852d18_26    conda-forge
+nvidia-cublas-cu11        2022.4.8                 pypi_0    pypi
+nvidia-cublas-cu117       11.10.1.25               pypi_0    pypi
+nvidia-cuda-runtime-cu11  2022.4.25                pypi_0    pypi
+nvidia-cuda-runtime-cu117 11.7.60                  pypi_0    pypi
+nvidia-cudnn-cu11         2022.5.19                pypi_0    pypi
+nvidia-cudnn-cu116        8.4.0.27                 pypi_0    pypi
+opencv-python             4.11.0.86                pypi_0    pypi
+openssl                   3.4.1                h7b32b05_0    conda-forge
+packaging                 24.2                     pypi_0    pypi
+pillow                    11.1.0                   pypi_0    pypi
+pip                       25.0            py310h06a4308_0  
+platformdirs              4.3.6              pyhd8ed1ab_1    conda-forge
+psutil                    7.0.0                    pypi_0    pypi
+psycopg2                  2.9.10                   pypi_0    pypi
+pycuda                    2024.1          py310h6007a64_3    conda-forge
+pyjwt                     2.10.1                   pypi_0    pypi
+pysocks                   1.7.1                    pypi_0    pypi
+python                    3.10.16              he870216_1  
+python-dotenv             1.0.1                    pypi_0    pypi
+python-engineio           4.11.2                   pypi_0    pypi
+python-socketio           5.12.1                   pypi_0    pypi
+python_abi                3.10                    2_cp310    conda-forge
+pytools                   2025.1.1           pyhd8ed1ab_0    conda-forge
+pytz                      2025.1                   pypi_0    pypi
+readline                  8.2                  h5eee18b_0  
+requests                  2.32.3                   pypi_0    pypi
+scikit-image              0.25.2                   pypi_0    pypi
+scipy                     1.15.2                   pypi_0    pypi
+sed                       4.8                  he412f7d_0    conda-forge
+setuptools                75.8.0          py310h06a4308_0  
+simple-websocket          1.1.0                    pypi_0    pypi
+siphash24                 1.7             py310ha75aee5_0    conda-forge
+soupsieve                 2.6                      pypi_0    pypi
+sqlalchemy                2.0.38                   pypi_0    pypi
+sqlite                    3.45.3               h5eee18b_0  
+sympy                     1.13.3                   pypi_0    pypi
+sysroot_linux-64          2.17                h0157908_18    conda-forge
+tifffile                  2025.2.18                pypi_0    pypi
+tk                        8.6.14               h39e8969_0  
+torch                     2.0.1+cu118              pypi_0    pypi
+torchvision               0.15.2+cu118             pypi_0    pypi
+tqdm                      4.67.1                   pypi_0    pypi
+triton                    2.0.0                    pypi_0    pypi
+typing-extensions         4.12.2               hd8ed1ab_1    conda-forge
+typing_extensions         4.12.2             pyha770c72_1    conda-forge
+tzdata                    2025a                h04d1e81_0  
+urllib3                   2.3.0                    pypi_0    pypi
+werkzeug                  3.1.3                    pypi_0    pypi
+wheel                     0.45.1          py310h06a4308_0  
+wsproto                   1.2.0                    pypi_0    pypi
+xz                        5.6.4                h5eee18b_1  
+zipp                      3.21.0             pyhd8ed1ab_1    conda-forge
+zlib                      1.2.13               h4ab18f5_6    conda-forge
+zstd                      1.5.6                ha6fb4c9_0    conda-forge
+bash: /home/autobits/anaconda3/envs/trtruntime/lib/libtinfo.so.6: no version information available (required by bash)
+bash: /home/autobits/anaconda3/envs/trtruntime/lib/libtinfo.so.6: no version information available (required by bash)
+bash: /home/autobits/anaconda3/envs/trtruntime/lib/libtinfo.so.6: no version information available (required by bash)
+(trtruntime) autobits@autobits-A520M-K-V2:~/Autobits-emp-att/web-cli/final-compre$ pip install tensorrt==8.5.3.1
+Looking in indexes: https://pypi.org/simple, https://pypi.ngc.nvidia.com
+Collecting tensorrt==8.5.3.1
+  Downloading tensorrt-8.5.3.1-cp310-none-manylinux_2_17_x86_64.whl.metadata (721 bytes)
+Requirement already satisfied: nvidia-cuda-runtime-cu11 in /home/autobits/anaconda3/envs/trtruntime/lib/python3.10/site-packages (from tensorrt==8.5.3.1) (2022.4.25)
+Requirement already satisfied: nvidia-cudnn-cu11 in /home/autobits/anaconda3/envs/trtruntime/lib/python3.10/site-packages (from tensorrt==8.5.3.1) (2022.5.19)
+Requirement already satisfied: nvidia-cublas-cu11 in /home/autobits/anaconda3/envs/trtruntime/lib/python3.10/site-packages (from tensorrt==8.5.3.1) (2022.4.8)
+Requirement already satisfied: nvidia-cublas-cu117 in /home/autobits/anaconda3/envs/trtruntime/lib/python3.10/site-packages (from nvidia-cublas-cu11->tensorrt==8.5.3.1) (11.10.1.25)
+Requirement already satisfied: nvidia-cuda-runtime-cu117 in /home/autobits/anaconda3/envs/trtruntime/lib/python3.10/site-packages (from nvidia-cuda-runtime-cu11->tensorrt==8.5.3.1) (11.7.60)
+Requirement already satisfied: nvidia-cudnn-cu116 in /home/autobits/anaconda3/envs/trtruntime/lib/python3.10/site-packages (from nvidia-cudnn-cu11->tensorrt==8.5.3.1) (8.4.0.27)
+Requirement already satisfied: setuptools in /home/autobits/anaconda3/envs/trtruntime/lib/python3.10/site-packages (from nvidia-cublas-cu117->nvidia-cublas-cu11->tensorrt==8.5.3.1) (75.8.0)
+Requirement already satisfied: wheel in /home/autobits/anaconda3/envs/trtruntime/lib/python3.10/site-packages (from nvidia-cublas-cu117->nvidia-cublas-cu11->tensorrt==8.5.3.1) (0.45.1)
+Downloading tensorrt-8.5.3.1-cp310-none-manylinux_2_17_x86_64.whl (549.5 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 549.5/549.5 MB 10.6 MB/s eta 0:00:00
+Installing collected packages: tensorrt
+Successfully installed tensorrt-8.5.3.1
+bash: /home/autobits/anaconda3/envs/trtruntime/lib/libtinfo.so.6: no version information available (required by bash)
+bash: /home/autobits/anaconda3/envs/trtruntime/lib/libtinfo.so.6: no version information available (required by bash)
+bash: /home/autobits/anaconda3/envs/trtruntime/lib/libtinfo.so.6: no version information available (required by bash)
+(trtruntime) autobits@autobits-A520M-K-V2:~/Autobits-emp-att/web-cli/final-compre$ conda list
+# packages in environment at /home/autobits/anaconda3/envs/trtruntime:
+#
+# Name                    Version                   Build  Channel
+_libgcc_mutex             0.1                        main  
+_openmp_mutex             5.1                       1_gnu  
+appdirs                   1.4.4              pyhd8ed1ab_1    conda-forge
+attrs                     25.1.0                   pypi_0    pypi
+bcrypt                    4.2.1                    pypi_0    pypi
+beautifulsoup4            4.13.3                   pypi_0    pypi
+bidict                    0.23.1                   pypi_0    pypi
+blinker                   1.9.0                    pypi_0    pypi
+bzip2                     1.0.8                h5eee18b_6  
+ca-certificates           2025.2.25            h06a4308_0  
+cached-property           2.0.1                    pypi_0    pypi
+certifi                   2025.1.31                pypi_0    pypi
+charset-normalizer        3.4.1                    pypi_0    pypi
+click                     8.1.8                    pypi_0    pypi
+cmake                     3.31.4                   pypi_0    pypi
+cudatoolkit               11.8.0              h4ba93d1_13    conda-forge
+filelock                  3.17.0                   pypi_0    pypi
+flask                     3.1.0                    pypi_0    pypi
+flask-cors                5.0.1                    pypi_0    pypi
+flask-socketio            5.5.1                    pypi_0    pypi
+flask-sqlalchemy          3.1.1                    pypi_0    pypi
+gdown                     5.2.0                    pypi_0    pypi
+greenlet                  3.1.1                    pypi_0    pypi
+h11                       0.14.0                   pypi_0    pypi
+icu                       73.2                 h59595ed_0    conda-forge
+idna                      3.10                     pypi_0    pypi
+imageio                   2.37.0                   pypi_0    pypi
+importlib-metadata        8.6.1              pyha770c72_0    conda-forge
+itsdangerous              2.2.0                    pypi_0    pypi
+jinja2                    3.1.5                    pypi_0    pypi
+kernel-headers_linux-64   3.10.0              he073ed8_18    conda-forge
+lazy-loader               0.4                      pypi_0    pypi
+ld_impl_linux-64          2.40                 h12ee557_0  
+libblas                   3.9.0           31_h59b9bed_openblas    conda-forge
+libboost                  1.84.0               hba137d9_3    conda-forge
+libboost-python           1.84.0          py310ha2bacc8_7    conda-forge
+libcblas                  3.9.0           31_he106b2a_openblas    conda-forge
+libffi                    3.4.4                h6a678d5_1  
+libgcc                    14.2.0               h767d61c_2    conda-forge
+libgcc-ng                 14.2.0               h69a702a_2    conda-forge
+libgfortran               14.2.0               h69a702a_2    conda-forge
+libgfortran5              14.2.0               hf1ad2bd_2    conda-forge
+libgomp                   14.2.0               h767d61c_2    conda-forge
+liblapack                 3.9.0           31_h7ac8fdf_openblas    conda-forge
+libopenblas               0.3.29          pthreads_h94d23a6_0    conda-forge
+libstdcxx                 14.2.0               h8f9b012_2    conda-forge
+libstdcxx-ng              14.2.0               h4852527_2    conda-forge
+libuuid                   1.41.5               h5eee18b_0  
+libzlib                   1.2.13               h4ab18f5_6    conda-forge
+lit                       18.1.8                   pypi_0    pypi
+mako                      1.3.9              pyhd8ed1ab_0    conda-forge
+markupsafe                3.0.2           py310h89163eb_1    conda-forge
+mpmath                    1.3.0                    pypi_0    pypi
+ncurses                   6.4                  h6a678d5_0  
+networkx                  3.4.2                    pypi_0    pypi
+numpy                     1.24.4                   pypi_0    pypi
+nvcc_linux-64             11.8                h9852d18_26    conda-forge
+nvidia-cublas-cu11        2022.4.8                 pypi_0    pypi
+nvidia-cublas-cu117       11.10.1.25               pypi_0    pypi
+nvidia-cuda-runtime-cu11  2022.4.25                pypi_0    pypi
+nvidia-cuda-runtime-cu117 11.7.60                  pypi_0    pypi
+nvidia-cudnn-cu11         2022.5.19                pypi_0    pypi
+nvidia-cudnn-cu116        8.4.0.27                 pypi_0    pypi
+opencv-python             4.11.0.86                pypi_0    pypi
+openssl                   3.4.1                h7b32b05_0    conda-forge
+packaging                 24.2                     pypi_0    pypi
+pillow                    11.1.0                   pypi_0    pypi
+pip                       25.0            py310h06a4308_0  
+platformdirs              4.3.6              pyhd8ed1ab_1    conda-forge
+psutil                    7.0.0                    pypi_0    pypi
+psycopg2                  2.9.10                   pypi_0    pypi
+pycuda                    2024.1          py310h6007a64_3    conda-forge
+pyjwt                     2.10.1                   pypi_0    pypi
+pysocks                   1.7.1                    pypi_0    pypi
+python                    3.10.16              he870216_1  
+python-dotenv             1.0.1                    pypi_0    pypi
+python-engineio           4.11.2                   pypi_0    pypi
+python-socketio           5.12.1                   pypi_0    pypi
+python_abi                3.10                    2_cp310    conda-forge
+pytools                   2025.1.1           pyhd8ed1ab_0    conda-forge
+pytz                      2025.1                   pypi_0    pypi
+readline                  8.2                  h5eee18b_0  
+requests                  2.32.3                   pypi_0    pypi
+scikit-image              0.25.2                   pypi_0    pypi
+scipy                     1.15.2                   pypi_0    pypi
+sed                       4.8                  he412f7d_0    conda-forge
+setuptools                75.8.0          py310h06a4308_0  
+simple-websocket          1.1.0                    pypi_0    pypi
+siphash24                 1.7             py310ha75aee5_0    conda-forge
+soupsieve                 2.6                      pypi_0    pypi
+sqlalchemy                2.0.38                   pypi_0    pypi
+sqlite                    3.45.3               h5eee18b_0  
+sympy                     1.13.3                   pypi_0    pypi
+sysroot_linux-64          2.17                h0157908_18    conda-forge
+tensorrt                  8.5.3.1                  pypi_0    pypi
+tifffile                  2025.2.18                pypi_0    pypi
+tk                        8.6.14               h39e8969_0  
+torch                     2.0.1+cu118              pypi_0    pypi
+torchvision               0.15.2+cu118             pypi_0    pypi
+tqdm                      4.67.1                   pypi_0    pypi
+triton                    2.0.0                    pypi_0    pypi
+typing-extensions         4.12.2               hd8ed1ab_1    conda-forge
+typing_extensions         4.12.2             pyha770c72_1    conda-forge
+tzdata                    2025a                h04d1e81_0  
+urllib3                   2.3.0                    pypi_0    pypi
+werkzeug                  3.1.3                    pypi_0    pypi
+wheel                     0.45.1          py310h06a4308_0  
+wsproto                   1.2.0                    pypi_0    pypi
+xz                        5.6.4                h5eee18b_1  
+zipp                      3.21.0             pyhd8ed1ab_1    conda-forge
+zlib                      1.2.13               h4ab18f5_6    conda-forge
+zstd                      1.5.6                ha6fb4c9_0    conda-forge
+bash: /home/autobits/anaconda3/envs/trtruntime/lib/libtinfo.so.6: no version information available (required by bash)
+bash: /home/autobits/anaconda3/envs/trtruntime/lib/libtinfo.so.6: no version information available (required by bash)
+bash: /home/autobits/anaconda3/envs/trtruntime/lib/libtinfo.so.6: no version information available (required by bash)
